@@ -25,6 +25,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     //游戏道具
     var gamePropsLayer: SKNode!
     var gamePropsGenerator: GamePropsGenerator!
+    var gamePropsMap = [GamePropsType:GameProps]()//正在起作用的道具集合
+    var gamePropsBanner: GamePropsBanner!//正在起作用的道具显示区域
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -100,6 +102,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gamePropsLayer.zPosition = CGFloat(SceneZPosition.GamePropsZPosition.rawValue)
         addChild(gamePropsLayer)
         gamePropsGenerator = GamePropsGenerator(gameScene: self)
+        gamePropsBanner = GamePropsBanner(gameScene: self)
     }
     
     private func setupInGameMenu(){
@@ -144,21 +147,36 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     /*    碰撞检测事件处理    */
     func didBeginContact(contact: SKPhysicsContact) {
         let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
-        if collision == (PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemyCageEdge.rawValue){
+        switch collision{
+            //普通敌人 回笼
+        case PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyNormal{
                 enemy.moveToward((randomPointInRect(player.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
                 enemiesToAdjustDirection.append(enemy)
             }
-        }
-        else if collision == (PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyCageEdge.rawValue){
+            //快速敌人 移除
+        case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyFast.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyFast{
                 enemy.removeFromParent()
             }
-        }
-        else if collision == (PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.Player.rawValue) || collision == (PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Player.rawValue) || collision == (PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue){
-            handleGameOver(false)
+            //敌人与用户接触，游戏结束
+        case PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.Player.rawValue:
+            fallthrough
+        case PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Player.rawValue:
+            fallthrough
+        case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
+//            handleGameOver(false)
+            break
+            //用户拾得道具 增加特殊效果
+        case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
+            let gamePropsBody = contact.bodyA.categoryBitMask == PhysicsCategory.GameProps.rawValue ? contact.bodyA : contact.bodyB
+            if let gameProps = gamePropsBody.node as? GameProps{
+                gamePropsGenerator.handleGamePropsEffect(gameProps)
+            }
+        default:
+            break
         }
     }
     

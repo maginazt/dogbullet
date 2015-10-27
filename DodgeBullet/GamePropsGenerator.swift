@@ -8,7 +8,7 @@
 
 import Foundation
 import SpriteKit
-class GamePropsGenerator {
+class GamePropsGenerator : GamePropsDelegate {
     
     unowned let gameScene: GameScene
     
@@ -23,9 +23,27 @@ class GamePropsGenerator {
     }
     
     func spawnGameProps(){
-        let gameProps = GameProps(gamePropsType: GamePropsType.SpeedUp)
+        let gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
         gameProps.position = randomPointInRect(gameScene.playableArea)
         gameScene.gamePropsLayer.addChild(gameProps)
-        
     }
+    
+    func handleGamePropsEffect(gameProps: GameProps){
+        if gameScene.gamePropsMap.keys.contains(gameProps.type){
+            let oldGameProps = gameScene.gamePropsMap[gameProps.type]!
+            oldGameProps.resetEffectTimer()
+            gameProps.removeFromParent()
+        }
+        else{
+            gameScene.gamePropsMap[gameProps.type] = gameProps
+            gameScene.gamePropsBanner.add(gameProps)
+        }
+    }
+    
+    func disableEffect(type: GamePropsType) {
+        if let gameProps = gameScene.gamePropsMap.removeValueForKey(type){
+            gameScene.gamePropsBanner.remove(gameProps)
+        }
+    }
+    
 }

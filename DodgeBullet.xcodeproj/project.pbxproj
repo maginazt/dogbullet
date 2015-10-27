@@ -48,6 +48,7 @@
 		4CA8A7DF1BD1D3A7007C5F0E /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */; settings = {ASSET_TAGS = (); }; };
 		4CD5E5831BDCB1AA00463460 /* GameProps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5821BDCB1AA00463460 /* GameProps.swift */; settings = {ASSET_TAGS = (); }; };
 		4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */; settings = {ASSET_TAGS = (); }; };
+		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +107,7 @@
 		4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		4CD5E5821BDCB1AA00463460 /* GameProps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameProps.swift; sourceTree = "<group>"; };
 		4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsGenerator.swift; sourceTree = "<group>"; };
+		CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +224,7 @@
 				4C4468001BCA335000FC0A7F /* gamecontroller */,
 				4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */,
 				4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */,
+				CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */,
 			);
 			name = gamelogic;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */,
+				CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */,
 				4C4468131BCA3CD100FC0A7F /* CGPoint+Extensions.swift in Sources */,
 				4C44681B1BCA3CD100FC0A7F /* SKTEffects.swift in Sources */,
 				4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */,
@@ -548,6 +552,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
@@ -559,6 +564,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;

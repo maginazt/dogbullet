@@ -48,8 +48,8 @@ enum GameSpeed: Float{
 }
 
 //游戏道具
-enum GamePropsType{
-    case SpeedUp //加速
+enum GamePropsType: Int{
+    case SpeedUp = 0 //加速
     case ScaleDown //缩小
     case Phantom //幻象
     case StopTime //时间静止
@@ -58,5 +58,5 @@ enum GamePropsType{
     case Rock //石头 晕眩
     case WhosYourDaddy //无敌
     case SlowDown //减速光环
-    
+    case Maximum
 }

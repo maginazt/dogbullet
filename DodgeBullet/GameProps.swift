@@ -10,6 +10,13 @@ import Foundation
 import SpriteKit
 class GameProps: SKSpriteNode {
     
+    static let spinNumber = 10
+    static let blinkNumber = 10
+    // 有效时间
+    static let maxEffectTime = 10
+    static let TimerActionKey = "timerActionKey"
+    
+    static let SpinActionKey = "spinActionKey"
     static let spinAnimate: SKAction = {
         let spin = SKAction.sequence([
             SKAction.scaleXTo(0, duration: 0.3),
@@ -23,12 +30,16 @@ class GameProps: SKSpriteNode {
             SKAction.fadeInWithDuration(0.25)])
         
         return SKAction.sequence([
-            SKAction.repeatAction(spin, count: 15),
-            SKAction.repeatAction(blink, count: 10),
+            SKAction.repeatAction(spin, count: GameProps.spinNumber),
+            SKAction.repeatAction(blink, count: GameProps.blinkNumber),
             SKAction.removeFromParent()])
     }()
     
     let type: GamePropsType
+    
+    var effectTime = GameProps.maxEffectTime
+    var countDownLabel: SKLabelNode!
+    var delegate: GamePropsDelegate?
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
@@ -39,8 +50,20 @@ class GameProps: SKSpriteNode {
             texture = atlas.textureNamed("speedUp")
         case .ScaleDown:
             texture = atlas.textureNamed("scaleDown")
+        case .DogFood:
+            texture = atlas.textureNamed("dogFood")
+        case .Phantom:
+            texture = atlas.textureNamed("phantom")
+        case .SlowDown:
+            texture = atlas.textureNamed("slowDown")
+        case .StopTime:
+            texture = atlas.textureNamed("stopTime")
+        case .TurnCats:
+            texture = atlas.textureNamed("turnCats")
+        case .WhosYourDaddy:
+            texture = atlas.textureNamed("whosYourDaddy")
         default:
-            texture = atlas.textureNamed("default")
+            texture = atlas.textureNamed("rock")
         }
         super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(50, 50))
         physicsBody = SKPhysicsBody(circleOfRadius: size.width/2)
@@ -48,10 +71,41 @@ class GameProps: SKSpriteNode {
         physicsBody?.categoryBitMask = PhysicsCategory.GameProps.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
-        runAction(GameProps.spinAnimate)
+        runAction(GameProps.spinAnimate, withKey: GameProps.SpinActionKey)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func initializeEffect(delegate: GamePropsDelegate){
+        self.delegate = delegate
+        self.countDownLabel = SKLabelNode(fontNamed: "Arial")
+        self.countDownLabel.fontSize = self.size.width/2
+        self.countDownLabel.fontColor = SKColor.whiteColor()
+        self.countDownLabel.position = CGPointMake(self.size.width/2, -self.size.height/1.5)
+        self.countDownLabel.text = "\(self.effectTime)"
+        self.addChild(self.countDownLabel)
+        //计时action
+        self.runAction(SKAction.sequence([
+            SKAction.waitForDuration(1.0),
+            SKAction.runBlock({ () -> Void in
+                self.countDownLabel.text = "\(--self.effectTime)"
+                if self.effectTime <= 0{
+                    self.delegate?.disableEffect(self.type)
+                }
+            })]), withKey: GameProps.TimerActionKey)
+    }
+    
+    func resetEffectTimer(){
+        effectTime = GameProps.maxEffectTime
+    }
+    
+    deinit{
+        print("deinit game props")
+    }
+}
+protocol GamePropsDelegate{
+    //道具到时，消除道具效果
+    func disableEffect(type: GamePropsType)
 }
