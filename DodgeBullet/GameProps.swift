@@ -116,9 +116,6 @@ class GameProps: SKSpriteNode {
         effectTime = GameProps.maxEffectTime
     }
     
-    deinit{
-        print("deinit game props")
-    }
 }
 protocol GamePropsDelegate{
     //道具到时，消除道具效果
