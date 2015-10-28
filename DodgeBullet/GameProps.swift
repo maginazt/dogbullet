@@ -71,6 +71,15 @@ class GameProps: SKSpriteNode {
         physicsBody?.categoryBitMask = PhysicsCategory.GameProps.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
+        
+        countDownLabel = SKLabelNode(fontNamed: "Arial")
+        countDownLabel.fontSize = size.width/2
+        countDownLabel.fontColor = SKColor.whiteColor()
+        countDownLabel.position = CGPointMake(0, -size.height)
+        countDownLabel.text = "\(effectTime)"
+        countDownLabel.hidden = true
+        addChild(countDownLabel)
+        
         runAction(GameProps.spinAnimate, withKey: GameProps.SpinActionKey)
     }
 
@@ -79,22 +88,28 @@ class GameProps: SKSpriteNode {
     }
     
     func initializeEffect(delegate: GamePropsDelegate){
+        removeActionForKey(GameProps.SpinActionKey)
+        physicsBody = nil
+        alpha = 1.0
         self.delegate = delegate
-        self.countDownLabel = SKLabelNode(fontNamed: "Arial")
-        self.countDownLabel.fontSize = self.size.width/2
-        self.countDownLabel.fontColor = SKColor.whiteColor()
-        self.countDownLabel.position = CGPointMake(self.size.width/2, -self.size.height/1.5)
-        self.countDownLabel.text = "\(self.effectTime)"
-        self.addChild(self.countDownLabel)
+        countDownLabel.hidden = false
         //计时action
-        self.runAction(SKAction.sequence([
+        runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(1.0),
             SKAction.runBlock({ () -> Void in
                 self.countDownLabel.text = "\(--self.effectTime)"
+                switch self.effectTime{
+                case 4 ... 10:
+                    self.countDownLabel.fontColor = SKColor.whiteColor()
+                case 0 ... 3:
+                    self.countDownLabel.fontColor = SKColor.redColor()
+                default:
+                    break
+                }
                 if self.effectTime <= 0{
                     self.delegate?.disableEffect(self.type)
                 }
-            })]), withKey: GameProps.TimerActionKey)
+            })])), withKey: GameProps.TimerActionKey)
     }
     
     func resetEffectTimer(){

@@ -23,7 +23,7 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         
         /* Set the scale mode to scale to fit the window */
-        let scene = GameScene(size: CGSizeMake(1536, 2048))
+        let scene = GameScene(size: CGSizeMake(2048, 1536))
         scene.scaleMode = .AspectFill
 //        setupEnvironments(scene)
         skView.createGestureRecognizer(scene)

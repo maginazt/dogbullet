@@ -12,65 +12,47 @@ class GamePropsBanner {
     
     unowned let gameScene: GameScene
     let area: CGRect
+    let gridSize: CGFloat = 100
     
-    var head: GamePropsNode?
+    var queue = [GameProps]()
     
     init(gameScene: GameScene){
         self.gameScene = gameScene
-        area = CGRectMake(CGRectGetMinX(gameScene.playableArea)+CGRectGetWidth(gameScene.playableArea)/3, CGRectGetMaxY(gameScene.playableArea)-100, CGRectGetWidth(gameScene.playableArea)/3, 100)
+        area = CGRectMake(500, CGRectGetMaxY(gameScene.playableArea)-100, gridSize*10, 100)
     }
     
     func add(gameProps: GameProps){
-        let node = GamePropsNode(gameProps: gameProps)
         var pos: CGPoint!
-        if head == nil{
-            pos = CGPointMake(CGRectGetMaxX(area)-gameProps.size.width/1.5, CGRectGetMaxY(area)-gameProps.size.height/1.5)
-            head = node
+        if let lastItem = queue.last{
+            pos = CGPointMake(lastItem.position.x-gridSize, lastItem.position.y)
         }
         else{
-            pos = CGPointMake(head!.gameProps.position.x-gameProps.size.width*1.5, head!.gameProps.position.y)
-            node.next = head
-            head = node
+            pos = CGPointMake(CGRectGetMaxX(area)-gridSize/2, CGRectGetMaxY(area)-gameProps.size.height/1.5)
         }
-        gameProps.removeActionForKey(GameProps.SpinActionKey)
+        queue.append(gameProps)
         gameProps.runAction(SKAction.group([
             SKAction.sequence([SKAction.scaleTo(0.2, duration: 0.1), SKAction.scaleTo(1.5, duration: 0.1)]),
-            SKAction.moveTo(pos, duration: 0.2)]))
+            SKAction.moveTo(pos, duration: 0.2)])){
+                let index = self.queue.indexOf(gameProps)
+                gameProps.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index!)+1)/2, gameProps.position.y)
+        }
     }
     
     func remove(gameProps: GameProps){
-        var nodeToRemove: GamePropsNode! = head
-        while nodeToRemove != nil{
-            if nodeToRemove.gameProps.type == gameProps.type{
-                break
+        if let removeIndex = queue.indexOf(gameProps){
+            let y = gameProps.position.y
+            queue.removeAtIndex(removeIndex)
+            gameProps.removeActionForKey(GameProps.TimerActionKey)
+            gameProps.runAction(SKAction.sequence([
+                SKAction.fadeOutWithDuration(0.2),
+                SKAction.removeFromParent()])){
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        for index in removeIndex ..< self.queue.count{
+                            let props = self.queue[index]
+                            props.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, y)
+                        }
+                    })
             }
-            nodeToRemove = nodeToRemove.next
         }
-        let lastPos = nodeToRemove.gameProps.position
-        nodeToRemove.gameProps.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.2),
-            SKAction.removeFromParent()])){
-                if nodeToRemove === self.head{
-                    self.head = self.head?.next
-                }
-                else{
-                    var prevNode: GamePropsNode! = self.head
-                    while prevNode.next !== nodeToRemove{
-                        prevNode.gameProps.position = prevNode.next!.gameProps.position
-                        prevNode = prevNode.next
-                    }
-                    prevNode.gameProps.position = lastPos
-                    prevNode.next = nodeToRemove.next
-                }
-        }
-    }
-}
-class GamePropsNode {
-    
-    unowned let gameProps: GameProps
-    var next: GamePropsNode?
-    
-    init(gameProps: GameProps){
-        self.gameProps = gameProps
     }
 }
