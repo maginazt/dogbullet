@@ -24,7 +24,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     func spawnGameProps(){
         let gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
-        gameProps.position = randomPointInRect(gameScene.playableArea)
+        gameProps.position = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize/2, gameScene.gamePropsBanner.gridSize*2))
         gameScene.gamePropsLayer.addChild(gameProps)
     }
     

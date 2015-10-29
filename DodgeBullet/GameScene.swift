@@ -30,7 +30,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
-    var timeLabel: SKLabelNode!
+    var currentTimeLabel: SKLabelNode!
+    var bestRecordLabel: SKLabelNode!
     var timePassed: NSTimeInterval = 0
     var lastTimeStamp: NSTimeInterval = 0
     var deltaTime: NSTimeInterval = 0
@@ -101,12 +102,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gamePropsLayer = SKNode()
         gamePropsLayer.zPosition = CGFloat(SceneZPosition.GamePropsZPosition.rawValue)
         addChild(gamePropsLayer)
-        gamePropsGenerator = GamePropsGenerator(gameScene: self)
         gamePropsBanner = GamePropsBanner(gameScene: self)
+        gamePropsGenerator = GamePropsGenerator(gameScene: self)
     }
     
     private func setupInGameMenu(){
         inGameMenu = SKNode()
+        inGameMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         inGameMenu.hidden = true
         let resume = SKLabelNode(fontNamed: "Chalkduster")
         resume.fontColor = SKColor.orangeColor()
@@ -135,13 +137,27 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func setupUI(){
-        timeLabel = SKLabelNode(fontNamed: "Chalkduster")
-        timeLabel.fontColor = SKColor.whiteColor()
-        timeLabel.fontSize = 50
-        timeLabel.text = NSString(format: "%2.2f", timePassed) as String
-        timeLabel.horizontalAlignmentMode = .Left
-        timeLabel.position = CGPointMake(CGRectGetMinX(playableArea), CGRectGetMaxY(playableArea)-90)
+        let timeLabel = SKNode()
+        timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
+        timeLabel.position = CGPointMake(CGRectGetMinX(playableArea)+30, CGRectGetMaxY(playableArea)-80)
         addChild(timeLabel)
+        currentTimeLabel = SKLabelNode(fontNamed: "Chalkduster")
+        currentTimeLabel.name = "ct"
+        currentTimeLabel.fontColor = SKColor.whiteColor()
+        currentTimeLabel.fontSize = 50
+        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
+        currentTimeLabel.horizontalAlignmentMode = .Left
+        currentTimeLabel.position = CGPointMake(0, 30)
+        timeLabel.addChild(currentTimeLabel)
+        
+        bestRecordLabel = SKLabelNode(fontNamed: "Chalkduster")
+        bestRecordLabel.name = "br"
+        bestRecordLabel.fontColor = SKColor.whiteColor()
+        bestRecordLabel.fontSize = 50
+        bestRecordLabel.text = NSString(format: "BR: %2.2f", UserDocuments.bestRecord) as String
+        bestRecordLabel.horizontalAlignmentMode = .Left
+        bestRecordLabel.position = CGPointMake(0, -30)
+        timeLabel.addChild(bestRecordLabel)
     }
     
     /*    碰撞检测事件处理    */
@@ -233,7 +249,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     /*   主刷新循环   */
     override func update(currentTime: NSTimeInterval) {
         if !inGameMenu.hidden && !paused{
+            lastTimeStamp = 0.0
             paused = true
+            return
         }
         if lastTimeStamp == 0.0{
             lastTimeStamp = currentTime
@@ -243,7 +261,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             lastTimeStamp = currentTime
         }
         timePassed += deltaTime
-        timeLabel.text = NSString(format: "%2.2f", timePassed) as String
+        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
+        if timePassed > UserDocuments.bestRecord{
+            currentTimeLabel.fontColor = SKColor.redColor()
+            bestRecordLabel.text = NSString(format: "BR: %2.2f", timePassed) as String
+            bestRecordLabel.fontColor = SKColor.redColor()
+        }
         
         //慢速敌人始终朝向player
         for enemy in enemyGenerator.slowEnemies{
@@ -272,6 +295,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     func moveByDirection(direction: CGPoint) {
         if !initialing{
             player.moveToward(direction*moveSpeed)
+        }
+    }
+    
+    deinit{
+        if timePassed > UserDocuments.bestRecord{
+            UserDocuments.bestRecord = timePassed
         }
     }
 }

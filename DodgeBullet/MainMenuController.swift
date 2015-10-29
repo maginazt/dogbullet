@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 class MainMenuController: UIViewController {
     override func viewDidLoad() {
-        if Config.musicStatus{
+        if UserDocuments.musicStatus{
             SKTAudio.sharedInstance().playBackgroundMusic("backgroundMusic.mp3")
         }
     }
     
     @IBAction func startGameButtonPressed(sender: UIButton) {
-        if Config.soundStatus{
+        if UserDocuments.soundStatus{
             SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
         }
         if let vc = storyboard?.instantiateViewControllerWithIdentifier("GameViewController"){
@@ -25,7 +25,7 @@ class MainMenuController: UIViewController {
     }
     
     @IBAction func settingsButtonPressed(sender: UIButton) {
-        if Config.soundStatus{
+        if UserDocuments.soundStatus{
             SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
         }
         if let vc = storyboard?.instantiateViewControllerWithIdentifier("SettingsController"){

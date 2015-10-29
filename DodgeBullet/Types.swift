@@ -24,6 +24,7 @@ enum SceneZPosition: Int{
     case GamePropsZPosition = 50
     case EnemyZPosition = 80
     case PlayerZPosition = 100
+    case GameMenuZPosition = 200
 }
 
 //控制方式

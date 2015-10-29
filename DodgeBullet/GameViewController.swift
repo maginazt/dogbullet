@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
         
         skView.presentScene(scene)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: Config.ControllerStatusChangedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: UserDocuments.ControllerStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willResignActive", name: UIApplicationWillResignActiveNotification, object: nil)
     }
     
@@ -46,7 +46,7 @@ class GameViewController: UIViewController {
 //    }
     
     @IBAction func pauseButtonPressed(sender: UIButton) {
-        if Config.soundStatus{
+        if UserDocuments.soundStatus{
             SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
         }
         let skView = self.view as! SKView
