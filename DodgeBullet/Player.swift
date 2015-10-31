@@ -68,16 +68,19 @@ class Player: SKNode {
             mainSprite.texture = mainSprite.stopTexture
         }
         else{
-            faceCurrentDirection()
+            faceCurrentDirection(target)
         }
     }
     
-    func faceCurrentDirection(){
+    func faceCurrentDirection(target: CGPoint){
         if let dir = physicsBody?.velocity{
             zRotation = dir.angle
-            if !mainSprite.hasActions(){
-                mainSprite.runAction(mainSprite.runningAnim)
-            }
+        }
+        else{
+            zRotation = (target-position).angle
+        }
+        if !mainSprite.hasActions(){
+            mainSprite.runAction(mainSprite.runningAnim)
         }
     }
     

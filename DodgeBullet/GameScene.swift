@@ -13,7 +13,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var forceTouchAvailable: Bool = false
     var initialing = true
     //当前移动速度
-    var moveSpeed: CGFloat = 300.0;
+    var moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
     var playableArea = CGRectMake(0, 0, 0, 0)
     //用户与敌人
@@ -27,6 +27,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var gamePropsGenerator: GamePropsGenerator!
     var gamePropsMap = [GamePropsType:GameProps]()//正在起作用的道具集合
     var gamePropsBanner: GamePropsBanner!//正在起作用的道具显示区域
+    
+    var playerPhantom: Player?//用户幻象
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -230,20 +232,20 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
         }
-        else{
-            if forceTouchAvailable{
-                if let touch = atouch{
-                    if touch.force > 0.2{
-                        player.mainSprite.runAction(SKAction.sequence([
-                            SKAction.runBlock({self.player.physicsBody = nil}),
-                            SKAction.scaleTo(0, duration: 0.1),
-                            SKAction.runBlock({self.player.position = touch.locationInNode(self)}),
-                            SKAction.scaleTo(1, duration: 0.1),
-                            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
-                    }
-                }
-            }
-        }
+//        else{
+//            if forceTouchAvailable{
+//                if let touch = atouch{
+//                    if touch.force > 0.2{
+//                        player.mainSprite.runAction(SKAction.sequence([
+//                            SKAction.runBlock({self.player.physicsBody = nil}),
+//                            SKAction.scaleTo(0, duration: 0.1),
+//                            SKAction.runBlock({self.player.position = touch.locationInNode(self)}),
+//                            SKAction.scaleTo(1, duration: 0.1),
+//                            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
+//                    }
+//                }
+//            }
+//        }
     }
     
     /*   主刷新循环   */
@@ -251,6 +253,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         if !inGameMenu.hidden && !paused{
             lastTimeStamp = 0.0
             paused = true
+        }
+        if paused{
             return
         }
         if lastTimeStamp == 0.0{
