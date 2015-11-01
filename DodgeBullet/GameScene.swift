@@ -223,8 +223,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 let touchPos = touch.locationInNode(self)
                 let resume = inGameMenu.childNodeWithName("resume")
                 if resume!.containsPoint(touchPos){
-                    inGameMenu.hidden = true
-                    paused = false
+                    resumeGame()
                 }
                 let settings = inGameMenu.childNodeWithName("settings")
                 if settings!.containsPoint(touchPos){
@@ -296,13 +295,21 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         enemiesToAdjustDirection.removeAll()
     }
     
-    /*    处理游戏结束    */
+    /*    处理游戏事件    */
     func handleGameOver(won: Bool){
         let gameOver = GameOverScene()
         gameOver.size = size
         gameOver.scaleMode = scaleMode
         gameOver.won = won
         view?.presentScene(gameOver, transition: SKTransition.flipVerticalWithDuration(0.3))
+    }
+    
+    func resumeGame(){
+        inGameMenu.hidden = true
+        paused = false
+        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+            accelerometerController.motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: accelerometerController.handler)
+        }
     }
     
     /*   PlayerControllerDelegate   */

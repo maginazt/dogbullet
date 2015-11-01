@@ -60,6 +60,9 @@ class GameViewController: UIViewController {
         scene.inGameMenu.hidden = false
         scene.lastTimeStamp = 0.0
         scene.player.physicsBody?.velocity = CGVectorMake(0, 0)
+        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+            accelerometerController.motionManager.stopAccelerometerUpdates()
+        }
     }
     
     /*    接收通知    */
