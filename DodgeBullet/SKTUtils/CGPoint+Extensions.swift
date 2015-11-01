@@ -249,3 +249,56 @@ public func randomPointInRect(rect: CGRect) -> CGPoint{
     let randomY = CGFloat.random(min: CGRectGetMinY(rect), max: CGRectGetMaxY(rect))
     return CGPointMake(randomX, randomY)
 }
+
+public func randomPointOnSideOfRect(rect: CGRect, exclude: Int) -> (Int,CGPoint){
+    switch randomSideOfRect(rect, exclude: exclude){
+    case 0:
+        //上
+        return (0,CGPointMake(CGFloat.random(min: CGRectGetMinX(rect), max: CGRectGetMaxX(rect)), CGRectGetMaxY(rect)))
+    case 1:
+        //左
+        return (1,CGPointMake(CGRectGetMinX(rect), CGFloat.random(min: CGRectGetMinY(rect), max: CGRectGetMaxY(rect))))
+    case 2:
+        //下
+        return (2,CGPointMake(CGFloat.random(min: CGRectGetMinX(rect), max: CGRectGetMaxX(rect)), CGRectGetMinY(rect)))
+    default:
+        //右
+        return (3,CGPointMake(CGRectGetMaxX(rect), CGFloat.random(min: CGRectGetMinY(rect), max: CGRectGetMaxY(rect))))
+    }
+}
+
+private func randomSideOfRect(rect: CGRect, exclude: Int) -> Int{
+    switch exclude{
+    case 0:
+        switch random()%3{
+        case 0:
+            return 1
+        case 1:
+            return 2
+        default:
+            return 3
+        }
+    case 1:
+        switch random()%3{
+        case 0:
+            return 0
+        case 1:
+            return 2
+        default:
+            return 3
+        }
+    case 2:
+        switch random()%3{
+        case 0:
+            return 0
+        case 1:
+            return 1
+        default:
+            return 3
+        }
+    case 3:
+        return random()%3
+    default:
+        return random()%4
+    }
+}

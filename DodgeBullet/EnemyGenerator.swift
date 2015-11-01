@@ -67,7 +67,13 @@ class EnemyGenerator {
     }
     
     private func createNormalEnemyAtPositon(position: CGPoint){
-        let targetPos = randomPointInRect(gameScene.player.fireRect)
+        var targetPos: CGPoint!
+        if let phantom = gameScene.playerPhantom{
+            targetPos = randomPointInRect(phantom.fireRect)
+        }
+        else{
+            targetPos = randomPointInRect(gameScene.player.fireRect)
+        }
         let enemy = EnemyNormal(textureName: "enemy-1")
         normalEnemies.append(enemy)
         gameScene.enemyLayer.addChild(enemy)
@@ -108,7 +114,12 @@ class EnemyGenerator {
             let enemy = EnemyFast(textureName: "enemy-1")
             gameScene.enemyLayer.addChild(enemy)
             enemy.position = spawnPoint
-            enemy.moveToward((gameScene.player.position-spawnPoint).normalized()*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+            if let phantom = gameScene.playerPhantom{
+                enemy.moveToward((phantom.position-spawnPoint).normalized()*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+            }
+            else{
+                enemy.moveToward((gameScene.player.position-spawnPoint).normalized()*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+            }
             enemy.faceCurrentDirection()
         }
     }

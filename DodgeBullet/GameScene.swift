@@ -170,7 +170,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyNormal{
-                enemy.moveToward((randomPointInRect(player.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+                if let phantom = playerPhantom{
+                    enemy.moveToward((randomPointInRect(phantom.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+                }
+                else{
+                    enemy.moveToward((randomPointInRect(player.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+                }
                 enemiesToAdjustDirection.append(enemy)
             }
             //快速敌人 移除
@@ -274,7 +279,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         //慢速敌人始终朝向player
         for enemy in enemyGenerator.slowEnemies{
-            enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+            if let phantom = playerPhantom{
+                enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+            }
+            else{
+                enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+            }
             enemy.faceCurrentDirection()
         }
     }

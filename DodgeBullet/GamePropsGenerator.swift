@@ -73,36 +73,21 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.playerPhantom = phantom
         gameScene.addChild(phantom)
         
-        //从游戏区域的四条边的中点逆时针运动
-        let side = gameScene.gamePropsBanner.gridSize
-        //上、左、下、右
-        let movePoints = [
-            randomPointInRect(CGRectMake(CGRectGetMinX(gameScene.playableArea)+CGRectGetWidth(gameScene.playableArea)/2-side/2, CGRectGetMaxY(gameScene.playableArea)-side*2, side, side)),
-            randomPointInRect(CGRectMake(CGRectGetMinX(gameScene.playableArea)+side, CGRectGetMinY(gameScene.playableArea)+CGRectGetHeight(gameScene.playableArea)/2-side/2, side, side)),
-            randomPointInRect(CGRectMake(CGRectGetMinX(gameScene.playableArea)+CGRectGetWidth(gameScene.playableArea)/2-side/2, CGRectGetMinY(gameScene.playableArea)+side, side, side)),
-            randomPointInRect(CGRectMake(CGRectGetMaxX(gameScene.playableArea)-side*2, CGRectGetMinY(gameScene.playableArea)+CGRectGetHeight(gameScene.playableArea)/2-side/2, side, side))
-        ]
-        //选择离当前位置最远的点
-        var remoteIndex = 0
-        var maxDistance: CGFloat = 0
-        for point in movePoints{
-            let dis = (point-phantom.position).length()
-            if dis > maxDistance{
-                remoteIndex = movePoints.indexOf(point)!
-                maxDistance = dis
-            }
+        //从游戏区域的四条边的随机点进行运动
+        let area = CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize, gameScene.gamePropsBanner.gridSize)
+        let lastMove = randomPointOnSideOfRect(area, exclude: -1)
+        phantom.moveToward(lastMove.1)
+        phantom.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-self.gameScene.playerPhantom!.position).length()/self.gameScene.moveSpeed))){
+            self.createNextMoveAction(area, lastMove: lastMove)
         }
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, movePoints[remoteIndex].x, movePoints[remoteIndex].y)
-        for var nextIndex = (remoteIndex+1) % movePoints.count; nextIndex != remoteIndex; nextIndex = (nextIndex+1) % movePoints.count{
-            CGPathAddLineToPoint(path, nil, movePoints[nextIndex].x, movePoints[nextIndex].y)
+    }
+    
+    private func createNextMoveAction(area: CGRect, var lastMove: (Int, CGPoint)){
+        lastMove = randomPointOnSideOfRect(area, exclude: lastMove.0)
+        gameScene.playerPhantom?.moveToward(lastMove.1)
+        gameScene.playerPhantom?.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-gameScene.playerPhantom!.position).length()/gameScene.moveSpeed))){
+            self.createNextMoveAction(area, lastMove: lastMove)
         }
-        phantom.runAction(SKAction.sequence([
-            SKAction.runBlock({ () -> Void in
-                phantom.moveToward(movePoints[remoteIndex])
-            }),
-            SKAction.moveTo(movePoints[remoteIndex], duration: NSTimeInterval(maxDistance/self.gameScene.moveSpeed)),
-            SKAction.repeatActionForever(SKAction.followPath(path, asOffset: false, orientToPath: true, speed: gameScene.moveSpeed))]))
     }
     
     // 消除游戏道具效果
@@ -132,6 +117,7 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func removePhantomEffect(){
+        gameScene.playerPhantom?.removeAllActions()
         gameScene.playerPhantom?.removeFromParent()
         gameScene.playerPhantom = nil
     }
