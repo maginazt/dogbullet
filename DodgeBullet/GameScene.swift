@@ -35,6 +35,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var stopTimeEnabled = false//时间静止效果
     var dogFoodArea: CGRect?//狗粮区域
     var whosYourDaddyEnabled = false//无敌效果
+    var slowDownEnabled = false//减速光环效果
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -410,6 +411,27 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             }
         }
         enemiesToAdjustDirection.removeAll()
+        
+        if slowDownEnabled{
+            for enemy in enemyLayer.children{
+                var originalSpeed: CGFloat!
+                if enemy is EnemySlow{
+                    originalSpeed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+                }
+                else if enemy is EnemyNormal{
+                    originalSpeed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
+                }
+                else{
+                    originalSpeed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
+                }
+                if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
+                    enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+                }
+                else{
+                    enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*originalSpeed
+                }
+            }
+        }
     }
     
     /*    处理游戏事件    */

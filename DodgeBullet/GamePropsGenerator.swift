@@ -65,6 +65,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addRockEffect(gameProps.position)
             case .WhosYourDaddy:
                 addWhosYourDaddyEffect()
+            case .SlowDown:
+                addSlowDownEffect()
             default:
                 break
             }
@@ -148,6 +150,17 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.whosYourDaddyEnabled = true
     }
     
+    let slowDownRadius: CGFloat = 200
+    
+    private func addSlowDownEffect(){
+        gameScene.slowDownEnabled = true
+        let circle = SKShapeNode(circleOfRadius: slowDownRadius)
+        circle.name = "circle"
+        circle.strokeColor = SKColor.purpleColor()
+        circle.lineWidth = 1.5
+        gameScene.player.addChild(circle)
+    }
+    
     private func spawnRock(position: CGPoint){
         let rock = SKLabelNode(fontNamed: "Arial")
         rock.verticalAlignmentMode = .Center
@@ -184,6 +197,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 removeDogFoodEffect()
             case .WhosYourDaddy:
                 removeWhosYourDaddyEffect()
+            case .SlowDown:
+                removeSlowDownEffect()
             default:
                 break
             }
@@ -246,4 +261,21 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.whosYourDaddyEnabled = false
     }
     
+    private func removeSlowDownEffect(){
+        gameScene.slowDownEnabled = false
+        gameScene.player.childNodeWithName("circle")?.removeFromParent()
+        for enemy in gameScene.enemyLayer.children{
+            var originalSpeed: CGFloat!
+            if enemy is EnemySlow{
+                originalSpeed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+            }
+            else if enemy is EnemyNormal{
+                originalSpeed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
+            }
+            else{
+                originalSpeed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
+            }
+            enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*originalSpeed
+        }
+    }
 }
