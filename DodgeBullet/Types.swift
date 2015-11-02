@@ -18,6 +18,7 @@ enum PhysicsCategory: UInt32{
     case EnemyFast = 32
     case GameProps = 64
     case Cat = 128
+    case Rock = 256
 }
 
 enum SceneZPosition: Int{
@@ -48,6 +49,7 @@ enum GameSpeed: CGFloat{
     case PlayerMaxSpeed = 540
     case PlayerDefaultSpeed = 300
     case CatSpeed = 400
+    case RockSpeed = 600
 }
 
 //游戏道具

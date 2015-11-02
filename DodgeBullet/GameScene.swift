@@ -213,6 +213,36 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             catBody.node?.removeFromParent()
             timePassed += 0.5
             showBonusTimeEffect(player.position)
+            //石头接触笼子，移除石头
+        case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
+            let rockBody = contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue ? contact.bodyA : contact.bodyB
+            rockBody.node?.removeFromParent()
+            //石头接触敌人，敌人眩晕
+        case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemySlow.rawValue:
+            fallthrough
+        case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyNormal.rawValue:
+            fallthrough
+        case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyFast.rawValue:
+            var rockBody: SKPhysicsBody!
+            var enemyBody: SKPhysicsBody!
+            if contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue{
+                rockBody = contact.bodyA
+                enemyBody = contact.bodyB
+            }
+            else{
+                rockBody = contact.bodyB
+                enemyBody = contact.bodyA
+            }
+            rockBody.node?.removeFromParent()
+            if enemyBody.velocity != CGVectorMake(0, 0){
+                let originalVelocity = enemyBody.velocity
+                enemyBody.velocity = CGVectorMake(0, 0)
+                enemyBody.node?.runAction(SKAction.sequence([
+                    SKAction.waitForDuration(2),
+                    SKAction.runBlock({ () -> Void in
+                        enemyBody.velocity = originalVelocity
+                    })]), withKey: "hitRockAction")
+            }
         default:
             break
         }
@@ -332,7 +362,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             
             //慢速敌人始终朝向player
             for enemy in enemyGenerator.slowEnemies{
-                if !stopTimeEnabled{
+                if !stopTimeEnabled && enemy.actionForKey("hitRockAction") == nil{
                     var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
                     if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
                         speed = CGFloat(GameSpeed.CatSpeed.rawValue)

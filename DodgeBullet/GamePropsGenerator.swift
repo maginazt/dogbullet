@@ -38,11 +38,16 @@ class GamePropsGenerator : GamePropsDelegate {
             gameProps.removeFromParent()
         }
         else{
-            gameScene.gamePropsMap[gameProps.type] = gameProps
-            gameProps.initializeEffect(self)
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.gameScene.gamePropsBanner.add(gameProps)
-            })
+            if gameProps.type == GamePropsType.Rock{
+                gameProps.removeFromParent()
+            }
+            else{
+                gameScene.gamePropsMap[gameProps.type] = gameProps
+                gameProps.initializeEffect(self)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.gameScene.gamePropsBanner.add(gameProps)
+                })
+            }
             switch gameProps.type{
             case .SpeedUp:
                 addSpeedUpEffect()
@@ -56,6 +61,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addTurnCatsEffect()
             case .DogFood:
                 addDogFoodEffect(gameProps.position)
+            case .Rock:
+                addRockEffect(gameProps.position)
             default:
                 break
             }
@@ -127,6 +134,29 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addDogFoodEffect(position: CGPoint){
         gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
+    }
+    
+    private func addRockEffect(position: CGPoint){
+        for _ in 0 ..< 20{
+            spawnRock(position)
+        }
+    }
+    
+    private func spawnRock(position: CGPoint){
+        let rock = SKLabelNode(fontNamed: "Arial")
+        rock.verticalAlignmentMode = .Center
+        rock.fontColor = SKColor.greenColor()
+        rock.fontSize = 60
+        rock.text = "•"
+        rock.position = position
+        gameScene.addChild(rock)
+        rock.physicsBody = SKPhysicsBody(circleOfRadius: 6)
+        rock.physicsBody?.usesPreciseCollisionDetection = true
+        rock.physicsBody?.linearDamping = 0
+        rock.physicsBody?.velocity = CGVector(point: angleToDirection(CGFloat.random(min: 0, max: CGFloat(M_PI*2.0)))*CGFloat(GameSpeed.RockSpeed.rawValue))
+        rock.physicsBody?.categoryBitMask = PhysicsCategory.Rock.rawValue
+        rock.physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
+        rock.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemySlow.rawValue
     }
     
     // 消除游戏道具效果
