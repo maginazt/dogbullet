@@ -54,6 +54,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addStopTimeEffect()
             case .TurnCats:
                 addTurnCatsEffect()
+            case .DogFood:
+                addDogFoodEffect(gameProps.position)
             default:
                 break
             }
@@ -123,6 +125,10 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
+    private func addDogFoodEffect(position: CGPoint){
+        gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
+    }
+    
     // 消除游戏道具效果
     func disableEffect(type: GamePropsType) {
         if let gameProps = gameScene.gamePropsMap.removeValueForKey(type){
@@ -138,6 +144,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 removeStopTimeEffect()
             case .TurnCats:
                 removeTurnCatsEffect()
+            case .DogFood:
+                removeDogFoodEffect()
             default:
                 break
             }
@@ -190,6 +198,10 @@ class GamePropsGenerator : GamePropsDelegate {
             fast.physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
             fast.physicsBody?.velocity *= CGFloat(GameSpeed.EnemyFastSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
         }
+    }
+    
+    private func removeDogFoodEffect(){
+        gameScene.dogFoodArea = nil
     }
     
 }

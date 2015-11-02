@@ -43,7 +43,7 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
 //        type = gamePropsType
-        type = .TurnCats
+        type = .DogFood
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{

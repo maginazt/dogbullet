@@ -30,6 +30,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     var playerPhantom: Player?//用户幻象
     var stopTimeEnabled = false//时间静止效果
+    var dogFoodArea: CGRect?//狗粮区域
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -303,28 +304,48 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             bestRecordLabel.text = NSString(format: "BR: %2.2f", timePassed) as String
             bestRecordLabel.fontColor = SKColor.redColor()
         }
-        
-        //慢速敌人始终朝向player
-        for enemy in enemyGenerator.slowEnemies{
-            if !stopTimeEnabled{
-                var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
-                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
-                    speed = CGFloat(GameSpeed.CatSpeed.rawValue)
-                }
-                if let phantom = playerPhantom{
-                    enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*speed)
-                }
-                else{
-                    enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*speed)
-                }
-                enemy.faceCurrentDirection()
-            }
-        }
-    }
+}
     
     override func didSimulatePhysics() {
-        for enemy in enemiesToAdjustDirection{
-            enemy.faceCurrentDirection()
+        if dogFoodArea != nil{
+            for enemyNode in enemyLayer.children{
+                if let enemy = enemyNode as? Enemy{
+                    var speed: CGFloat!
+                    if enemy is EnemySlow{
+                        speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+                    }
+                    else if enemy is EnemyNormal{
+                        speed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
+                    }
+                    else{
+                        speed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
+                    }
+                    enemy.moveToward((randomPointInRect(dogFoodArea!)-enemy.position).normalized()*speed)
+                    enemy.faceCurrentDirection()
+                }
+            }
+        }
+        else{
+            for enemy in enemiesToAdjustDirection{
+                enemy.faceCurrentDirection()
+            }
+            
+            //慢速敌人始终朝向player
+            for enemy in enemyGenerator.slowEnemies{
+                if !stopTimeEnabled{
+                    var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+                    if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                        speed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                    }
+                    if let phantom = playerPhantom{
+                        enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*speed)
+                    }
+                    else{
+                        enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*speed)
+                    }
+                    enemy.faceCurrentDirection()
+                }
+            }
         }
         enemiesToAdjustDirection.removeAll()
     }
