@@ -28,9 +28,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var gamePropsMap = [GamePropsType:GameProps]()//正在起作用的道具集合
     var gamePropsBanner: GamePropsBanner!//正在起作用的道具显示区域
     
+    let hitRockActionKey = "hitRockAction"
+    let playerKickActionKey = "playerKickAction"
+    
     var playerPhantom: Player?//用户幻象
     var stopTimeEnabled = false//时间静止效果
     var dogFoodArea: CGRect?//狗粮区域
+    var whosYourDaddyEnabled = false//无敌效果
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -200,6 +204,33 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
 //            if !stopTimeEnabled{
 //                handleGameOver(false)
 //            }
+            if whosYourDaddyEnabled{
+                let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
+                if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
+                    var speed: CGFloat!
+                    if enemyBody.categoryBitMask == PhysicsCategory.EnemySlow.rawValue{
+                        speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+                    }
+                    else if enemyBody.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue{
+                        speed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
+                    }
+                    else{
+                        speed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
+                    }
+                    let nextVelocity = (enemyBody.node!.position-player.position).normalized()*speed
+                    enemyBody.velocity = CGVectorMake(0, 0)
+                    enemyBody.node?.runAction(SKAction.sequence([
+                        SKAction.group([
+                            SKAction.moveBy(CGVector(point: nextVelocity), duration: 1),
+                            SKAction.rotateByAngle(CGFloat(M_PI*2.0), duration: 1)]),
+                        SKAction.runBlock({ () -> Void in
+                            if let enemy = enemyBody.node as? Enemy{
+                                enemy.moveToward(nextVelocity)
+                                enemy.faceCurrentDirection()
+                            }
+                        })]), withKey: playerKickActionKey)
+                }
+            }
             break
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -234,14 +265,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 enemyBody = contact.bodyA
             }
             rockBody.node?.removeFromParent()
-            if enemyBody.velocity != CGVectorMake(0, 0){
+            if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
                 let originalVelocity = enemyBody.velocity
                 enemyBody.velocity = CGVectorMake(0, 0)
                 enemyBody.node?.runAction(SKAction.sequence([
                     SKAction.waitForDuration(2),
                     SKAction.runBlock({ () -> Void in
                         enemyBody.velocity = originalVelocity
-                    })]), withKey: "hitRockAction")
+                        
+                    })]), withKey: hitRockActionKey)
             }
         default:
             break
@@ -362,7 +394,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             
             //慢速敌人始终朝向player
             for enemy in enemyGenerator.slowEnemies{
-                if !stopTimeEnabled && enemy.actionForKey("hitRockAction") == nil{
+                if !stopTimeEnabled && enemy.actionForKey(hitRockActionKey) == nil && enemy.actionForKey(playerKickActionKey) == nil{
                     var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
                     if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
                         speed = CGFloat(GameSpeed.CatSpeed.rawValue)

@@ -63,6 +63,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addDogFoodEffect(gameProps.position)
             case .Rock:
                 addRockEffect(gameProps.position)
+            case .WhosYourDaddy:
+                addWhosYourDaddyEffect()
             default:
                 break
             }
@@ -142,6 +144,10 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
+    private func addWhosYourDaddyEffect(){
+        gameScene.whosYourDaddyEnabled = true
+    }
+    
     private func spawnRock(position: CGPoint){
         let rock = SKLabelNode(fontNamed: "Arial")
         rock.verticalAlignmentMode = .Center
@@ -176,6 +182,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 removeTurnCatsEffect()
             case .DogFood:
                 removeDogFoodEffect()
+            case .WhosYourDaddy:
+                removeWhosYourDaddyEffect()
             default:
                 break
             }
@@ -232,6 +240,10 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removeDogFoodEffect(){
         gameScene.dogFoodArea = nil
+    }
+    
+    private func removeWhosYourDaddyEffect(){
+        gameScene.whosYourDaddyEnabled = false
     }
     
 }
