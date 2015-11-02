@@ -52,6 +52,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addPhantomEffect()
             case .StopTime:
                 addStopTimeEffect()
+            case .TurnCats:
+                addTurnCatsEffect()
             default:
                 break
             }
@@ -99,17 +101,25 @@ class GamePropsGenerator : GamePropsDelegate {
         for enemy in gameScene.enemyGenerator.slowEnemies{
             enemy.paused = true
             enemy.physicsBody?.velocity = CGVectorMake(0, 0)
-            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.None.rawValue
         }
         for enemy in gameScene.enemyGenerator.normalEnemies{
             enemy.paused = true
             enemy.physicsBody?.velocity = CGVectorMake(0, 0)
-            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue
         }
         if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
             fastEnemy.paused = true
             fastEnemy.physicsBody?.velocity = CGVectorMake(0, 0)
-            fastEnemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue
+        }
+    }
+    
+    private func addTurnCatsEffect(){
+        for enemyNode in gameScene.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.sprite.color = SKColor.yellowColor()
+                enemy.sprite.colorBlendFactor = 0.9
+                enemy.physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
+                enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*CGFloat(GameSpeed.CatSpeed.rawValue)
+            }
         }
     }
     
@@ -126,6 +136,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 removePhantomEffect()
             case .StopTime:
                 removeStopTimeEffect()
+            case .TurnCats:
+                removeTurnCatsEffect()
             default:
                 break
             }
@@ -151,17 +163,32 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.stopTimeEnabled = false
         for enemy in gameScene.enemyGenerator.slowEnemies{
             enemy.paused = false
-            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.None.rawValue
         }
         for enemy in gameScene.enemyGenerator.normalEnemies{
             enemy.paused = false
             enemy.physicsBody?.velocity = CGVector(point: angleToDirection(enemy.zRotation)*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
-            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.Player.rawValue
         }
         if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
             fastEnemy.paused = false
             fastEnemy.physicsBody?.velocity = CGVector(point: angleToDirection(fastEnemy.zRotation)*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
-            fastEnemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.Player.rawValue
+        }
+    }
+    
+    private func removeTurnCatsEffect(){
+        for slow in gameScene.enemyGenerator.slowEnemies{
+            slow.sprite.color = SKColor.blueColor()
+            slow.physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
+            slow.physicsBody?.velocity *= CGFloat(GameSpeed.EnemySlowSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
+        }
+        for normal in gameScene.enemyGenerator.normalEnemies{
+            normal.sprite.color = SKColor.whiteColor()
+            normal.physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
+            normal.physicsBody?.velocity *= CGFloat(GameSpeed.EnemyNormalSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
+        }
+        if let fast = gameScene.enemyLayer.childNodeWithName("faseEnemy") as? EnemyFast{
+            fast.sprite.color = SKColor.redColor()
+            fast.physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
+            fast.physicsBody?.velocity *= CGFloat(GameSpeed.EnemyFastSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
         }
     }
     

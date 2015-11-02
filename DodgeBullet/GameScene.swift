@@ -168,6 +168,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         switch collision{
             //普通敌人 回笼
+        case PhysicsCategory.Cat.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
+            let catBody = contact.bodyA.categoryBitMask == PhysicsCategory.Cat.rawValue ? contact.bodyA : contact.bodyB
+            if let cat = catBody.node as? Enemy{
+                cat.moveToward((randomPointInRect(player.fireRect)-cat.position).normalized()*CGFloat(GameSpeed.CatSpeed.rawValue))
+                enemiesToAdjustDirection.append(cat)
+            }
         case PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyNormal{
@@ -179,7 +185,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 enemiesToAdjustDirection.append(enemy)
             }
-            //快速敌人 移除
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyFast.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyFast{
@@ -191,8 +196,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Player.rawValue:
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
-//            handleGameOver(false)
-//            print("I'm a dead man")
+//            if !stopTimeEnabled{
+//                handleGameOver(false)
+//            }
             break
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -200,21 +206,41 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if let gameProps = gamePropsBody.node as? GameProps{
                 gamePropsGenerator.handleGamePropsEffect(gameProps)
             }
+            //用户接触猫，增加额外时间
+        case PhysicsCategory.Cat.rawValue | PhysicsCategory.Player.rawValue:
+            let catBody = contact.bodyA.categoryBitMask == PhysicsCategory.Cat.rawValue ? contact.bodyA : contact.bodyB
+            catBody.node?.removeFromParent()
+            timePassed += 0.5
+            showBonusTimeEffect(player.position)
         default:
             break
         }
     }
     
+    let bonusTimeAction = SKAction.sequence([
+        SKAction.moveByX(0, y: 100, duration: 0.5),
+        SKAction.fadeOutWithDuration(0.2),
+        SKAction.removeFromParent()])
+    func showBonusTimeEffect(position: CGPoint){
+        let bonusLabel = SKLabelNode(fontNamed: "Arial")
+        bonusLabel.fontColor = SKColor.yellowColor()
+        bonusLabel.fontSize = 50
+        bonusLabel.text = "+0.5s"
+        bonusLabel.position = position
+        addChild(bonusLabel)
+        bonusLabel.runAction(bonusTimeAction)
+    }
+    
     /*    用户手势处理    */
     //划动手势
     func handleSwipeGesture(){
-        player.mainSprite.runAction(SKAction.sequence([
-            SKAction.runBlock({self.player.physicsBody = nil}),
-            SKAction.scaleXTo(0, duration: 0.1),
-            SKAction.scaleXTo(-1, duration: 0.1),
-            SKAction.scaleXTo(0, duration: 0.1),
-            SKAction.scaleXTo(1, duration: 0.1),
-            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
+//        player.mainSprite.runAction(SKAction.sequence([
+//            SKAction.runBlock({self.player.physicsBody = nil}),
+//            SKAction.scaleXTo(0, duration: 0.1),
+//            SKAction.scaleXTo(-1, duration: 0.1),
+//            SKAction.scaleXTo(0, duration: 0.1),
+//            SKAction.scaleXTo(1, duration: 0.1),
+//            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
     }
     
     /*   点击事件处理   */
@@ -281,11 +307,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         //慢速敌人始终朝向player
         for enemy in enemyGenerator.slowEnemies{
             if !stopTimeEnabled{
+                var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                    speed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                }
                 if let phantom = playerPhantom{
-                    enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+                    enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*speed)
                 }
                 else{
-                    enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+                    enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*speed)
                 }
                 enemy.faceCurrentDirection()
             }
@@ -313,6 +343,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         paused = false
         if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
             accelerometerController.motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: accelerometerController.handler)
+        }
+        if stopTimeEnabled{
+            for enemy in enemyLayer.children{
+                enemy.paused = true
+            }
         }
     }
     
