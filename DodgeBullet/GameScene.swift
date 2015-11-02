@@ -29,6 +29,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var gamePropsBanner: GamePropsBanner!//正在起作用的道具显示区域
     
     var playerPhantom: Player?//用户幻象
+    var stopTimeEnabled = false//时间静止效果
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
@@ -191,6 +192,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
 //            handleGameOver(false)
+//            print("I'm a dead man")
             break
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -278,13 +280,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         //慢速敌人始终朝向player
         for enemy in enemyGenerator.slowEnemies{
-            if let phantom = playerPhantom{
-                enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+            if !stopTimeEnabled{
+                if let phantom = playerPhantom{
+                    enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+                }
+                else{
+                    enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
+                }
+                enemy.faceCurrentDirection()
             }
-            else{
-                enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*CGFloat(GameSpeed.EnemySlowSpeed.rawValue))
-            }
-            enemy.faceCurrentDirection()
         }
     }
     

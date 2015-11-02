@@ -244,6 +244,10 @@ public func lerp(start start: CGPoint, end: CGPoint, t: CGFloat) -> CGPoint {
   return CGPoint(x: start.x + (end.x - start.x)*t, y: start.y + (end.y - start.y)*t)
 }
 
+public func angleToDirection(angle: CGFloat) -> CGPoint{
+    return CGPointMake(cos(angle), sin(angle))
+}
+
 public func randomPointInRect(rect: CGRect) -> CGPoint{
     let randomX = CGFloat.random(min: CGRectGetMinX(rect), max: CGRectGetMaxX(rect))
     let randomY = CGFloat.random(min: CGRectGetMinY(rect), max: CGRectGetMaxY(rect))

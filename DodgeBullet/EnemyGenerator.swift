@@ -32,8 +32,10 @@ class EnemyGenerator {
         //正常敌人生成策略：线性增量生成，每隔n秒随机在各个区域生成一个敌人
         gameScene .runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.runBlock({ () -> Void in
-                for _ in 0 ..< 4{
-                    self.spawnNormalEnemy()
+                if !self.gameScene.stopTimeEnabled{
+                    for _ in 0 ..< 4{
+                        self.spawnNormalEnemy()
+                    }
                 }
             }),
             SKAction.waitForDuration(5)])))
@@ -41,13 +43,17 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 5))),
             SKAction.runBlock({ () -> Void in
-                self.spawnSlowEnemy()
+                if !self.gameScene.stopTimeEnabled{
+                    self.spawnSlowEnemy()
+                }
             })])))
         //快速敌人生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
             SKAction.runBlock({ () -> Void in
-                self.spawnFastEnemy()
+                if !self.gameScene.stopTimeEnabled{
+                    self.spawnFastEnemy()
+                }
             })])))
     }
     
@@ -113,6 +119,7 @@ class EnemyGenerator {
             }
             let enemy = EnemyFast(textureName: "enemy-1")
             gameScene.enemyLayer.addChild(enemy)
+            enemy.name = "fastEenmy"
             enemy.position = spawnPoint
             if let phantom = gameScene.playerPhantom{
                 enemy.moveToward((phantom.position-spawnPoint).normalized()*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))

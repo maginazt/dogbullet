@@ -18,7 +18,9 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                self.spawnGameProps()
+                if !gameScene.stopTimeEnabled{
+                    self.spawnGameProps()
+                }
             })])))
     }
     
@@ -48,6 +50,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 addScaleDownEffect()
             case .Phantom:
                 addPhantomEffect()
+            case .StopTime:
+                addStopTimeEffect()
             default:
                 break
             }
@@ -90,6 +94,25 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
+    private func addStopTimeEffect(){
+        gameScene.stopTimeEnabled = true
+        for enemy in gameScene.enemyGenerator.slowEnemies{
+            enemy.paused = true
+            enemy.physicsBody?.velocity = CGVectorMake(0, 0)
+            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.None.rawValue
+        }
+        for enemy in gameScene.enemyGenerator.normalEnemies{
+            enemy.paused = true
+            enemy.physicsBody?.velocity = CGVectorMake(0, 0)
+            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue
+        }
+        if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
+            fastEnemy.paused = true
+            fastEnemy.physicsBody?.velocity = CGVectorMake(0, 0)
+            fastEnemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue
+        }
+    }
+    
     // 消除游戏道具效果
     func disableEffect(type: GamePropsType) {
         if let gameProps = gameScene.gamePropsMap.removeValueForKey(type){
@@ -101,6 +124,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 removeScaleDownEffect()
             case .Phantom:
                 removePhantomEffect()
+            case .StopTime:
+                removeStopTimeEffect()
             default:
                 break
             }
@@ -120,6 +145,24 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.playerPhantom?.removeAllActions()
         gameScene.playerPhantom?.removeFromParent()
         gameScene.playerPhantom = nil
+    }
+    
+    private func removeStopTimeEffect(){
+        gameScene.stopTimeEnabled = false
+        for enemy in gameScene.enemyGenerator.slowEnemies{
+            enemy.paused = false
+            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.None.rawValue
+        }
+        for enemy in gameScene.enemyGenerator.normalEnemies{
+            enemy.paused = false
+            enemy.physicsBody?.velocity = CGVector(point: angleToDirection(enemy.zRotation)*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.Player.rawValue
+        }
+        if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
+            fastEnemy.paused = false
+            fastEnemy.physicsBody?.velocity = CGVector(point: angleToDirection(fastEnemy.zRotation)*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+            fastEnemy.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.Player.rawValue
+        }
     }
     
 }

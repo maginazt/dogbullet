@@ -187,3 +187,4 @@ public func /= (inout vector: CGVector, scalar: CGFloat) {
 public func lerp(start start: CGVector, end: CGVector, t: CGFloat) -> CGVector {
   return CGVector(dx: start.dx + (end.dx - start.dx)*t, dy: start.dy + (end.dy - start.dy)*t)
 }
+
