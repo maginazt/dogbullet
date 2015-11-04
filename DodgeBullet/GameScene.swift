@@ -33,6 +33,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     var playerPhantom: Player?//用户幻象
     var stopTimeEnabled = false//时间静止效果
+    var turnCatEnabled = false//变猫效果
     var dogFoodArea: CGRect?//狗粮区域
     var whosYourDaddyEnabled = false//无敌效果
     var slowDownEnabled = false//减速光环效果
@@ -184,10 +185,10 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue ? contact.bodyA : contact.bodyB
             if let enemy = enemyBody.node as? EnemyNormal{
                 if let phantom = playerPhantom{
-                    enemy.moveToward((randomPointInRect(phantom.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+                    enemy.moveToward((randomPointInRect(phantom.fireRect)-enemy.position).normalized()*enemy.moveSpeed)
                 }
                 else{
-                    enemy.moveToward((randomPointInRect(player.fireRect)-enemy.position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+                    enemy.moveToward((randomPointInRect(player.fireRect)-enemy.position).normalized()*enemy.moveSpeed)
                 }
                 enemiesToAdjustDirection.append(enemy)
             }
@@ -202,49 +203,61 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Player.rawValue:
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
-//            if !stopTimeEnabled{
-//                handleGameOver(false)
-//            }
-            if whosYourDaddyEnabled{
-                let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
-                if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
-                    var speed: CGFloat!
-                    if enemyBody.categoryBitMask == PhysicsCategory.EnemySlow.rawValue{
-                        speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+            if !stopTimeEnabled{
+                if whosYourDaddyEnabled{
+                    let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
+                    if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
+                        if let enemy = enemyBody.node as? Enemy{
+                            let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed
+                            enemyBody.velocity = CGVectorMake(0, 0)
+                            enemy.runAction(SKAction.sequence([
+                                SKAction.group([
+                                    SKAction.moveBy(CGVector(point: nextVelocity), duration: 1),
+                                    SKAction.rotateByAngle(CGFloat(M_PI*2.0), duration: 1)]),
+                                SKAction.runBlock({ () -> Void in
+                                    enemy.moveToward(nextVelocity)
+                                    enemy.faceCurrentDirection()
+                                })]), withKey: playerKickActionKey)
+                        }
                     }
-                    else if enemyBody.categoryBitMask == PhysicsCategory.EnemyNormal.rawValue{
-                        speed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
-                    }
-                    else{
-                        speed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
-                    }
-                    let nextVelocity = (enemyBody.node!.position-player.position).normalized()*speed
-                    enemyBody.velocity = CGVectorMake(0, 0)
-                    enemyBody.node?.runAction(SKAction.sequence([
-                        SKAction.group([
-                            SKAction.moveBy(CGVector(point: nextVelocity), duration: 1),
-                            SKAction.rotateByAngle(CGFloat(M_PI*2.0), duration: 1)]),
-                        SKAction.runBlock({ () -> Void in
-                            if let enemy = enemyBody.node as? Enemy{
-                                enemy.moveToward(nextVelocity)
-                                enemy.faceCurrentDirection()
-                            }
-                        })]), withKey: playerKickActionKey)
                 }
+                handleGameOver(false)
             }
-            break
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
             let gamePropsBody = contact.bodyA.categoryBitMask == PhysicsCategory.GameProps.rawValue ? contact.bodyA : contact.bodyB
             if let gameProps = gamePropsBody.node as? GameProps{
                 gamePropsGenerator.handleGamePropsEffect(gameProps)
             }
+            //石头接触猫，增加额外时间
+        case PhysicsCategory.Cat.rawValue | PhysicsCategory.Rock.rawValue:
+            fallthrough
             //用户接触猫，增加额外时间
         case PhysicsCategory.Cat.rawValue | PhysicsCategory.Player.rawValue:
-            let catBody = contact.bodyA.categoryBitMask == PhysicsCategory.Cat.rawValue ? contact.bodyA : contact.bodyB
+            var catBody: SKPhysicsBody!
+            var otherBody: SKPhysicsBody!
+            if contact.bodyA.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                catBody = contact.bodyA
+                otherBody = contact.bodyB
+            }
+            else{
+                catBody = contact.bodyB
+                otherBody = contact.bodyA
+            }
+            catBody.node?.removeAllActions()
             catBody.node?.removeFromParent()
+            if let normalEnemy = catBody.node as? EnemyNormal{
+                if let index = enemyGenerator.normalEnemies.indexOf(normalEnemy){
+                    enemyGenerator.normalEnemies.removeAtIndex(index)
+                }
+            }
+            else if let slowEnemy = catBody.node as? EnemySlow{
+                if let index = enemyGenerator.slowEnemies.indexOf(slowEnemy){
+                    enemyGenerator.slowEnemies.removeAtIndex(index)
+                }
+            }
             timePassed += 0.5
-            showBonusTimeEffect(player.position)
+            showBonusTimeEffect(otherBody.node!.position)
             //石头接触笼子，移除石头
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let rockBody = contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue ? contact.bodyA : contact.bodyB
@@ -267,13 +280,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             }
             rockBody.node?.removeFromParent()
             if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
-                let originalVelocity = enemyBody.velocity
                 enemyBody.velocity = CGVectorMake(0, 0)
                 enemyBody.node?.runAction(SKAction.sequence([
                     SKAction.waitForDuration(2),
                     SKAction.runBlock({ () -> Void in
-                        enemyBody.velocity = originalVelocity
-                        
+                        if let enemy = enemyBody.node as? Enemy{
+                            if !self.stopTimeEnabled{
+                                enemy.currentSpeed = enemy.moveSpeed
+                            }
+                        }
                     })]), withKey: hitRockActionKey)
             }
         default:
@@ -367,68 +382,63 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             bestRecordLabel.text = NSString(format: "BR: %2.2f", timePassed) as String
             bestRecordLabel.fontColor = SKColor.redColor()
         }
-}
+    }
     
+    //调整敌人朝向与速度
     override func didSimulatePhysics() {
-        if dogFoodArea != nil{
-            for enemyNode in enemyLayer.children{
-                if let enemy = enemyNode as? Enemy{
-                    var speed: CGFloat!
-                    if enemy is EnemySlow{
-                        speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+        if !stopTimeEnabled{
+            //所有狗都朝向狗粮
+            if dogFoodArea != nil && !turnCatEnabled{
+                for enemyNode in enemyLayer.children{
+                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil{
+                        if let enemy = enemyNode as? Enemy{
+                            enemy.moveToward((randomPointInRect(dogFoodArea!)-enemy.position).normalized()*enemy.moveSpeed)
+                            enemy.faceCurrentDirection()
+                        }
                     }
-                    else if enemy is EnemyNormal{
-                        speed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
-                    }
-                    else{
-                        speed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
-                    }
-                    enemy.moveToward((randomPointInRect(dogFoodArea!)-enemy.position).normalized()*speed)
+                }
+            }
+            else{
+                //普通敌人调整朝向
+                for enemy in enemiesToAdjustDirection{
                     enemy.faceCurrentDirection()
                 }
-            }
-        }
-        else{
-            for enemy in enemiesToAdjustDirection{
-                enemy.faceCurrentDirection()
-            }
-            
-            //慢速敌人始终朝向player
-            for enemy in enemyGenerator.slowEnemies{
-                if !stopTimeEnabled && enemy.actionForKey(hitRockActionKey) == nil && enemy.actionForKey(playerKickActionKey) == nil{
-                    var speed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
-                    if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
-                        speed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                //慢速敌人始终朝向player
+                for enemy in enemyGenerator.slowEnemies{
+                    if enemy.actionForKey(hitRockActionKey) == nil && enemy.actionForKey(playerKickActionKey) == nil{
+                        var speed = enemy.moveSpeed
+                        if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                            speed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                        }
+                        //变猫时不追逐幻象
+                        if playerPhantom != nil && enemy.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
+                            enemy.physicsBody?.velocity = CGVector(point: (playerPhantom!.position-enemy.position).normalized()*speed)
+                        }
+                        else{
+                            enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*speed)
+                        }
+                        enemy.faceCurrentDirection()
                     }
-                    if let phantom = playerPhantom{
-                        enemy.physicsBody?.velocity = CGVector(point: (phantom.position-enemy.position).normalized()*speed)
-                    }
-                    else{
-                        enemy.physicsBody?.velocity = CGVector(point: (player.position-enemy.position).normalized()*speed)
-                    }
-                    enemy.faceCurrentDirection()
                 }
             }
-        }
-        enemiesToAdjustDirection.removeAll()
-        
-        if slowDownEnabled{
-            for enemy in enemyLayer.children{
-                var originalSpeed: CGFloat!
-                if enemy is EnemySlow{
-                    originalSpeed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
-                }
-                else if enemy is EnemyNormal{
-                    originalSpeed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
-                }
-                else{
-                    originalSpeed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
-                }
-                if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
-                    enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*CGFloat(GameSpeed.SlowDownSpeed.rawValue)
-                }
-                else{
-                    enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*originalSpeed
+            enemiesToAdjustDirection.removeAll()
+            if slowDownEnabled{
+                for enemyNode in enemyLayer.children{
+                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil{
+                        if let enemy = enemyNode as? Enemy{
+                            if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
+                                enemy.currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+                            }
+                            else{
+                                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                                    enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                                }
+                                else{
+                                    enemy.currentSpeed = enemy.moveSpeed
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

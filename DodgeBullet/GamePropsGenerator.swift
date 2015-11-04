@@ -16,7 +16,7 @@ class GamePropsGenerator : GamePropsDelegate {
         self.gameScene = gameScene
         //道具生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 10))),
             SKAction.runBlock({ () -> Void in
                 if !gameScene.stopTimeEnabled{
                     self.spawnGameProps()
@@ -35,6 +35,9 @@ class GamePropsGenerator : GamePropsDelegate {
         if gameScene.gamePropsMap.keys.contains(gameProps.type){
             let oldGameProps = gameScene.gamePropsMap[gameProps.type]!
             oldGameProps.resetEffectTimer()
+            if gameProps.type == .DogFood{
+                addDogFoodEffect(gameProps.position)
+            }
             gameProps.removeFromParent()
         }
         else{
@@ -111,27 +114,19 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addStopTimeEffect(){
         gameScene.stopTimeEnabled = true
-        for enemy in gameScene.enemyGenerator.slowEnemies{
-            enemy.paused = true
-            enemy.physicsBody?.velocity = CGVectorMake(0, 0)
-        }
-        for enemy in gameScene.enemyGenerator.normalEnemies{
-            enemy.paused = true
-            enemy.physicsBody?.velocity = CGVectorMake(0, 0)
-        }
-        if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
-            fastEnemy.paused = true
-            fastEnemy.physicsBody?.velocity = CGVectorMake(0, 0)
+        for enemyNode in gameScene.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.paused = true
+                enemy.currentSpeed = 0
+            }
         }
     }
     
     private func addTurnCatsEffect(){
+        gameScene.turnCatEnabled = true
         for enemyNode in gameScene.enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
-                enemy.sprite.color = SKColor.yellowColor()
-                enemy.sprite.colorBlendFactor = 0.9
-                enemy.physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
-                enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*CGFloat(GameSpeed.CatSpeed.rawValue)
+                enemy.turnCat()
             }
         }
     }
@@ -175,7 +170,7 @@ class GamePropsGenerator : GamePropsDelegate {
         rock.physicsBody?.velocity = CGVector(point: angleToDirection(CGFloat.random(min: 0, max: CGFloat(M_PI*2.0)))*CGFloat(GameSpeed.RockSpeed.rawValue))
         rock.physicsBody?.categoryBitMask = PhysicsCategory.Rock.rawValue
         rock.physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
-        rock.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemySlow.rawValue
+        rock.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Cat.rawValue
     }
     
     // 消除游戏道具效果
@@ -222,34 +217,25 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removeStopTimeEffect(){
         gameScene.stopTimeEnabled = false
-        for enemy in gameScene.enemyGenerator.slowEnemies{
-            enemy.paused = false
-        }
-        for enemy in gameScene.enemyGenerator.normalEnemies{
-            enemy.paused = false
-            enemy.physicsBody?.velocity = CGVector(point: angleToDirection(enemy.zRotation)*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
-        }
-        if let fastEnemy = gameScene.enemyLayer.childNodeWithName("fastEnemy"){
-            fastEnemy.paused = false
-            fastEnemy.physicsBody?.velocity = CGVector(point: angleToDirection(fastEnemy.zRotation)*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+        for enemyNode in gameScene.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.paused = false
+                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
+                    enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                }
+                else{
+                    enemy.currentSpeed = enemy.moveSpeed
+                }
+            }
         }
     }
     
     private func removeTurnCatsEffect(){
-        for slow in gameScene.enemyGenerator.slowEnemies{
-            slow.sprite.color = SKColor.blueColor()
-            slow.physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
-            slow.physicsBody?.velocity *= CGFloat(GameSpeed.EnemySlowSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
-        }
-        for normal in gameScene.enemyGenerator.normalEnemies{
-            normal.sprite.color = SKColor.whiteColor()
-            normal.physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
-            normal.physicsBody?.velocity *= CGFloat(GameSpeed.EnemyNormalSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
-        }
-        if let fast = gameScene.enemyLayer.childNodeWithName("faseEnemy") as? EnemyFast{
-            fast.sprite.color = SKColor.redColor()
-            fast.physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
-            fast.physicsBody?.velocity *= CGFloat(GameSpeed.EnemyFastSpeed.rawValue/GameSpeed.CatSpeed.rawValue)
+        gameScene.turnCatEnabled = false
+        for enemyNode in gameScene.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.resumeFromCat()
+            }
         }
     }
     
@@ -264,18 +250,12 @@ class GamePropsGenerator : GamePropsDelegate {
     private func removeSlowDownEffect(){
         gameScene.slowDownEnabled = false
         gameScene.player.childNodeWithName("circle")?.removeFromParent()
-        for enemy in gameScene.enemyLayer.children{
-            var originalSpeed: CGFloat!
-            if enemy is EnemySlow{
-                originalSpeed = CGFloat(GameSpeed.EnemySlowSpeed.rawValue)
+        for enemyNode in gameScene.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                if !gameScene.stopTimeEnabled{
+                    enemy.currentSpeed = enemy.moveSpeed
+                }
             }
-            else if enemy is EnemyNormal{
-                originalSpeed = CGFloat(GameSpeed.EnemyNormalSpeed.rawValue)
-            }
-            else{
-                originalSpeed = CGFloat(GameSpeed.EnemyFastSpeed.rawValue)
-            }
-            enemy.physicsBody?.velocity = enemy.physicsBody!.velocity.normalized()*originalSpeed
         }
     }
 }

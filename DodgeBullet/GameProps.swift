@@ -43,7 +43,12 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
 //        type = gamePropsType
-        type = .SlowDown
+        switch random() % 2{
+        case 0:
+            type = .WhosYourDaddy
+        default:
+            type = .SlowDown
+        }
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{
