@@ -35,7 +35,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var stopTimeEnabled = false//时间静止效果
     var turnCatEnabled = false//变猫效果
     var dogFoodArea: CGRect?//狗粮区域
-    var whosYourDaddyEnabled = false//无敌效果
+    var shieldCount = 0//护盾次数
     var slowDownEnabled = false//减速光环效果
     //游戏内菜单
     var inGameMenu: SKNode!
@@ -58,6 +58,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     override func didMoveToView(view: SKView) {
+        backgroundColor = SKColor(red: 242.0/255.0, green: 244.0/255.0, blue: 245.0/255.0, alpha: 1)
         initialing = true
         setupPlayableArea()
         setupEnemyCage()
@@ -129,7 +130,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         inGameMenu.addChild(resume)
         
         let settings = SKLabelNode(fontNamed: "Chalkduster")
-        settings.fontColor = SKColor.whiteColor()
+        settings.fontColor = SKColor.blueColor()
         settings.fontSize = 80
         settings.text = "Settings"
         settings.name = "settings"
@@ -137,7 +138,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         inGameMenu.addChild(settings)
         
         let mainMenu = SKLabelNode(fontNamed: "Chalkduster")
-        mainMenu.fontColor = SKColor.whiteColor()
+        mainMenu.fontColor = SKColor.blueColor()
         mainMenu.fontSize = 80
         mainMenu.text = "Main Menu"
         mainMenu.name = "mainMenu"
@@ -153,7 +154,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         addChild(timeLabel)
         currentTimeLabel = SKLabelNode(fontNamed: "Chalkduster")
         currentTimeLabel.name = "ct"
-        currentTimeLabel.fontColor = SKColor.whiteColor()
+        currentTimeLabel.fontColor = SKColor.blackColor()
         currentTimeLabel.fontSize = 50
         currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
         currentTimeLabel.horizontalAlignmentMode = .Left
@@ -162,7 +163,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         bestRecordLabel = SKLabelNode(fontNamed: "Chalkduster")
         bestRecordLabel.name = "br"
-        bestRecordLabel.fontColor = SKColor.whiteColor()
+        bestRecordLabel.fontColor = SKColor.blackColor()
         bestRecordLabel.fontSize = 50
         bestRecordLabel.text = NSString(format: "BR: %2.2f", UserDocuments.bestRecord) as String
         bestRecordLabel.horizontalAlignmentMode = .Left
@@ -204,7 +205,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
             if !stopTimeEnabled{
-                if whosYourDaddyEnabled{
+                if shieldCount > 0{
+                    shieldCount--
                     let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
                     if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
                         if let enemy = enemyBody.node as? Enemy{
@@ -220,9 +222,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                                 })]), withKey: playerKickActionKey)
                         }
                     }
+                    if shieldCount <= 0{
+                        gamePropsGenerator.disableEffect(.WhosYourDaddy)
+                    }
                 }
                 else{
-                    handleGameOver(false)
+//                    handleGameOver(false)
                 }
             }
             //用户拾得道具 增加特殊效果

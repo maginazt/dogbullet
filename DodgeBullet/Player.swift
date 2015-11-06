@@ -44,7 +44,7 @@ class Player: SKNode {
         let atlas = SKTextureAtlas(named: "characters")
         let texture = atlas.textureNamed("player-0")
         mainSprite = AnimatingSprite(t: texture)
-        mainSprite.runningAnim = AnimatingSprite.createAnimWithPrefix("player", numOfPics: 4, timePerFrame: 0.1)
+        mainSprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters",prefix: "player", numOfPics: 4, timePerFrame: 0.1))
         mainSprite.stopTexture = texture
         mainBody = SKPhysicsBody(circleOfRadius: texture.size().width/5)
         mainBody.allowsRotation = false

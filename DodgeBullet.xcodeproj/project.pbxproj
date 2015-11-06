@@ -36,6 +36,7 @@
 		4C9158251BCE7FDD005C958B /* engine.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C9158231BCE7FDD005C958B /* engine.sks */; };
 		4C9158271BCE800C005C958B /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9158261BCE800C005C958B /* spark.png */; };
 		4C91582A1BCE81FD005C958B /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9158291BCE81FD005C958B /* GameOverScene.swift */; };
+		4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4C9CF7851BECCF2000D682F6 /* effects.atlas */; settings = {ASSET_TAGS = (); }; };
 		4CA49B6A1BC9EC5900589D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B691BC9EC5900589D3C /* AppDelegate.swift */; };
 		4CA49B6E1BC9EC5900589D3C /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6D1BC9EC5900589D3C /* GameScene.swift */; };
 		4CA49B701BC9EC5900589D3C /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6F1BC9EC5900589D3C /* GameViewController.swift */; };
@@ -91,6 +92,7 @@
 		4C9158231BCE7FDD005C958B /* engine.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = engine.sks; sourceTree = "<group>"; };
 		4C9158261BCE800C005C958B /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		4C9158291BCE81FD005C958B /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		4C9CF7851BECCF2000D682F6 /* effects.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = effects.atlas; sourceTree = "<group>"; };
 		4CA49B661BC9EC5900589D3C /* DodgeBullet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DodgeBullet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B691BC9EC5900589D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4CA49B6D1BC9EC5900589D3C /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 		4C8863F11BD5030600496482 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4C9CF7851BECCF2000D682F6 /* effects.atlas */,
 				4C8863FD1BD79F5C00496482 /* characters.atlas */,
 				4C8863F21BD5030600496482 /* base@2x.png */,
 				4C8863F31BD5030600496482 /* knob@2x.png */,
@@ -371,6 +374,7 @@
 				4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */,
 				4C8863F71BD5030600496482 /* base@2x.png in Resources */,
 				4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */,
+				4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */,
 				4C8863FE1BD79F5C00496482 /* characters.atlas in Resources */,
 				4CA49B731BC9EC5900589D3C /* Main.storyboard in Resources */,
 				4C9158251BCE7FDD005C958B /* engine.sks in Resources */,
@@ -555,7 +559,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
@@ -570,7 +574,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;

@@ -30,7 +30,8 @@ class GameProps: SKSpriteNode {
             SKAction.fadeInWithDuration(0.25)])
         
         return SKAction.sequence([
-            SKAction.repeatAction(spin, count: GameProps.spinNumber),
+//            SKAction.repeatAction(spin, count: GameProps.spinNumber),
+            SKAction.waitForDuration(NSTimeInterval(GameProps.spinNumber)),
             SKAction.repeatAction(blink, count: GameProps.blinkNumber),
             SKAction.removeFromParent()])
     }()
@@ -43,6 +44,7 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
+//        type = .WhosYourDaddy
 //        switch random() % 2{
 //        case 0:
 //            type = .WhosYourDaddy
@@ -52,24 +54,24 @@ class GameProps: SKSpriteNode {
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{
-        case .SpeedUp:
-            texture = atlas.textureNamed("speedUp")
-        case .ScaleDown:
-            texture = atlas.textureNamed("scaleDown")
+//        case .SpeedUp:
+//            texture = atlas.textureNamed("speedUp")
+//        case .ScaleDown:
+//            texture = atlas.textureNamed("scaleDown")
         case .DogFood:
             texture = atlas.textureNamed("dogFood")
         case .Phantom:
             texture = atlas.textureNamed("phantom")
         case .SlowDown:
             texture = atlas.textureNamed("slowDown")
-        case .StopTime:
-            texture = atlas.textureNamed("stopTime")
-        case .TurnCats:
-            texture = atlas.textureNamed("turnCats")
-        case .WhosYourDaddy:
-            texture = atlas.textureNamed("whosYourDaddy")
+//        case .StopTime:
+//            texture = atlas.textureNamed("stopTime")
+//        case .TurnCats:
+//            texture = atlas.textureNamed("turnCats")
+//        case .Rock:
+//            texture = atlas.textureNamed("rock")
         default:
-            texture = atlas.textureNamed("rock")
+            texture = atlas.textureNamed("whosYourDaddy")
         }
         super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(50, 50))
         physicsBody = SKPhysicsBody(circleOfRadius: size.width/2)
@@ -80,7 +82,7 @@ class GameProps: SKSpriteNode {
         
         countDownLabel = SKLabelNode(fontNamed: "Arial")
         countDownLabel.fontSize = size.width/2
-        countDownLabel.fontColor = SKColor.whiteColor()
+        countDownLabel.fontColor = SKColor.blackColor()
         countDownLabel.position = CGPointMake(0, -size.height)
         countDownLabel.text = "\(effectTime)"
         countDownLabel.hidden = true
@@ -106,7 +108,7 @@ class GameProps: SKSpriteNode {
                 self.countDownLabel.text = "\(--self.effectTime)"
                 switch self.effectTime{
                 case 4 ... 10:
-                    self.countDownLabel.fontColor = SKColor.whiteColor()
+                    self.countDownLabel.fontColor = SKColor.blackColor()
                 case 0 ... 3:
                     self.countDownLabel.fontColor = SKColor.redColor()
                 default:

@@ -55,14 +55,15 @@ enum GameSpeed: CGFloat{
 
 //游戏道具
 enum GamePropsType: Int{
-    case SpeedUp = 0 //加速
-    case ScaleDown //缩小
     case Phantom //幻象
-    case StopTime //时间静止
-    case TurnCats //变猫
     case DogFood //狗粮
-    case Rock //石头 晕眩
     case WhosYourDaddy //无敌
     case SlowDown //减速光环
     case Maximum
+    // 已废弃
+    case SpeedUp //加速
+    case ScaleDown //缩小
+    case StopTime //时间静止
+    case TurnCats //变猫
+    case Rock //石头 晕眩
 }
