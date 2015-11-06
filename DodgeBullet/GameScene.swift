@@ -341,7 +341,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 let mainMenu = inGameMenu.childNodeWithName("mainMenu")
                 if mainMenu!.containsPoint(touchPos){
-                    (view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
+                    handleMainMenuAction()
                 }
             }
         }
@@ -359,6 +359,17 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
 //                }
 //            }
 //        }
+    }
+    
+    private func handleMainMenuAction(){
+        let alert = UIAlertController(title: "warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
+        let cancleAction = UIAlertAction(title: "No", style: .Cancel, handler: nil)
+        let continueAction = UIAlertAction(title: "Yes", style: .Destructive) { (action) -> Void in
+            (self.view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
+        }
+        alert.addAction(cancleAction)
+        alert.addAction(continueAction)
+        view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
     }
     
     /*   主刷新循环   */
@@ -448,6 +459,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     /*    处理游戏事件    */
     func handleGameOver(won: Bool){
+        if timePassed > UserDocuments.bestRecord{
+            UserDocuments.bestRecord = timePassed
+        }
         let gameOver = GameOverScene()
         gameOver.size = size
         gameOver.scaleMode = scaleMode
