@@ -14,7 +14,7 @@ class GameView: SKView {
     
     func setupController(scene: GameScene){
         releaseController()
-        switch Config.controllerStatus{
+        switch UserDocuments.controllerStatus{
             case .JoystickLeft:
                 createAnalogController(scene, isLeft: true)
             case .JoystickRight:

@@ -7,9 +7,8 @@
 //
 
 import Foundation
-class Config {
+class UserDocuments {
     static let ControllerStatusChangedNotification = "ControllerStatusChangedNotification"
-    static let SpeedValueChangedNotification = "SpeedValueChangedNotification"
     
     private static let NONE = 0
     private static let ON = 1
@@ -19,7 +18,7 @@ class Config {
     static var musicStatus: Bool = {
         do{
             var status = true
-            try status = Config.getStatusForKey(MUSIC_STATUS_KEY)
+            try status = UserDocuments.getStatusForKey(MUSIC_STATUS_KEY)
             return status
         }
         catch{
@@ -31,7 +30,7 @@ class Config {
     static var soundStatus: Bool = {
         do{
             var status = true
-            try status = Config.getStatusForKey(SOUND_STATUS_KEY)
+            try status = UserDocuments.getStatusForKey(SOUND_STATUS_KEY)
             return status
         }
         catch{
@@ -44,6 +43,12 @@ class Config {
         let userDefaults = NSUserDefaults.standardUserDefaults()
         let status = userDefaults.integerForKey(CONTROLLER_STATUS_KEY)
         return ControllerType(rawValue: status)!
+    }()
+    
+    private static let BEST_RECORD_KEY = "BestRecordKey"
+    static var bestRecord: NSTimeInterval = {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        return userDefaults.doubleForKey(BEST_RECORD_KEY)
     }()
     
     private static func getStatusForKey(key: String) throws -> Bool{
@@ -72,6 +77,10 @@ class Config {
         setStatus(soundStatus, forKey: SOUND_STATUS_KEY)
         let userDefaults = NSUserDefaults.standardUserDefaults()
         userDefaults.setInteger(controllerStatus.rawValue, forKey: CONTROLLER_STATUS_KEY)
-        NSNotificationCenter.defaultCenter().postNotificationName(ControllerStatusChangedNotification, object: nil)
+    }
+    
+    static func saveUserDocuments(){
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setDouble(bestRecord, forKey: BEST_RECORD_KEY)
     }
 }

@@ -41,7 +41,9 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 5))),
             SKAction.runBlock({ () -> Void in
-                self.spawnSlowEnemy()
+                if !self.gameScene.stopTimeEnabled{
+                    self.spawnSlowEnemy()
+                }
             })])))
         //快速敌人生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
@@ -67,13 +69,23 @@ class EnemyGenerator {
     }
     
     private func createNormalEnemyAtPositon(position: CGPoint){
-        let targetPos = randomPointInRect(gameScene.player.fireRect)
+        var targetPos: CGPoint!
+        if let phantom = gameScene.playerPhantom{
+            targetPos = randomPointInRect(phantom.fireRect)
+        }
+        else{
+            targetPos = randomPointInRect(gameScene.player.fireRect)
+        }
         let enemy = EnemyNormal(textureName: "enemy-1")
         normalEnemies.append(enemy)
         gameScene.enemyLayer.addChild(enemy)
         enemy.position = position
-        enemy.moveToward((targetPos-position).normalized()*CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+        enemy.moveToward((targetPos-position).normalized()*enemy.moveSpeed)
         enemy.faceCurrentDirection()
+        
+        if gameScene.turnCatEnabled{
+            enemy.turnCat()
+        }
     }
     
     func spawnSlowEnemy(){
@@ -83,6 +95,9 @@ class EnemyGenerator {
             slowEnemies.append(enemy)
             gameScene.enemyLayer.addChild(enemy)
             enemy.position = spawnPoint
+            if gameScene.turnCatEnabled{
+                enemy.turnCat()
+            }
             enemy.runAction(SKAction.sequence([
                 SKAction.waitForDuration(10),
                 SKAction.runBlock({ () -> Void in
@@ -93,7 +108,7 @@ class EnemyGenerator {
     }
     
     func spawnFastEnemy(){
-        if CGFloat.random() < 0.05{
+        if CGFloat.random() < 0.1{
             var spawnPoint: CGPoint!
             switch random() % 4{
             case 0:
@@ -108,8 +123,17 @@ class EnemyGenerator {
             let enemy = EnemyFast(textureName: "enemy-1")
             gameScene.enemyLayer.addChild(enemy)
             enemy.position = spawnPoint
-            enemy.moveToward((gameScene.player.position-spawnPoint).normalized()*CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
+            if let phantom = gameScene.playerPhantom{
+                enemy.moveToward((phantom.position-spawnPoint).normalized()*enemy.moveSpeed)
+            }
+            else{
+                enemy.moveToward((gameScene.player.position-spawnPoint).normalized()*enemy.moveSpeed)
+            }
             enemy.faceCurrentDirection()
+            
+            if gameScene.turnCatEnabled{
+                enemy.turnCat()
+            }
         }
     }
 }

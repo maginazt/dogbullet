@@ -23,7 +23,7 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         
         /* Set the scale mode to scale to fit the window */
-        let scene = GameScene(size: CGSizeMake(1536, 2048))
+        let scene = GameScene(size: CGSizeMake(2048, 1536))
         scene.scaleMode = .AspectFill
 //        setupEnvironments(scene)
         skView.createGestureRecognizer(scene)
@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
         
         skView.presentScene(scene)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: Config.ControllerStatusChangedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: UserDocuments.ControllerStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willResignActive", name: UIApplicationWillResignActiveNotification, object: nil)
     }
     
@@ -46,7 +46,7 @@ class GameViewController: UIViewController {
 //    }
     
     @IBAction func pauseButtonPressed(sender: UIButton) {
-        if Config.soundStatus{
+        if UserDocuments.soundStatus{
             SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
         }
         let skView = self.view as! SKView
@@ -60,6 +60,9 @@ class GameViewController: UIViewController {
         scene.inGameMenu.hidden = false
         scene.lastTimeStamp = 0.0
         scene.player.physicsBody?.velocity = CGVectorMake(0, 0)
+        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+            accelerometerController.motionManager.stopAccelerometerUpdates()
+        }
     }
     
     /*    接收通知    */

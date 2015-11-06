@@ -16,7 +16,7 @@ class AccelerometerController: PlayerController {
     let ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
     
     let steerDeadZone: CGFloat = 0.1
-    let motionManager: CMMotionManager;
+    let motionManager: CMMotionManager
     var delegate: PlayerControllerDelegate?
     
 //    let blend: CGFloat = 0.2

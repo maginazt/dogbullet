@@ -16,13 +16,13 @@ class SettingsController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        musicSwitch.on = Config.musicStatus
-        soundSwitch.on = Config.soundStatus
-        controllerSegment.selectedSegmentIndex = Config.controllerStatus.rawValue
+        musicSwitch.on = UserDocuments.musicStatus
+        soundSwitch.on = UserDocuments.soundStatus
+        controllerSegment.selectedSegmentIndex = UserDocuments.controllerStatus.rawValue
     }
     
     @IBAction func backButtonPressed(sender: UIButton) {
-        if Config.soundStatus{
+        if UserDocuments.soundStatus{
             SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
         }
         navigationController?.popViewControllerAnimated(true)
@@ -36,15 +36,16 @@ class SettingsController: UIViewController {
         else{
             SKTAudio.sharedInstance().pauseBackgroundMusic()
         }
-        Config.musicStatus = status
+        UserDocuments.musicStatus = status
     }
     
     @IBAction func changeSoundState(sender: UISwitch) {
-        Config.soundStatus = sender.on
+        UserDocuments.soundStatus = sender.on
     }
     
     @IBAction func changeControllerState(sender: UISegmentedControl) {
-        Config.controllerStatus = ControllerType(rawValue: sender.selectedSegmentIndex)!
+        UserDocuments.controllerStatus = ControllerType(rawValue: sender.selectedSegmentIndex)!
+        NSNotificationCenter.defaultCenter().postNotificationName(UserDocuments.ControllerStatusChangedNotification, object: nil)
     }
     
 }
