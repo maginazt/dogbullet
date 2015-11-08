@@ -99,7 +99,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         player = Player()
         player.position = CGPointMake(size.width/2, size.height/2)
         addChild(player)
-//        player.setupEngine()
+        player.setupTail()
     }
     
     private func setupEnemy(){
