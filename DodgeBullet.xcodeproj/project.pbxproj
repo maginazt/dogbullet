@@ -24,6 +24,8 @@
 		4C4468251BCA4E8000FC0A7F /* AccelerometerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4468241BCA4E8000FC0A7F /* AccelerometerController.swift */; };
 		4C4468271BCA61AE00FC0A7F /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4468261BCA61AE00FC0A7F /* Types.swift */; };
 		4C7259C71BCFC07500B04FC6 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7259C61BCFC07500B04FC6 /* MainMenuController.swift */; };
+		4C7D47871BF0CD7600E5114D /* Star.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7D47861BF0CD7600E5114D /* Star.png */; };
+		4C7D47891BF0CD9C00E5114D /* enemytail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C7D47881BF0CD9C00E5114D /* enemytail.sks */; };
 		4C8863F71BD5030600496482 /* base@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F21BD5030600496482 /* base@2x.png */; };
 		4C8863F81BD5030600496482 /* knob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F31BD5030600496482 /* knob@2x.png */; };
 		4C8863F91BD5030600496482 /* backgroundMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F51BD5030600496482 /* backgroundMusic.mp3 */; };
@@ -42,7 +44,6 @@
 		4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CA49B741BC9EC5900589D3C /* Assets.xcassets */; };
 		4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CA49B761BC9EC5900589D3C /* LaunchScreen.storyboard */; };
 		4CA49B831BC9EC5900589D3C /* DodgeBulletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B821BC9EC5900589D3C /* DodgeBulletUITests.swift */; };
-		4CA69B1F1BEF406700289727 /* footprintleft.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA69B1E1BEF406700289727 /* footprintleft.sks */; };
 		4CA7049F1BD33393008F0932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7049E1BD33393008F0932 /* GameView.swift */; };
 		4CA8A7DA1BD1CA9E007C5F0E /* UserDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */; };
 		4CA8A7DF1BD1D3A7007C5F0E /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */; };
@@ -81,6 +82,8 @@
 		4C4468241BCA4E8000FC0A7F /* AccelerometerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccelerometerController.swift; sourceTree = "<group>"; };
 		4C4468261BCA61AE00FC0A7F /* Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		4C7259C61BCFC07500B04FC6 /* MainMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
+		4C7D47861BF0CD7600E5114D /* Star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Star.png; sourceTree = "<group>"; };
+		4C7D47881BF0CD9C00E5114D /* enemytail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = enemytail.sks; sourceTree = "<group>"; };
 		4C8863F21BD5030600496482 /* base@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "base@2x.png"; sourceTree = "<group>"; };
 		4C8863F31BD5030600496482 /* knob@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "knob@2x.png"; sourceTree = "<group>"; };
 		4C8863F51BD5030600496482 /* backgroundMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = backgroundMusic.mp3; sourceTree = "<group>"; };
@@ -103,7 +106,6 @@
 		4CA49B7E1BC9EC5900589D3C /* DodgeBullet.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DodgeBullet.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B821BC9EC5900589D3C /* DodgeBulletUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DodgeBulletUITests.swift; sourceTree = "<group>"; };
 		4CA49B841BC9EC5900589D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4CA69B1E1BEF406700289727 /* footprintleft.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = footprintleft.sks; sourceTree = "<group>"; };
 		4CA7049E1BD33393008F0932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDocuments.swift; sourceTree = "<group>"; };
 		4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
@@ -237,9 +239,10 @@
 		4C9158281BCE8025005C958B /* emittersystem */ = {
 			isa = PBXGroup;
 			children = (
+				4C7D47861BF0CD7600E5114D /* Star.png */,
 				4CE160A21BEF345A00630B28 /* playertail.sks */,
 				4CE160A31BEF345A00630B28 /* spark.png */,
-				4CA69B1E1BEF406700289727 /* footprintleft.sks */,
+				4C7D47881BF0CD9C00E5114D /* enemytail.sks */,
 			);
 			name = emittersystem;
 			sourceTree = "<group>";
@@ -373,13 +376,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CE160A51BEF345A00630B28 /* spark.png in Resources */,
-				4CA69B1F1BEF406700289727 /* footprintleft.sks in Resources */,
+				4C7D47871BF0CD7600E5114D /* Star.png in Resources */,
 				4C8863FA1BD5030600496482 /* button_press.wav in Resources */,
 				4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */,
 				4C8863F71BD5030600496482 /* base@2x.png in Resources */,
 				4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */,
 				4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */,
 				4C8863FE1BD79F5C00496482 /* characters.atlas in Resources */,
+				4C7D47891BF0CD9C00E5114D /* enemytail.sks in Resources */,
 				4CA49B731BC9EC5900589D3C /* Main.storyboard in Resources */,
 				4C8863F91BD5030600496482 /* backgroundMusic.mp3 in Resources */,
 				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,

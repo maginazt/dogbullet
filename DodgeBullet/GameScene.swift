@@ -217,6 +217,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if !stopTimeEnabled{
                 if shieldCount > 0{
                     shieldCount--
+                    if let shield = player.childNodeWithName("shield") as? SKSpriteNode{
+                        shield.alpha /= 2
+                    }
                     let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
                     if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
                         if let enemy = enemyBody.node as? Enemy{
@@ -237,7 +240,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     }
                 }
                 else{
-                    handleGameOver()
+//                    handleGameOver()
                 }
             }
             //用户拾得道具 增加特殊效果

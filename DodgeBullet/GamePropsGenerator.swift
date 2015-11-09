@@ -145,16 +145,22 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addWhosYourDaddyEffect(){
         gameScene.shieldCount = maxShieldCount
+        let shield = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(100, 100))
+        shield.name = "shield"
+        shield.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25)))
+        gameScene.player.addChild(shield)
     }
     
     let slowDownRadius: CGFloat = 200
     
     private func addSlowDownEffect(){
         gameScene.slowDownEnabled = true
-        let circle = SKShapeNode(circleOfRadius: slowDownRadius)
+        let circle = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(slowDownRadius, slowDownRadius))
+        circle.xScale = 2
+        circle.yScale = 2
         circle.name = "circle"
-        circle.strokeColor = SKColor.purpleColor()
-        circle.lineWidth = 1.5
+        circle.zPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue) - 1
+        circle.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "slow", numOfPics: 9, timePerFrame: 0.12)))
         gameScene.player.addChild(circle)
     }
     
@@ -247,6 +253,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removeWhosYourDaddyEffect(){
         gameScene.shieldCount = 0
+        gameScene.player.childNodeWithName("shield")?.removeFromParent()
     }
     
     private func removeSlowDownEffect(){

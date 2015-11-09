@@ -43,7 +43,8 @@ class GameProps: SKSpriteNode {
     var delegate: GamePropsDelegate?
     
     init(gamePropsType: GamePropsType){
-        type = gamePropsType
+//        type = gamePropsType
+        type = .SlowDown
 //        type = .WhosYourDaddy
 //        switch random() % 2{
 //        case 0:
@@ -73,7 +74,7 @@ class GameProps: SKSpriteNode {
         default:
             texture = atlas.textureNamed("whosYourDaddy")
         }
-        super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(50, 50))
+        super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(75, 75))
         physicsBody = SKPhysicsBody(circleOfRadius: size.width/2)
         physicsBody?.dynamic = false
         physicsBody?.categoryBitMask = PhysicsCategory.GameProps.rawValue
