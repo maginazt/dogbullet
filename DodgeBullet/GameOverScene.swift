@@ -14,7 +14,7 @@ class GameOverScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         let label = SKLabelNode(fontNamed: "Chalkduster")
-        label.fontColor = SKColor.whiteColor()
+        label.fontColor = SKColor.blueColor()
         label.fontSize = 90
         label.position = CGPointMake(size.width/2, size.height/2)
         if won{
@@ -27,7 +27,7 @@ class GameOverScene: SKScene {
         
         let restart = SKLabelNode(fontNamed: "Chalkduster")
         restart.name = "restart"
-        restart.fontColor = SKColor.whiteColor()
+        restart.fontColor = SKColor.blueColor()
         restart.fontSize = 70
         restart.position = CGPointMake(size.width/2, label.position.y-150)
         restart.text = "Restart"

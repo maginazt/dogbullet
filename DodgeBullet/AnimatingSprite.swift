@@ -21,12 +21,12 @@ class AnimatingSprite: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class func createAnimWithPrefix(prefix: String, numOfPics: Int, timePerFrame: NSTimeInterval) -> SKAction{
-        let atlas = SKTextureAtlas(named: "characters")
+    class func createAnimWithAtlasNamed(atlasName: String, prefix: String, numOfPics: Int, timePerFrame: NSTimeInterval) -> SKAction{
+        let atlas = SKTextureAtlas(named: atlasName)
         var textures = [SKTexture]()
         for i in 1 ... numOfPics{
             textures.append(atlas.textureNamed(NSString(format: "%@-%d", prefix, i) as String))
         }
-        return SKAction.repeatActionForever(SKAction.animateWithTextures(textures, timePerFrame: timePerFrame))
+        return SKAction.animateWithTextures(textures, timePerFrame: timePerFrame)
     }
 }

@@ -33,9 +33,8 @@
 		4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */; };
 		4C8F4C6F1BCBD9AC00F93F83 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */; };
 		4C8F4C721BCBDCF200F93F83 /* EnemyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */; };
-		4C9158251BCE7FDD005C958B /* engine.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C9158231BCE7FDD005C958B /* engine.sks */; };
-		4C9158271BCE800C005C958B /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9158261BCE800C005C958B /* spark.png */; };
 		4C91582A1BCE81FD005C958B /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9158291BCE81FD005C958B /* GameOverScene.swift */; };
+		4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4C9CF7851BECCF2000D682F6 /* effects.atlas */; };
 		4CA49B6A1BC9EC5900589D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B691BC9EC5900589D3C /* AppDelegate.swift */; };
 		4CA49B6E1BC9EC5900589D3C /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6D1BC9EC5900589D3C /* GameScene.swift */; };
 		4CA49B701BC9EC5900589D3C /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6F1BC9EC5900589D3C /* GameViewController.swift */; };
@@ -43,11 +42,14 @@
 		4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CA49B741BC9EC5900589D3C /* Assets.xcassets */; };
 		4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CA49B761BC9EC5900589D3C /* LaunchScreen.storyboard */; };
 		4CA49B831BC9EC5900589D3C /* DodgeBulletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B821BC9EC5900589D3C /* DodgeBulletUITests.swift */; };
+		4CA69B1F1BEF406700289727 /* footprintleft.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA69B1E1BEF406700289727 /* footprintleft.sks */; };
 		4CA7049F1BD33393008F0932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7049E1BD33393008F0932 /* GameView.swift */; };
 		4CA8A7DA1BD1CA9E007C5F0E /* UserDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */; };
 		4CA8A7DF1BD1D3A7007C5F0E /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */; };
 		4CD5E5831BDCB1AA00463460 /* GameProps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5821BDCB1AA00463460 /* GameProps.swift */; };
 		4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */; };
+		4CE160A41BEF345A00630B28 /* playertail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A21BEF345A00630B28 /* playertail.sks */; };
+		4CE160A51BEF345A00630B28 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A31BEF345A00630B28 /* spark.png */; };
 		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; };
 /* End PBXBuildFile section */
 
@@ -88,9 +90,8 @@
 		4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnemyGenerator.swift; sourceTree = "<group>"; };
-		4C9158231BCE7FDD005C958B /* engine.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = engine.sks; sourceTree = "<group>"; };
-		4C9158261BCE800C005C958B /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		4C9158291BCE81FD005C958B /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		4C9CF7851BECCF2000D682F6 /* effects.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = effects.atlas; sourceTree = "<group>"; };
 		4CA49B661BC9EC5900589D3C /* DodgeBullet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DodgeBullet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B691BC9EC5900589D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4CA49B6D1BC9EC5900589D3C /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -102,11 +103,14 @@
 		4CA49B7E1BC9EC5900589D3C /* DodgeBullet.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DodgeBullet.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B821BC9EC5900589D3C /* DodgeBulletUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DodgeBulletUITests.swift; sourceTree = "<group>"; };
 		4CA49B841BC9EC5900589D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4CA69B1E1BEF406700289727 /* footprintleft.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = footprintleft.sks; sourceTree = "<group>"; };
 		4CA7049E1BD33393008F0932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDocuments.swift; sourceTree = "<group>"; };
 		4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		4CD5E5821BDCB1AA00463460 /* GameProps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameProps.swift; sourceTree = "<group>"; };
 		4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsGenerator.swift; sourceTree = "<group>"; };
+		4CE160A21BEF345A00630B28 /* playertail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = playertail.sks; sourceTree = "<group>"; };
+		4CE160A31BEF345A00630B28 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,6 +173,7 @@
 		4C8863F11BD5030600496482 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4C9CF7851BECCF2000D682F6 /* effects.atlas */,
 				4C8863FD1BD79F5C00496482 /* characters.atlas */,
 				4C8863F21BD5030600496482 /* base@2x.png */,
 				4C8863F31BD5030600496482 /* knob@2x.png */,
@@ -232,8 +237,9 @@
 		4C9158281BCE8025005C958B /* emittersystem */ = {
 			isa = PBXGroup;
 			children = (
-				4C9158231BCE7FDD005C958B /* engine.sks */,
-				4C9158261BCE800C005C958B /* spark.png */,
+				4CE160A21BEF345A00630B28 /* playertail.sks */,
+				4CE160A31BEF345A00630B28 /* spark.png */,
+				4CA69B1E1BEF406700289727 /* footprintleft.sks */,
 			);
 			name = emittersystem;
 			sourceTree = "<group>";
@@ -366,15 +372,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C9158271BCE800C005C958B /* spark.png in Resources */,
+				4CE160A51BEF345A00630B28 /* spark.png in Resources */,
+				4CA69B1F1BEF406700289727 /* footprintleft.sks in Resources */,
 				4C8863FA1BD5030600496482 /* button_press.wav in Resources */,
 				4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */,
 				4C8863F71BD5030600496482 /* base@2x.png in Resources */,
 				4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */,
+				4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */,
 				4C8863FE1BD79F5C00496482 /* characters.atlas in Resources */,
 				4CA49B731BC9EC5900589D3C /* Main.storyboard in Resources */,
-				4C9158251BCE7FDD005C958B /* engine.sks in Resources */,
 				4C8863F91BD5030600496482 /* backgroundMusic.mp3 in Resources */,
+				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,
 				4C8863F81BD5030600496482 /* knob@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,7 +563,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
@@ -570,7 +578,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;

@@ -99,7 +99,7 @@ class GamePropsGenerator : GamePropsDelegate {
         let area = CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize, gameScene.gamePropsBanner.gridSize)
         let lastMove = randomPointOnSideOfRect(area, exclude: -1)
         phantom.moveToward(lastMove.1)
-        phantom.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-self.gameScene.playerPhantom!.position).length()/self.gameScene.moveSpeed))){
+        phantom.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-self.gameScene.playerPhantom!.position).length()/GameSpeed.PlayerMaxSpeed.rawValue))){
             self.createNextMoveAction(area, lastMove: lastMove)
         }
     }
@@ -107,7 +107,7 @@ class GamePropsGenerator : GamePropsDelegate {
     private func createNextMoveAction(area: CGRect, var lastMove: (Int, CGPoint)){
         lastMove = randomPointOnSideOfRect(area, exclude: lastMove.0)
         gameScene.playerPhantom?.moveToward(lastMove.1)
-        gameScene.playerPhantom?.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-gameScene.playerPhantom!.position).length()/gameScene.moveSpeed))){
+        gameScene.playerPhantom?.runAction(SKAction.moveTo(lastMove.1, duration: NSTimeInterval((lastMove.1-gameScene.playerPhantom!.position).length()/GameSpeed.PlayerMaxSpeed.rawValue))){
             self.createNextMoveAction(area, lastMove: lastMove)
         }
     }
@@ -141,8 +141,10 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
+    let maxShieldCount = 3
+    
     private func addWhosYourDaddyEffect(){
-        gameScene.whosYourDaddyEnabled = true
+        gameScene.shieldCount = maxShieldCount
     }
     
     let slowDownRadius: CGFloat = 200
@@ -244,7 +246,7 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func removeWhosYourDaddyEffect(){
-        gameScene.whosYourDaddyEnabled = false
+        gameScene.shieldCount = 0
     }
     
     private func removeSlowDownEffect(){

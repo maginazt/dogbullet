@@ -27,7 +27,7 @@ class Enemy: SKNode{
         sprite = AnimatingSprite(t: texture)
         sprite.xScale = 0.6
         sprite.yScale = 0.6
-        sprite.runningAnim = AnimatingSprite.createAnimWithPrefix("enemy", numOfPics: 2, timePerFrame: 0.1)
+        sprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters", prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
         self.moveSpeed = moveSpeed
         super.init()
         addChild(sprite)

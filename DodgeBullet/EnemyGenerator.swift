@@ -90,20 +90,34 @@ class EnemyGenerator {
     
     func spawnSlowEnemy(){
         if slowEnemies.count < maxSlowEnemyCount{
-            let spawnPoint = randomPointInRect(gameScene.playableArea)
-            let enemy = EnemySlow(textureName: "enemy-1")
-            slowEnemies.append(enemy)
-            gameScene.enemyLayer.addChild(enemy)
-            enemy.position = spawnPoint
-            if gameScene.turnCatEnabled{
-                enemy.turnCat()
-            }
-            enemy.runAction(SKAction.sequence([
-                SKAction.waitForDuration(10),
-                SKAction.runBlock({ () -> Void in
-                    enemy.removeFromParent()
-                    self.slowEnemies.removeAtIndex(self.slowEnemies.indexOf(enemy)!)
-                })]))
+            let spawnPoint = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize, gameScene.gamePropsBanner.gridSize))
+            let spawnAnimation = AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "enemyShow", numOfPics: 8, timePerFrame: 0.1)
+            let spawnNode = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(50, 50))
+            spawnNode.position = spawnPoint
+            gameScene.enemyLayer.addChild(spawnNode)
+            spawnNode.runAction(SKAction.group([
+                SKAction.sequence([
+                    spawnAnimation,
+                    SKAction.removeFromParent()
+                    ]),
+                SKAction.sequence([
+                    SKAction.waitForDuration(0.4),
+                    SKAction.runBlock({ () -> Void in
+                        let enemy = EnemySlow(textureName: "enemy-1")
+                        self.slowEnemies.append(enemy)
+                        self.gameScene.enemyLayer.addChild(enemy)
+                        enemy.position = spawnPoint
+                        if self.gameScene.turnCatEnabled{
+                            enemy.turnCat()
+                        }
+                        enemy.runAction(SKAction.sequence([
+                            SKAction.waitForDuration(10),
+                            SKAction.runBlock({ () -> Void in
+                                enemy.removeFromParent()
+                                self.slowEnemies.removeAtIndex(self.slowEnemies.indexOf(enemy)!)
+                            })]))
+                    })])
+                ]))
         }
     }
     

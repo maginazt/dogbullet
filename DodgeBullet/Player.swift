@@ -12,6 +12,7 @@ import SpriteKit
 class Player: SKNode {
     
     let mainSprite: AnimatingSprite
+    var tail: SKEmitterNode!
     let mainBody: SKPhysicsBody
     
     let fireLength: CGFloat = 512
@@ -44,7 +45,7 @@ class Player: SKNode {
         let atlas = SKTextureAtlas(named: "characters")
         let texture = atlas.textureNamed("player-0")
         mainSprite = AnimatingSprite(t: texture)
-        mainSprite.runningAnim = AnimatingSprite.createAnimWithPrefix("player", numOfPics: 4, timePerFrame: 0.1)
+        mainSprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters",prefix: "player", numOfPics: 4, timePerFrame: 0.1))
         mainSprite.stopTexture = texture
         mainBody = SKPhysicsBody(circleOfRadius: texture.size().width/5)
         mainBody.allowsRotation = false
@@ -79,16 +80,20 @@ class Player: SKNode {
         else{
             zRotation = (target-position).angle
         }
+        if tail != nil{
+            tail.emissionAngle = zRotation + CGFloat(M_PI)
+        }
         if !mainSprite.hasActions(){
             mainSprite.runAction(mainSprite.runningAnim)
         }
     }
     
-    func setupEngine(){
-        if let engine = SKEmitterNode(fileNamed: "engine"){
-            engine.position = CGPointMake(0, -mainSprite.size.height/2)
-            engine.targetNode = scene
-            addChild(engine)
+    func setupTail(){
+        if let emitter = SKEmitterNode(fileNamed: "playertail"){
+//            emitter.position = CGPointMake(-mainSprite.size.width/5, -mainSprite.size.height/5)
+            emitter.targetNode = scene
+            tail = emitter
+            addChild(tail)
         }
     }
 }
