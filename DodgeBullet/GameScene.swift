@@ -79,17 +79,19 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func setupPlayableArea(){
-        let maxAspectRatio: CGFloat = 16.0 / 9.0
-        let maxAspectHeight = size.width / maxAspectRatio
-        let margin = (self.size.height - maxAspectHeight) / 2
-        playableArea = CGRectMake(0, margin, size.width, maxAspectHeight)
-//        print(playableArea)
-        
-//        let edgeShape = SKShapeNode(rect: playableArea)
-//        edgeShape.strokeColor = SKColor.redColor()
-//        edgeShape.lineWidth = 10.0
-//        addChild(edgeShape)
-//        backgroundColor = SKColor.whiteColor()
+        if let sz = view?.frame.size{
+            // width: height = 16 : 9 iphone5
+            if sz.height / sz.width < 0.65{
+                let maxAspectRatio: CGFloat = 16.0 / 9.0
+                let maxAspectHeight = size.width / maxAspectRatio
+                let margin = (size.height - maxAspectHeight) / 2
+                playableArea = CGRectMake(0, margin, size.width, maxAspectHeight)
+            }
+            // width: height = 4 : 3 ipad
+            else{
+                playableArea = CGRectMake(0, 0, size.width, size.height)
+            }
+        }
         physicsBody = SKPhysicsBody(edgeLoopFromRect: playableArea)
         physicsBody?.categoryBitMask = PhysicsCategory.Edge.rawValue
         physicsBody?.friction = 0
@@ -169,6 +171,14 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         bestRecordLabel.horizontalAlignmentMode = .Left
         bestRecordLabel.position = CGPointMake(0, -30)
         timeLabel.addChild(bestRecordLabel)
+        
+        let pauseLabel = SKLabelNode(fontNamed: "Chalkduster")
+        pauseLabel.name = "pause"
+        pauseLabel.fontColor = SKColor.blueColor()
+        pauseLabel.fontSize = 70
+        pauseLabel.text = "pause"
+        pauseLabel.position = CGPointMake(CGRectGetMaxX(playableArea)-100, CGRectGetMaxY(playableArea)-80)
+        addChild(pauseLabel)
     }
     
     /*    碰撞检测事件处理    */
@@ -227,7 +237,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     }
                 }
                 else{
-//                    handleGameOver(false)
+                    handleGameOver()
                 }
             }
             //用户拾得道具 增加特殊效果
@@ -329,15 +339,45 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
 //            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
     }
     
+    //双击手势
+    func handleDoubleTapGesture(sender: UITapGestureRecognizer){
+        if sender.state == .Ended{
+            var loc = sender.locationInView(view)
+            if let analog = (view as? GameView)?.controller as? AnalogController{
+                if loc.x < analog.padPadding + analog.padSide/2{
+                    loc.x = analog.padPadding + analog.padSide/2
+                }
+                else if loc.x > view!.frame.size.width - analog.padPadding - analog.padSide/2{
+                    loc.x = view!.frame.size.width - analog.padPadding - analog.padSide/2
+                }
+                if loc.y < analog.padPadding + analog.padSide/2{
+                    loc.y = analog.padPadding + analog.padSide/2
+                }
+                else if loc.y > view!.frame.size.height - analog.padPadding - analog.padSide/2{
+                    loc.y = view!.frame.size.height - analog.padPadding - analog.padSide/2
+                }
+                analog.center = loc
+            }
+        }
+    }
+    
     /*   点击事件处理   */
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let atouch = touches.first
-        if paused{
-            if let touch = atouch{
-                let touchPos = touch.locationInNode(self)
+        if let touch = atouch{
+            let touchPos = touch.locationInNode(self)
+            let pause = childNodeWithName("pause")
+            if !paused{
+                if pause!.containsPoint(touchPos){
+                    pauseGame()
+                    pause?.hidden = true
+                }
+            }
+            else{
                 let resume = inGameMenu.childNodeWithName("resume")
                 if resume!.containsPoint(touchPos){
                     resumeGame()
+                    pause?.hidden = false
                 }
                 let settings = inGameMenu.childNodeWithName("settings")
                 if settings!.containsPoint(touchPos){
@@ -350,24 +390,10 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
         }
-//        else{
-//            if forceTouchAvailable{
-//                if let touch = atouch{
-//                    if touch.force > 0.2{
-//                        player.mainSprite.runAction(SKAction.sequence([
-//                            SKAction.runBlock({self.player.physicsBody = nil}),
-//                            SKAction.scaleTo(0, duration: 0.1),
-//                            SKAction.runBlock({self.player.position = touch.locationInNode(self)}),
-//                            SKAction.scaleTo(1, duration: 0.1),
-//                            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
-//                    }
-//                }
-//            }
-//        }
     }
     
     private func handleMainMenuAction(){
-        let alert = UIAlertController(title: "warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
         let cancleAction = UIAlertAction(title: "No", style: .Cancel, handler: nil)
         let continueAction = UIAlertAction(title: "Yes", style: .Destructive) { (action) -> Void in
             (self.view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
@@ -463,14 +489,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     /*    处理游戏事件    */
-    func handleGameOver(won: Bool){
-        if timePassed > UserDocuments.bestRecord{
-            UserDocuments.bestRecord = timePassed
-        }
+    func handleGameOver(){
         let gameOver = GameOverScene()
         gameOver.size = size
         gameOver.scaleMode = scaleMode
-        gameOver.won = won
+        gameOver.result = timePassed
         view?.presentScene(gameOver, transition: SKTransition.flipVerticalWithDuration(0.3))
     }
     
@@ -484,6 +507,16 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             for enemy in enemyLayer.children{
                 enemy.paused = true
             }
+        }
+    }
+    
+    func pauseGame(){
+        paused = true
+        inGameMenu.hidden = false
+        lastTimeStamp = 0.0
+        player.physicsBody?.velocity = CGVectorMake(0, 0)
+        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+            accelerometerController.motionManager.stopAccelerometerUpdates()
         }
     }
     
