@@ -362,7 +362,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func handleMainMenuAction(){
-        let alert = UIAlertController(title: "warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
         let cancleAction = UIAlertAction(title: "No", style: .Cancel, handler: nil)
         let continueAction = UIAlertAction(title: "Yes", style: .Destructive) { (action) -> Void in
             (self.view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
