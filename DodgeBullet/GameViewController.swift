@@ -45,26 +45,6 @@ class GameViewController: UIViewController {
 //        (skView.scene as? GameScene)?.forceTouchAvailable = traitCollection.forceTouchCapability == UIForceTouchCapability.Available
 //    }
     
-    @IBAction func pauseButtonPressed(sender: UIButton) {
-        if UserDocuments.soundStatus{
-            SKTAudio.sharedInstance().playSoundEffect("button_press.wav")
-        }
-        let skView = self.view as! SKView
-        if let scene = skView.scene as? GameScene{
-            pauseScene(scene)
-        }
-    }
-    
-    func pauseScene(scene: GameScene){
-        scene.paused = true
-        scene.inGameMenu.hidden = false
-        scene.lastTimeStamp = 0.0
-        scene.player.physicsBody?.velocity = CGVectorMake(0, 0)
-        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
-            accelerometerController.motionManager.stopAccelerometerUpdates()
-        }
-    }
-    
     /*    接收通知    */
     func controllerChanged(){
         let gameView = view as! GameView
@@ -76,7 +56,8 @@ class GameViewController: UIViewController {
     func willResignActive(){
         let skView = self.view as! SKView
         if let scene = skView.scene as? GameScene{
-            pauseScene(scene)
+            scene.childNodeWithName("pause")?.hidden = true
+            scene.pauseGame()
         }
     }
     

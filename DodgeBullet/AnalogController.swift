@@ -10,9 +10,11 @@ import Foundation
 import UIKit
 class AnalogController: UIView, PlayerController{
     let baseCenter: CGPoint
-    var relPosition: CGPoint!
+//    var relPosition: CGPoint!
     var delegate: PlayerControllerDelegate?
     let knobImageView: UIImageView
+    var padSide: CGFloat!
+    var padPadding: CGFloat!
     
     override init(frame: CGRect) {
         baseCenter = CGPointMake(frame.size.width/2, frame.size.height/2)
@@ -23,9 +25,9 @@ class AnalogController: UIView, PlayerController{
         super.init(frame: frame)
         
         userInteractionEnabled = true
+        addSubview(knobImageView)
         let baseImageView = UIImageView(frame: bounds)
         baseImageView.image = UIImage(named: "base")
-        addSubview(knobImageView)
         addSubview(baseImageView)
     }
 

@@ -16,7 +16,7 @@ class GamePropsGenerator : GamePropsDelegate {
         self.gameScene = gameScene
         //道具生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 10))),
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
                 if !gameScene.stopTimeEnabled{
                     self.spawnGameProps()

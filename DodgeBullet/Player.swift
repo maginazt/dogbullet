@@ -67,6 +67,7 @@ class Player: SKNode {
         if target == CGPointZero{
             mainSprite.removeAllActions()
             mainSprite.texture = mainSprite.stopTexture
+            
         }
         else{
             faceCurrentDirection(target)
