@@ -67,7 +67,6 @@ class Player: SKNode {
         if target == CGPointZero{
             mainSprite.removeAllActions()
             mainSprite.texture = mainSprite.stopTexture
-            
         }
         else{
             faceCurrentDirection(target)
@@ -94,6 +93,7 @@ class Player: SKNode {
 //            emitter.position = CGPointMake(-mainSprite.size.width/5, -mainSprite.size.height/5)
             emitter.targetNode = scene
             tail = emitter
+            tail.particleSpeed = 0.0
             addChild(tail)
         }
     }

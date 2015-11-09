@@ -31,7 +31,7 @@ class GamePropsBanner {
         }
         queue.append(gameProps)
         gameProps.runAction(SKAction.group([
-            SKAction.sequence([SKAction.scaleTo(0.1, duration: 0.1), SKAction.scaleTo(1, duration: 0.1)]),
+            SKAction.sequence([SKAction.scaleTo(0.1, duration: 0.1), SKAction.scaleTo(1.2, duration: 0.1)]),
             SKAction.moveTo(pos, duration: 0.2)])){
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     let index = self.queue.indexOf(gameProps)

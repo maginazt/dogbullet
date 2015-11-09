@@ -133,6 +133,17 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addDogFoodEffect(position: CGPoint){
         gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
+        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.removeFromParent()
+        let food = SKSpriteNode(imageNamed: "food")
+        food.position = position
+        food.name = "dogFood"
+        let moveUpFull = SKAction.moveByX(0, y: 200, duration: 0.2)
+        let moveUpHalf = SKAction.moveByX(0, y: 100, duration: 0.1)
+        let moveUpQualter = SKAction.moveByX(0, y: 50, duration: 0.05)
+        food.runAction(SKAction.group([
+            SKAction.sequence([moveUpFull, moveUpFull.reversedAction(), moveUpHalf, moveUpHalf.reversedAction(), moveUpQualter, moveUpQualter.reversedAction()]),
+            SKAction.rotateByAngle(CGFloat(7*M_PI), duration: 0.7)]))
+        gameScene.gamePropsLayer.addChild(food)
     }
     
     private func addRockEffect(position: CGPoint){
@@ -159,7 +170,6 @@ class GamePropsGenerator : GamePropsDelegate {
         circle.xScale = 2
         circle.yScale = 2
         circle.name = "circle"
-        circle.zPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue) - 1
         circle.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "slow", numOfPics: 9, timePerFrame: 0.12)))
         gameScene.player.addChild(circle)
     }
@@ -249,6 +259,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removeDogFoodEffect(){
         gameScene.dogFoodArea = nil
+        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.removeFromParent()
     }
     
     private func removeWhosYourDaddyEffect(){

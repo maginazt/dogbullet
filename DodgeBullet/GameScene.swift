@@ -223,12 +223,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
                     if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
                         if let enemy = enemyBody.node as? Enemy{
-                            let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed
+                            let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed*2
                             enemyBody.velocity = CGVectorMake(0, 0)
                             enemy.runAction(SKAction.sequence([
                                 SKAction.group([
                                     SKAction.moveBy(CGVector(point: nextVelocity), duration: 1),
-                                    SKAction.rotateByAngle(CGFloat(M_PI*2.0), duration: 1)]),
+                                    SKAction.rotateByAngle(CGFloat(M_PI*4.0), duration: 1)]),
                                 SKAction.runBlock({ () -> Void in
                                     enemy.moveToward(nextVelocity)
                                     enemy.faceCurrentDirection()
@@ -240,7 +240,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     }
                 }
                 else{
-//                    handleGameOver()
+                    handleGameOver()
                 }
             }
             //用户拾得道具 增加特殊效果

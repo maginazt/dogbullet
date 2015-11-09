@@ -25,8 +25,8 @@ class Enemy: SKNode{
         let atlas = SKTextureAtlas(named: "characters")
         let texture = atlas.textureNamed(textureName)
         sprite = AnimatingSprite(t: texture)
-        sprite.xScale = 0.9
-        sprite.yScale = 0.9
+        sprite.xScale = 0.7
+        sprite.yScale = 0.7
         sprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters", prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
         self.moveSpeed = moveSpeed
         super.init()
@@ -83,18 +83,6 @@ class EnemyNormal: Enemy {
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
         sprite.runAction(sprite.runningAnim)
-        
-        if let footprintleft = SKEmitterNode(fileNamed: "footprintleft"){
-            footprintleft.position = CGPointMake(-sprite.texture!.size().width/5, 10)
-            footprintleft.targetNode = scene
-            footprintleft.advanceSimulationTime(0.75)
-            addChild(footprintleft)
-        }
-        if let footprintright = SKEmitterNode(fileNamed: "footprintright"){
-            footprintright.position = CGPointMake(-2*sprite.texture!.size().width/5, -10)
-            footprintright.targetNode = scene
-            addChild(footprintright)
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -121,6 +109,7 @@ class EnemySlow: Enemy {
         physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
+        sprite.runAction(sprite.runningAnim)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -148,6 +137,7 @@ class EnemyFast: Enemy{
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
+        sprite.runAction(sprite.runningAnim)
     }
     
     required init?(coder aDecoder: NSCoder) {
