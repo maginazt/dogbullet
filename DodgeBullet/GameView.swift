@@ -14,10 +14,11 @@ class GameView: SKView {
     
     func setupController(scene: GameScene){
         releaseController()
+        scene.onScreenControlEnabled = false
         switch UserDocuments.controllerStatus{
-            case .JoystickLeft:
-                createAnalogController(scene, isLeft: true)
-            case .JoystickRight:
+            case .OnScreen:
+                scene.onScreenControlEnabled = true
+            case .Joystick:
                 createAnalogController(scene, isLeft: false)
             case .Accelerometer:
                 createAccelerometerController(scene)
@@ -59,11 +60,6 @@ class GameView: SKView {
     
     func createGestureRecognizer(scene: GameScene){
         removeGestureRecognizers()
-        //躲避手势
-//        let swipe = UISwipeGestureRecognizer(target: scene, action: "handleSwipeGesture")
-//        swipe.direction = [.Left, .Right]
-//        swipe.numberOfTouchesRequired = 2
-//        addGestureRecognizer(swipe)
         //更换控制中心手势
         let dbtap = UITapGestureRecognizer(target: scene, action: "handleDoubleTapGesture:")
         dbtap.numberOfTapsRequired = 2
