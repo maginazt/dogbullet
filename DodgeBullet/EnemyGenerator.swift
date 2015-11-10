@@ -11,7 +11,7 @@ import SpriteKit
 class EnemyGenerator {
     
     static let enemyDistance: CGFloat = 200
-    let maxNormalEnemyCount = 35
+    let maxNormalEnemyCount = 40
     let maxSlowEnemyCount = 5
     
     unowned let gameScene: GameScene
@@ -39,7 +39,7 @@ class EnemyGenerator {
             SKAction.waitForDuration(5)])))
         //慢速敌人生成策略：随机增量生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 5))),
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
                 if !self.gameScene.stopTimeEnabled{
                     self.spawnSlowEnemy()
@@ -122,32 +122,87 @@ class EnemyGenerator {
     }
     
     func spawnFastEnemy(){
-        if CGFloat.random() < 0.1{
-            var spawnPoint: CGPoint!
-            switch random() % 4{
-            case 0:
-                spawnPoint = randomPointInRect(upRect)
-            case 1:
-                spawnPoint = randomPointInRect(rightRect)
-            case 2:
-                spawnPoint = randomPointInRect(downRect)
+        let probiblity = 1 / (1 + exp(-gameScene.timePassed/60)) - 0.5
+        if CGFloat.random() < CGFloat(probiblity){
+            switch CGFloat.random(){
+            case 0 ..< 0.5:
+                spawnFastEnemyInOneSide()
+            case 0.5 ..< 0.8:
+                spawnFastEnemyInTwoSide()
+            case 0.8 ..< 0.9:
+                spawnFastEnemyInThreeSide()
             default:
-                spawnPoint = randomPointInRect(leftRect)
+                spawnFastEnemyInAllSide()
             }
-            let enemy = EnemyFast(textureName: "enemy-1")
-            gameScene.enemyLayer.addChild(enemy)
-            enemy.position = spawnPoint
-            if let phantom = gameScene.playerPhantom{
-                enemy.moveToward((phantom.position-spawnPoint).normalized()*enemy.moveSpeed)
-            }
-            else{
-                enemy.moveToward((gameScene.player.position-spawnPoint).normalized()*enemy.moveSpeed)
-            }
-            enemy.faceCurrentDirection()
-            
-            if gameScene.turnCatEnabled{
-                enemy.turnCat()
-            }
+        }
+    }
+    
+    func spawnFastEnemyInAllSide(){
+        spawnFastEnemyAt(randomPointInRect(upRect))
+        spawnFastEnemyAt(randomPointInRect(downRect))
+        spawnFastEnemyAt(randomPointInRect(leftRect))
+        spawnFastEnemyAt(randomPointInRect(rightRect))
+    }
+    
+    func spawnFastEnemyInThreeSide(){
+        switch random() % 4{
+        case 0:
+            spawnFastEnemyAt(randomPointInRect(downRect))
+            spawnFastEnemyAt(randomPointInRect(leftRect))
+            spawnFastEnemyAt(randomPointInRect(rightRect))
+        case 1:
+            spawnFastEnemyAt(randomPointInRect(upRect))
+            spawnFastEnemyAt(randomPointInRect(downRect))
+            spawnFastEnemyAt(randomPointInRect(rightRect))
+        case 2:
+            spawnFastEnemyAt(randomPointInRect(upRect))
+            spawnFastEnemyAt(randomPointInRect(leftRect))
+            spawnFastEnemyAt(randomPointInRect(rightRect))
+        default:
+            spawnFastEnemyAt(randomPointInRect(upRect))
+            spawnFastEnemyAt(randomPointInRect(downRect))
+            spawnFastEnemyAt(randomPointInRect(leftRect))
+        }
+    }
+    
+    func spawnFastEnemyInTwoSide(){
+        switch random() % 2{
+        case 0:
+            spawnFastEnemyAt(randomPointInRect(upRect))
+            spawnFastEnemyAt(randomPointInRect(downRect))
+        default:
+            spawnFastEnemyAt(randomPointInRect(leftRect))
+            spawnFastEnemyAt(randomPointInRect(rightRect))
+        }
+    }
+    
+    func spawnFastEnemyInOneSide(){
+        switch random() % 4{
+        case 0:
+            spawnFastEnemyAt(randomPointInRect(upRect))
+        case 1:
+            spawnFastEnemyAt(randomPointInRect(leftRect))
+        case 2:
+            spawnFastEnemyAt(randomPointInRect(downRect))
+        default:
+            spawnFastEnemyAt(randomPointInRect(rightRect))
+        }
+    }
+    
+    func spawnFastEnemyAt(position: CGPoint){
+        let enemy = EnemyFast(textureName: "enemy-1")
+        gameScene.enemyLayer.addChild(enemy)
+        enemy.position = position
+        if let phantom = gameScene.playerPhantom{
+            enemy.moveToward((phantom.position-position).normalized()*enemy.moveSpeed)
+        }
+        else{
+            enemy.moveToward((randomPointInRect(gameScene.player.fireRect)-position).normalized()*enemy.moveSpeed)
+        }
+        enemy.faceCurrentDirection()
+        
+        if gameScene.turnCatEnabled{
+            enemy.turnCat()
         }
     }
 }
