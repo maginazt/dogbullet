@@ -11,13 +11,17 @@ import SpriteKit
 class GameView: SKView {
     //游戏控制
     var controller: PlayerController?
+    //双击手势
+    var changeAnalogPositionGesture: UITapGestureRecognizer?
+    //拖动手势
+    var onScreenMoveGesture: UIPanGestureRecognizer?
     
     func setupController(scene: GameScene){
         releaseController()
-        scene.onScreenControlEnabled = false
+        removeGestureRecognizers()
         switch UserDocuments.controllerStatus{
             case .OnScreen:
-                scene.onScreenControlEnabled = true
+                createOnScreenController(scene)
             case .Joystick:
                 createAnalogController(scene, isLeft: false)
             case .Accelerometer:
@@ -56,14 +60,16 @@ class GameView: SKView {
         addSubview(analogController)
         controller = analogController
         controller!.delegate = scene
-    }
-    
-    func createGestureRecognizer(scene: GameScene){
-        removeGestureRecognizers()
+        
         //更换控制中心手势
         let dbtap = UITapGestureRecognizer(target: scene, action: "handleDoubleTapGesture:")
         dbtap.numberOfTapsRequired = 2
         addGestureRecognizer(dbtap)
+    }
+    
+    func createOnScreenController(scene: GameScene){
+        let pan = UIPanGestureRecognizer(target: scene, action: "handlePanGesture:")
+        addGestureRecognizer(pan)
     }
     
     func removeGestureRecognizers(){

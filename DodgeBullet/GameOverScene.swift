@@ -60,7 +60,6 @@ class GameOverScene: SKScene {
                 let scene = GameScene(size: size)
                 scene.scaleMode = scaleMode
                 let gameView = view as! GameView
-                gameView.createGestureRecognizer(scene)
                 gameView.setupController(scene)
                 gameView.presentScene(scene, transition: SKTransition.flipVerticalWithDuration(0.3))
             }
