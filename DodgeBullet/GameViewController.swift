@@ -26,7 +26,6 @@ class GameViewController: UIViewController {
         let scene = GameScene(size: CGSizeMake(2048, 1536))
         scene.scaleMode = .AspectFill
         
-        skView.createGestureRecognizer(scene)
         skView.setupController(scene)
         
         skView.presentScene(scene)
