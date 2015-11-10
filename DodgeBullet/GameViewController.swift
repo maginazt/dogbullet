@@ -25,7 +25,7 @@ class GameViewController: UIViewController {
         /* Set the scale mode to scale to fit the window */
         let scene = GameScene(size: CGSizeMake(2048, 1536))
         scene.scaleMode = .AspectFill
-//        setupEnvironments(scene)
+        
         skView.createGestureRecognizer(scene)
         skView.setupController(scene)
         
@@ -33,17 +33,8 @@ class GameViewController: UIViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: UserDocuments.ControllerStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willResignActive", name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
-    
-//    func setupEnvironments(scene: GameScene){
-//        scene.forceTouchAvailable = traitCollection.forceTouchCapability == UIForceTouchCapability.Available
-//    }
-//    
-//    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        let skView = self.view as! SKView
-//        (skView.scene as? GameScene)?.forceTouchAvailable = traitCollection.forceTouchCapability == UIForceTouchCapability.Available
-//    }
     
     /*    接收通知    */
     func controllerChanged(){
@@ -59,6 +50,10 @@ class GameViewController: UIViewController {
             scene.childNodeWithName("pause")?.hidden = true
             scene.pauseGame()
         }
+    }
+    
+    func orientationChanged(){
+//        print(UIDevice.currentDevice().orientation.rawValue)
     }
     
     override func prefersStatusBarHidden() -> Bool {

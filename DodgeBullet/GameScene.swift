@@ -12,6 +12,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     var forceTouchAvailable: Bool = false
     var initialing = true
+    var onScreenControlEnabled = false
     //当前移动速度
     var moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
@@ -331,17 +332,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     /*    用户手势处理    */
-    //划动手势
-    func handleSwipeGesture(){
-//        player.mainSprite.runAction(SKAction.sequence([
-//            SKAction.runBlock({self.player.physicsBody = nil}),
-//            SKAction.scaleXTo(0, duration: 0.1),
-//            SKAction.scaleXTo(-1, duration: 0.1),
-//            SKAction.scaleXTo(0, duration: 0.1),
-//            SKAction.scaleXTo(1, duration: 0.1),
-//            SKAction.runBlock({self.player.physicsBody = self.player.mainBody})]))
-    }
-    
     //双击手势
     func handleDoubleTapGesture(sender: UITapGestureRecognizer){
         if sender.state == .Ended{
@@ -364,6 +354,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
     }
     
+    var anchor: CGPoint!
+    
     /*   点击事件处理   */
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let atouch = touches.first
@@ -374,6 +366,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 if pause!.containsPoint(touchPos){
                     pauseGame()
                     pause?.hidden = true
+                }
+                else{
+                    anchor = touchPos
                 }
             }
             else{
@@ -392,6 +387,23 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     handleMainMenuAction()
                 }
             }
+        }
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let atouch = touches.first
+        if let touch = atouch{
+            let touchPos = touch.locationInNode(self)
+            if onScreenControlEnabled{
+                player.moveToward((touchPos-anchor).normalized() * moveSpeed)
+            }
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        anchor = nil
+        if onScreenControlEnabled{
+            player.moveToward(CGPointZero)
         }
     }
     
