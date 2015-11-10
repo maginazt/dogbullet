@@ -43,8 +43,8 @@ class GameProps: SKSpriteNode {
     var delegate: GamePropsDelegate?
     
     init(gamePropsType: GamePropsType){
-        type = gamePropsType
-//        type = .DogFood
+//        type = gamePropsType
+        type = .Phantom
 //        switch random() % 2{
 //        case 0:
 //            type = .WhosYourDaddy
