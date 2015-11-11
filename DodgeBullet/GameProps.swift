@@ -43,8 +43,8 @@ class GameProps: SKSpriteNode {
     var delegate: GamePropsDelegate?
     
     init(gamePropsType: GamePropsType){
-        type = gamePropsType
-//        type = .WhosYourDaddy
+//        type = gamePropsType
+        type = .WhosYourDaddy
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{
