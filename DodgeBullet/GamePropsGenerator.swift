@@ -38,6 +38,9 @@ class GamePropsGenerator : GamePropsDelegate {
             if gameProps.type == .DogFood{
                 addDogFoodEffect(gameProps.position)
             }
+            else if gameProps.type == .WhosYourDaddy{
+                addWhosYourDaddyEffect()
+            }
             gameProps.removeFromParent()
         }
         else{
@@ -52,16 +55,8 @@ class GamePropsGenerator : GamePropsDelegate {
                 })
             }
             switch gameProps.type{
-            case .SpeedUp:
-                addSpeedUpEffect()
-            case .ScaleDown:
-                addScaleDownEffect()
             case .Phantom:
                 addPhantomEffect()
-            case .StopTime:
-                addStopTimeEffect()
-            case .TurnCats:
-                addTurnCatsEffect()
             case .DogFood:
                 addDogFoodEffect(gameProps.position)
             case .Rock:
@@ -74,15 +69,6 @@ class GamePropsGenerator : GamePropsDelegate {
                 break
             }
         }
-    }
-    
-    private func addSpeedUpEffect(){
-        gameScene.moveSpeed = GameSpeed.PlayerMaxSpeed.rawValue
-    }
-    
-    private func addScaleDownEffect(){
-        gameScene.player.xScale = 0.5
-        gameScene.player.yScale = 0.5
     }
     
     private func addPhantomEffect(){
@@ -113,36 +99,23 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
-    private func addStopTimeEffect(){
-        gameScene.stopTimeEnabled = true
-        for enemyNode in gameScene.enemyLayer.children{
-            if let enemy = enemyNode as? Enemy{
-                enemy.paused = true
-                enemy.currentSpeed = 0
-            }
-        }
-    }
-    
-    private func addTurnCatsEffect(){
-        gameScene.turnCatEnabled = true
-        for enemyNode in gameScene.enemyLayer.children{
-            if let enemy = enemyNode as? Enemy{
-                enemy.turnCat()
-            }
-        }
-    }
-    
     private func addDogFoodEffect(position: CGPoint){
         gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
-        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.removeFromParent()
+        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(0.3),
+            SKAction.removeFromParent()]))
         let food = SKSpriteNode(imageNamed: "food")
         food.position = position
         food.name = "dogFood"
         let moveUpFull = SKAction.moveByX(0, y: 200, duration: 0.2)
+        let scaleUpFull = SKAction.scaleTo(2, duration: 0.2)
         let moveUpHalf = SKAction.moveByX(0, y: 100, duration: 0.1)
+        let scaleUpHalf = SKAction.scaleTo(1.85, duration: 0.1)
         let moveUpQualter = SKAction.moveByX(0, y: 50, duration: 0.05)
+        let scaleUpQualter = SKAction.scaleTo(1.7, duration: 0.05)
         food.runAction(SKAction.group([
             SKAction.sequence([moveUpFull, moveUpFull.reversedAction(), moveUpHalf, moveUpHalf.reversedAction(), moveUpQualter, moveUpQualter.reversedAction()]),
+            SKAction.sequence([scaleUpFull, SKAction.scaleTo(1.5, duration: 0.2), scaleUpHalf, SKAction.scaleTo(1.5, duration: 0.1), scaleUpQualter, SKAction.scaleTo(1.5, duration: 0.05)]),
             SKAction.rotateByAngle(CGFloat(7*M_PI), duration: 0.7)]))
         gameScene.gamePropsLayer.addChild(food)
     }
@@ -151,28 +124,6 @@ class GamePropsGenerator : GamePropsDelegate {
         for _ in 0 ..< 20{
             spawnRock(position)
         }
-    }
-    
-    let maxShieldCount = 3
-    
-    private func addWhosYourDaddyEffect(){
-        gameScene.shieldCount = maxShieldCount
-        let shield = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(100, 100))
-        shield.name = "shield"
-        shield.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25)))
-        gameScene.player.addChild(shield)
-    }
-    
-    let slowDownRadius: CGFloat = 200
-    
-    private func addSlowDownEffect(){
-        gameScene.slowDownEnabled = true
-        let circle = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(slowDownRadius, slowDownRadius))
-        circle.xScale = 2
-        circle.yScale = 2
-        circle.name = "circle"
-        circle.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "slow", numOfPics: 9, timePerFrame: 0.12)))
-        gameScene.player.addChild(circle)
     }
     
     private func spawnRock(position: CGPoint){
@@ -192,21 +143,36 @@ class GamePropsGenerator : GamePropsDelegate {
         rock.physicsBody?.contactTestBitMask = PhysicsCategory.EnemyCageEdge.rawValue | PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.EnemyNormal.rawValue | PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Cat.rawValue
     }
     
+    let maxShieldCount = 3
+    
+    private func addWhosYourDaddyEffect(){
+        gameScene.shieldCount = maxShieldCount
+        gameScene.player.childNodeWithName("shield")?.removeFromParent()
+        let shield = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(100, 100))
+        shield.name = "shield"
+        shield.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25)))
+        gameScene.player.addChild(shield)
+    }
+    
+    let slowDownRadius: CGFloat = 200
+    
+    private func addSlowDownEffect(){
+        gameScene.slowDownEnabled = true
+        let circle = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(slowDownRadius, slowDownRadius))
+        circle.xScale = 2
+        circle.yScale = 2
+        circle.name = "circle"
+        circle.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "slow", numOfPics: 9, timePerFrame: 0.12)))
+        gameScene.player.addChild(circle)
+    }
+    
     // 消除游戏道具效果
     func disableEffect(type: GamePropsType) {
         if let gameProps = gameScene.gamePropsMap.removeValueForKey(type){
             gameScene.gamePropsBanner.remove(gameProps)
             switch gameProps.type{
-            case .SpeedUp:
-                removeSpeedUpEffect()
-            case .ScaleDown:
-                removeScaleDownEffect()
             case .Phantom:
                 removePhantomEffect()
-            case .StopTime:
-                removeStopTimeEffect()
-            case .TurnCats:
-                removeTurnCatsEffect()
             case .DogFood:
                 removeDogFoodEffect()
             case .WhosYourDaddy:
@@ -219,45 +185,11 @@ class GamePropsGenerator : GamePropsDelegate {
         }
     }
     
-    private func removeSpeedUpEffect(){
-        gameScene.moveSpeed = GameSpeed.PlayerDefaultSpeed.rawValue
-    }
-    
-    private func removeScaleDownEffect(){
-        gameScene.player.xScale = 1
-        gameScene.player.yScale = 1
-    }
-    
     private func removePhantomEffect(){
-//        gameScene.playerPhantom?.removeAllActions()
         gameScene.playerPhantom?.runAction(SKAction.sequence([
             SKAction.fadeOutWithDuration(0.3),
             SKAction.removeFromParent()]))
         gameScene.playerPhantom = nil
-    }
-    
-    private func removeStopTimeEffect(){
-        gameScene.stopTimeEnabled = false
-        for enemyNode in gameScene.enemyLayer.children{
-            if let enemy = enemyNode as? Enemy{
-                enemy.paused = false
-                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
-                    enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
-                }
-                else{
-                    enemy.currentSpeed = enemy.moveSpeed
-                }
-            }
-        }
-    }
-    
-    private func removeTurnCatsEffect(){
-        gameScene.turnCatEnabled = false
-        for enemyNode in gameScene.enemyLayer.children{
-            if let enemy = enemyNode as? Enemy{
-                enemy.resumeFromCat()
-            }
-        }
     }
     
     private func removeDogFoodEffect(){

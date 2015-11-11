@@ -34,18 +34,22 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     var playerPhantom: Player?//用户幻象
     var stopTimeEnabled = false//时间静止效果
-    var turnCatEnabled = false//变猫效果
     var dogFoodArea: CGRect?//狗粮区域
     var shieldCount = 0//护盾次数
     var slowDownEnabled = false//减速光环效果
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
-    var currentTimeLabel: SKLabelNode!
-    var bestRecordLabel: SKLabelNode!
+//    var currentTimeLabel: SKLabelNode!
+//    var bestRecordLabel: SKLabelNode!
+    var timeLabel: SKLabelNode!
     var timePassed: NSTimeInterval = 0
     var lastTimeStamp: NSTimeInterval = 0
     var deltaTime: NSTimeInterval = 0
+    // 分钟奖励
+    var turnCatEnabled = false//变猫效果
+    var nextMinute = 1
+    var bonusTime: NSTimeInterval = 10
     
     /*   初始化   */
     override init(size: CGSize) {
@@ -151,34 +155,41 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func setupUI(){
-        let timeLabel = SKNode()
+//        let timeLabel = SKNode()
+//        timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
+//        timeLabel.position = CGPointMake(CGRectGetMinX(playableArea)+30, CGRectGetMaxY(playableArea)-80)
+//        addChild(timeLabel)
+//        currentTimeLabel = SKLabelNode(fontNamed: "Chalkduster")
+//        currentTimeLabel.name = "ct"
+//        currentTimeLabel.fontColor = SKColor.blackColor()
+//        currentTimeLabel.fontSize = 50
+//        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
+//        currentTimeLabel.horizontalAlignmentMode = .Left
+//        currentTimeLabel.position = CGPointMake(0, 30)
+//        timeLabel.addChild(currentTimeLabel)
+//        
+//        bestRecordLabel = SKLabelNode(fontNamed: "Chalkduster")
+//        bestRecordLabel.name = "br"
+//        bestRecordLabel.fontColor = SKColor.blackColor()
+//        bestRecordLabel.fontSize = 50
+//        bestRecordLabel.text = NSString(format: "BR: %2.2f", UserDocuments.bestRecord) as String
+//        bestRecordLabel.horizontalAlignmentMode = .Left
+//        bestRecordLabel.position = CGPointMake(0, -30)
+//        timeLabel.addChild(bestRecordLabel)
+        timeLabel = SKLabelNode(fontNamed: "Arial")
         timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
-        timeLabel.position = CGPointMake(CGRectGetMinX(playableArea)+30, CGRectGetMaxY(playableArea)-80)
+        timeLabel.position = CGPointMake(CGRectGetMidX(playableArea)-60, CGRectGetMaxY(playableArea)-80)
+        timeLabel.fontColor = SKColor.blackColor()
+        timeLabel.fontSize = 50
+        timeLabel.horizontalAlignmentMode = .Left
         addChild(timeLabel)
-        currentTimeLabel = SKLabelNode(fontNamed: "Chalkduster")
-        currentTimeLabel.name = "ct"
-        currentTimeLabel.fontColor = SKColor.blackColor()
-        currentTimeLabel.fontSize = 50
-        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
-        currentTimeLabel.horizontalAlignmentMode = .Left
-        currentTimeLabel.position = CGPointMake(0, 30)
-        timeLabel.addChild(currentTimeLabel)
         
-        bestRecordLabel = SKLabelNode(fontNamed: "Chalkduster")
-        bestRecordLabel.name = "br"
-        bestRecordLabel.fontColor = SKColor.blackColor()
-        bestRecordLabel.fontSize = 50
-        bestRecordLabel.text = NSString(format: "BR: %2.2f", UserDocuments.bestRecord) as String
-        bestRecordLabel.horizontalAlignmentMode = .Left
-        bestRecordLabel.position = CGPointMake(0, -30)
-        timeLabel.addChild(bestRecordLabel)
-        
-        let pauseLabel = SKLabelNode(fontNamed: "Chalkduster")
+        let pauseLabel = SKLabelNode(fontNamed: "Arial")
         pauseLabel.name = "pause"
         pauseLabel.fontColor = SKColor.blueColor()
-        pauseLabel.fontSize = 70
+        pauseLabel.fontSize = 50
         pauseLabel.text = "pause"
-        pauseLabel.position = CGPointMake(CGRectGetMaxX(playableArea)-100, CGRectGetMaxY(playableArea)-80)
+        pauseLabel.position = CGPointMake(CGRectGetMinX(playableArea)+70, CGRectGetMaxY(playableArea)-80)
         addChild(pauseLabel)
     }
     
@@ -277,7 +288,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     enemyGenerator.slowEnemies.removeAtIndex(index)
                 }
             }
-            timePassed += 0.5
+            timePassed += 0.1
             showBonusTimeEffect(otherBody.node!.position)
             //石头接触笼子，移除石头
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
@@ -321,11 +332,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         SKAction.moveByX(0, y: 100, duration: 0.5),
         SKAction.fadeOutWithDuration(0.2),
         SKAction.removeFromParent()])
+    
     func showBonusTimeEffect(position: CGPoint){
         let bonusLabel = SKLabelNode(fontNamed: "Arial")
-        bonusLabel.fontColor = SKColor.yellowColor()
+        bonusLabel.fontColor = SKColor.purpleColor()
         bonusLabel.fontSize = 50
-        bonusLabel.text = "+0.5s"
+        bonusLabel.text = "+0.1s"
         bonusLabel.position = position
         addChild(bonusLabel)
         bonusLabel.runAction(bonusTimeAction)
@@ -428,19 +440,92 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         if paused{
             return
         }
-        if lastTimeStamp == 0.0{
-            lastTimeStamp = currentTime
+        if !turnCatEnabled{
+            if lastTimeStamp == 0.0{
+                lastTimeStamp = currentTime
+            }
+            else{
+                deltaTime = currentTime - lastTimeStamp
+                lastTimeStamp = currentTime
+            }
+            timePassed += deltaTime
+            let minute = Int(timePassed/60)
+            timeLabel.text = minute > 0 ? (NSString(format: "%0.2d:%04.1f", minute, timePassed % 60) as String) : (NSString(format: "%04.1f", timePassed) as String)
+            if timePassed > UserDocuments.bestRecord && timeLabel.fontColor != SKColor.redColor(){
+                timeLabel.fontColor = SKColor.redColor()
+            }
+            
+            if minute == nextMinute{
+                addTurnCatEffect()
+            }
         }
-        else{
-            deltaTime = currentTime - lastTimeStamp
-            lastTimeStamp = currentTime
+    }
+    
+    func addTurnCatEffect(){
+        turnCatEnabled = true
+        nextMinute++
+        lastTimeStamp = 0.0
+        for enemyNode in enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.turnCat()
+            }
         }
-        timePassed += deltaTime
-        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
-        if timePassed > UserDocuments.bestRecord{
-            currentTimeLabel.fontColor = SKColor.redColor()
-            bestRecordLabel.text = NSString(format: "BR: %2.2f", timePassed) as String
-            bestRecordLabel.fontColor = SKColor.redColor()
+        timeLabel.text = NSString(format: "%04.1f", bonusTime) as String
+        let originColor = timeLabel.fontColor
+        timeLabel.fontColor = SKColor.purpleColor()
+        
+        let instructionLabel = SKLabelNode(fontNamed: "Arial")
+        instructionLabel.fontSize = 80
+        instructionLabel.fontColor = SKColor.redColor()
+        instructionLabel.text = "Eat them!"
+        instructionLabel.position = CGPointMake(CGRectGetMidX(playableArea), CGRectGetMidY(playableArea))
+        addChild(instructionLabel)
+        
+        stopTimeEnabled = true
+        for enemyNode in enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.paused = true
+                enemy.currentSpeed = 0
+            }
+        }
+        
+        instructionLabel.runAction(SKAction.sequence([
+            SKAction.group([
+                SKAction.moveByX(0, y: 300, duration: 1.5),
+                SKAction.fadeOutWithDuration(1.5)]),
+            SKAction.removeFromParent()])){
+                self.stopTimeEnabled = false
+                for enemyNode in self.enemyLayer.children{
+                    if let enemy = enemyNode as? Enemy{
+                        enemy.paused = false
+                        enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
+                    }
+                }
+                self.runAction(SKAction.repeatActionForever(SKAction.sequence([
+                    SKAction.waitForDuration(0.1),
+                    SKAction.runBlock({ () -> Void in
+                        self.bonusTime -= 0.1
+                        self.timeLabel.text = NSString(format: "%04.1f", self.bonusTime) as String
+                        switch self.bonusTime{
+                        case 4 ... 10:
+                            self.timeLabel.fontColor = SKColor.purpleColor()
+                        case 0 ... 3:
+                            self.timeLabel.fontColor = SKColor.redColor()
+                        default:
+                            break
+                        }
+                        if self.bonusTime < 0{
+                            self.turnCatEnabled = false
+                            for enemyNode in self.enemyLayer.children{
+                                if let enemy = enemyNode as? Enemy{
+                                    enemy.resumeFromCat()
+                                }
+                            }
+                            self.timeLabel.fontColor = originColor
+                            self.removeActionForKey("TurnCatAction")
+                            self.bonusTime = 10
+                        }
+                    })])), withKey: "TurnCatAction")
         }
     }
     
@@ -484,18 +569,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             enemiesToAdjustDirection.removeAll()
             if slowDownEnabled{
                 for enemyNode in enemyLayer.children{
-                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil{
+                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil && enemyNode.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
                         if let enemy = enemyNode as? Enemy{
                             if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
                                 enemy.currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
                             }
                             else{
-                                if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
-                                    enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
-                                }
-                                else{
-                                    enemy.currentSpeed = enemy.moveSpeed
-                                }
+                                enemy.currentSpeed = enemy.moveSpeed
                             }
                         }
                     }
