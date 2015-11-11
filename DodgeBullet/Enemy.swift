@@ -53,7 +53,7 @@ class Enemy: SKNode{
     }
     
     func turnCat(){
-        sprite.color = SKColor.yellowColor()
+        sprite.color = SKColor.purpleColor()
         sprite.colorBlendFactor = 0.9
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         if let gameScene = scene as? GameScene{

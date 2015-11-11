@@ -44,32 +44,18 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
-//        type = .Phantom
-//        switch random() % 2{
-//        case 0:
-//            type = .WhosYourDaddy
-//        default:
-//            type = .SlowDown
-//        }
+//        type = .WhosYourDaddy
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{
-//        case .SpeedUp:
-//            texture = atlas.textureNamed("speedUp")
-//        case .ScaleDown:
-//            texture = atlas.textureNamed("scaleDown")
         case .DogFood:
             texture = atlas.textureNamed("dogFood")
         case .Phantom:
             texture = atlas.textureNamed("phantom")
         case .SlowDown:
             texture = atlas.textureNamed("slowDown")
-//        case .StopTime:
-//            texture = atlas.textureNamed("stopTime")
-//        case .TurnCats:
-//            texture = atlas.textureNamed("turnCats")
-//        case .Rock:
-//            texture = atlas.textureNamed("rock")
+        case .Rock:
+            texture = atlas.textureNamed("rock")
         default:
             texture = atlas.textureNamed("whosYourDaddy")
         }

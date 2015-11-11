@@ -18,7 +18,7 @@ class GamePropsBanner {
     
     init(gameScene: GameScene){
         self.gameScene = gameScene
-        area = CGRectMake(500, CGRectGetMaxY(gameScene.playableArea)-120, gridSize*10, 100)
+        area = CGRectMake(CGRectGetMaxX(gameScene.playableArea)-gridSize*11/2, CGRectGetMaxY(gameScene.playableArea)-120, gridSize*5, 100)
     }
     
     func add(gameProps: GameProps){

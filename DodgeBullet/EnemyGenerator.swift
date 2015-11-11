@@ -197,7 +197,7 @@ class EnemyGenerator {
             enemy.moveToward((phantom.position-position).normalized()*enemy.moveSpeed)
         }
         else{
-            enemy.moveToward((randomPointInRect(gameScene.player.fireRect)-position).normalized()*enemy.moveSpeed)
+            enemy.moveToward((randomPointInRect(gameScene.player.fireRectNarrow)-position).normalized()*enemy.moveSpeed)
         }
         enemy.faceCurrentDirection()
         
