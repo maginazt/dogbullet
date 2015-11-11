@@ -358,7 +358,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         if sender.state == .Began || sender.state == .Changed{
             var dir = sender.velocityInView(view)
             dir.y *= -1
-            if !initialing && !paused{
+            if !initialing && !paused && (abs(dir.x) > 50 || abs(dir.y) > 50){
+                if abs(dir.x) < 30{
+                    dir.x = 0
+                }
+                if abs(dir.y) < 30{
+                    dir.y = 0
+                }
                 player.moveToward(dir.normalized() * moveSpeed)
             }
         }
