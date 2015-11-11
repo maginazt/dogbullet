@@ -19,25 +19,31 @@ class Player: SKNode {
     //开火区
     var fireRect: CGRect{
         let gameScene = scene as! GameScene
-        var lowerX = position.x - fireLength/2
-        var lowerY = position.y - fireLength/2
-        var width: CGFloat = fireLength
-        var height: CGFloat = fireLength
-        if lowerX < CGRectGetMinX(gameScene.playableArea){
-            width = fireLength + lowerX - CGRectGetMinX(gameScene.playableArea)
-            lowerX = CGRectGetMinX(gameScene.playableArea)
-        }
-        if lowerY < CGRectGetMinY(gameScene.playableArea){
-            height = fireLength + lowerY - CGRectGetMinY(gameScene.playableArea)
-            lowerY = CGRectGetMinY(gameScene.playableArea)
-        }
-        if lowerX + width > CGRectGetMaxX(gameScene.playableArea){
-            width = CGRectGetMaxX(gameScene.playableArea) - lowerX
-        }
-        if lowerY + height > CGRectGetMaxY(gameScene.playableArea){
-            height = CGRectGetMaxY(gameScene.playableArea) - lowerY
-        }
-        return CGRectMake(lowerX, lowerY, width, height)
+        return CGRectIntersection(gameScene.playableArea, CGRect(origin: CGPointMake(position.x-fireLength/2, position.y-fireLength/2), size: CGSizeMake(fireLength, fireLength)))
+//        var lowerX = position.x - fireLength/2
+//        var lowerY = position.y - fireLength/2
+//        var width: CGFloat = fireLength
+//        var height: CGFloat = fireLength
+//        if lowerX < CGRectGetMinX(gameScene.playableArea){
+//            width = fireLength + lowerX - CGRectGetMinX(gameScene.playableArea)
+//            lowerX = CGRectGetMinX(gameScene.playableArea)
+//        }
+//        if lowerY < CGRectGetMinY(gameScene.playableArea){
+//            height = fireLength + lowerY - CGRectGetMinY(gameScene.playableArea)
+//            lowerY = CGRectGetMinY(gameScene.playableArea)
+//        }
+//        if lowerX + width > CGRectGetMaxX(gameScene.playableArea){
+//            width = CGRectGetMaxX(gameScene.playableArea) - lowerX
+//        }
+//        if lowerY + height > CGRectGetMaxY(gameScene.playableArea){
+//            height = CGRectGetMaxY(gameScene.playableArea) - lowerY
+//        }
+//        return CGRectMake(lowerX, lowerY, width, height)
+    }
+    
+    var fireRectNarrow: CGRect{
+        let gameScene = scene as! GameScene
+        return CGRectIntersection(gameScene.playableArea, CGRect(origin: CGPointMake(position.x-fireLength/4, position.y-fireLength/4), size: CGSizeMake(fireLength/2, fireLength/2)))
     }
     
     override init() {

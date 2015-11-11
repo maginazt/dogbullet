@@ -12,6 +12,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     var forceTouchAvailable: Bool = false
     var initialing = true
+    var onScreenControlEnabled = false
     //当前移动速度
     var moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
@@ -353,26 +354,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
     }
     
-    //拖动手势
-    func handlePanGesture(sender: UIPanGestureRecognizer){
-        if sender.state == .Began || sender.state == .Changed{
-            var dir = sender.velocityInView(view)
-            dir.y *= -1
-            if !initialing && !paused && (abs(dir.x) > 50 || abs(dir.y) > 50){
-                if abs(dir.x) < 30{
-                    dir.x = 0
-                }
-                if abs(dir.y) < 30{
-                    dir.y = 0
-                }
-                player.moveToward(dir.normalized() * moveSpeed)
-            }
-        }
-        else if sender.state == .Ended{
-            player.moveToward(CGPointZero)
-        }
-    }
-    
     /*   点击事件处理   */
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let atouch = touches.first
@@ -401,6 +382,29 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     handleMainMenuAction()
                 }
             }
+        }
+    }
+    
+    var previousPoints = [CGPoint]()
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if !initialing && onScreenControlEnabled{
+            let atouch = touches.first
+            if let touch = atouch{
+                let touchPos = touch.locationInNode(self)
+                previousPoints.append(touchPos)
+                if previousPoints.count > 10{
+                    let prev = previousPoints.removeFirst()
+                    player.moveToward((touchPos-prev).normalized() * moveSpeed)
+                }
+            }
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if !initialing && onScreenControlEnabled{
+            previousPoints.removeAll()
+            player.moveToward(CGPointZero)
         }
     }
     
