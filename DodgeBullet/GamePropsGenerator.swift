@@ -148,7 +148,7 @@ class GamePropsGenerator : GamePropsDelegate {
     private func addWhosYourDaddyEffect(){
         gameScene.shieldCount = maxShieldCount
         gameScene.player.childNodeWithName("shield")?.removeFromParent()
-        let shield = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(100, 100))
+        let shield = SKSpriteNode(texture: SKTextureAtlas(named: "effects").textureNamed("unbreakable-1"))
         shield.name = "shield"
         shield.runAction(SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25)))
         gameScene.player.addChild(shield)
@@ -158,7 +158,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addSlowDownEffect(){
         gameScene.slowDownEnabled = true
-        let circle = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(slowDownRadius, slowDownRadius))
+        let circle = SKSpriteNode(texture: SKTextureAtlas(named: "effects").textureNamed("slow-1"))
         circle.xScale = 2
         circle.yScale = 2
         circle.name = "circle"
