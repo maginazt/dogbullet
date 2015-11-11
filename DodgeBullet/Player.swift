@@ -97,4 +97,13 @@ class Player: SKNode {
             addChild(tail)
         }
     }
+    
+    func setupPhantomTail(){
+        if let emitter = SKEmitterNode(fileNamed: "phantomtail"){
+            emitter.targetNode = scene
+            tail = emitter
+            tail.particleSpeed = 0.0
+            addChild(tail)
+        }
+    }
 }

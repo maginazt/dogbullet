@@ -32,6 +32,7 @@
 		4C8863FA1BD5030600496482 /* button_press.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F61BD5030600496482 /* button_press.wav */; };
 		4C8863FE1BD79F5C00496482 /* characters.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863FD1BD79F5C00496482 /* characters.atlas */; };
 		4C8864001BD7A38800496482 /* AnimatingSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8863FF1BD7A38800496482 /* AnimatingSprite.swift */; };
+		4C8B21231BF236050036EC44 /* phantomtail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C8B21221BF236050036EC44 /* phantomtail.sks */; };
 		4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */; };
 		4C8F4C6F1BCBD9AC00F93F83 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */; };
 		4C8F4C721BCBDCF200F93F83 /* EnemyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */; };
@@ -90,6 +91,7 @@
 		4C8863F61BD5030600496482 /* button_press.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = button_press.wav; sourceTree = "<group>"; };
 		4C8863FD1BD79F5C00496482 /* characters.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = characters.atlas; sourceTree = "<group>"; };
 		4C8863FF1BD7A38800496482 /* AnimatingSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatingSprite.swift; sourceTree = "<group>"; };
+		4C8B21221BF236050036EC44 /* phantomtail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = phantomtail.sks; sourceTree = "<group>"; };
 		4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnemyGenerator.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 		4C9158281BCE8025005C958B /* emittersystem */ = {
 			isa = PBXGroup;
 			children = (
+				4C8B21221BF236050036EC44 /* phantomtail.sks */,
 				4C7D47861BF0CD7600E5114D /* Star.png */,
 				4CE160A21BEF345A00630B28 /* playertail.sks */,
 				4CE160A31BEF345A00630B28 /* spark.png */,
@@ -378,6 +381,7 @@
 				4CE160A51BEF345A00630B28 /* spark.png in Resources */,
 				4C7D47871BF0CD7600E5114D /* Star.png in Resources */,
 				4C8863FA1BD5030600496482 /* button_press.wav in Resources */,
+				4C8B21231BF236050036EC44 /* phantomtail.sks in Resources */,
 				4CA49B781BC9EC5900589D3C /* LaunchScreen.storyboard in Resources */,
 				4C8863F71BD5030600496482 /* base@2x.png in Resources */,
 				4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */,

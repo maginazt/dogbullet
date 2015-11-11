@@ -44,7 +44,7 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
-//        type = .DogFood
+//        type = .Phantom
 //        switch random() % 2{
 //        case 0:
 //            type = .WhosYourDaddy

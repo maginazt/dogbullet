@@ -94,6 +94,7 @@ class GamePropsGenerator : GamePropsDelegate {
         phantom.position = gameScene.player.position
         gameScene.playerPhantom = phantom
         gameScene.addChild(phantom)
+        phantom.setupPhantomTail()
         
         //从游戏区域的四条边的随机点进行运动
         let area = CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize, gameScene.gamePropsBanner.gridSize)
@@ -228,8 +229,10 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func removePhantomEffect(){
-        gameScene.playerPhantom?.removeAllActions()
-        gameScene.playerPhantom?.removeFromParent()
+//        gameScene.playerPhantom?.removeAllActions()
+        gameScene.playerPhantom?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(0.3),
+            SKAction.removeFromParent()]))
         gameScene.playerPhantom = nil
     }
     
@@ -259,17 +262,23 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removeDogFoodEffect(){
         gameScene.dogFoodArea = nil
-        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.removeFromParent()
+        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(0.3),
+            SKAction.removeFromParent()]))
     }
     
     private func removeWhosYourDaddyEffect(){
         gameScene.shieldCount = 0
-        gameScene.player.childNodeWithName("shield")?.removeFromParent()
+        gameScene.player.childNodeWithName("shield")?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(0.3),
+            SKAction.removeFromParent()]))
     }
     
     private func removeSlowDownEffect(){
         gameScene.slowDownEnabled = false
-        gameScene.player.childNodeWithName("circle")?.removeFromParent()
+        gameScene.player.childNodeWithName("circle")?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(0.3),
+            SKAction.removeFromParent()]))
         for enemyNode in gameScene.enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
                 if !gameScene.stopTimeEnabled{

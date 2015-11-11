@@ -42,7 +42,7 @@ enum PreferenceErrorType: ErrorType{
 
 //移动速度
 enum GameSpeed: CGFloat{
-    case SlowDownSpeed = 100
+    case SlowDownSpeed = 50
     case EnemyNormalSpeed = 250
     case EnemySlowSpeed = 150
     case EnemyFastSpeed = 750
