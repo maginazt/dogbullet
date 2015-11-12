@@ -11,6 +11,8 @@ import SpriteKit
 class Enemy: SKNode{
     
     let sprite: AnimatingSprite
+    var effect: SKEmitterNode?
+    
     let moveSpeed: CGFloat
     var currentSpeed: CGFloat{
         get{
@@ -61,6 +63,7 @@ class Enemy: SKNode{
                 currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
             }
         }
+        effect?.removeFromParent()
     }
     
     func resumeFromCat(){
@@ -68,6 +71,9 @@ class Enemy: SKNode{
             if !gameScene.stopTimeEnabled{
                 currentSpeed = moveSpeed
             }
+        }
+        if let e = effect{
+            addChild(e)
         }
     }
 }
@@ -111,6 +117,14 @@ class EnemySlow: Enemy {
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
         sprite.runAction(sprite.runningAnim)
     }
+    
+    func setupGhostEffect(){
+        if let emitter = SKEmitterNode(fileNamed: "ghostlight"){
+            effect = emitter
+            emitter.position = CGPointMake(-sprite.texture!.size().width/6, 0)
+            addChild(emitter)
+        }
+    }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -142,6 +156,15 @@ class EnemyFast: Enemy{
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupFireEffect(){
+        if let emitter = SKEmitterNode(fileNamed: "firetail"){
+            effect = emitter
+            emitter.position = CGPointMake(-sprite.texture!.size().width/5, 0)
+            emitter.targetNode = scene
+            addChild(emitter)
+        }
     }
     
     override func resumeFromCat() {

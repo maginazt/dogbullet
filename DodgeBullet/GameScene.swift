@@ -405,9 +405,16 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if let touch = atouch{
                 let touchPos = touch.locationInNode(self)
                 previousPoints.append(touchPos)
-                if previousPoints.count > 10{
+                if previousPoints.count > 15{
                     let prev = previousPoints.removeFirst()
-                    player.moveToward((touchPos-prev).normalized() * moveSpeed)
+                    var avg = CGPointZero
+                    for point in previousPoints{
+                        avg.x += point.x
+                        avg.y += point.y
+                    }
+                    avg.x /= CGFloat(previousPoints.count)
+                    avg.y /= CGFloat(previousPoints.count)
+                    player.moveToward((avg-prev).normalized() * moveSpeed)
                 }
             }
         }

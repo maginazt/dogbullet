@@ -106,6 +106,7 @@ class EnemyGenerator {
                         let enemy = EnemySlow(textureName: "enemy-1")
                         self.slowEnemies.append(enemy)
                         self.gameScene.enemyLayer.addChild(enemy)
+                        enemy.setupGhostEffect()
                         enemy.position = spawnPoint
                         if self.gameScene.turnCatEnabled{
                             enemy.turnCat()
@@ -192,6 +193,7 @@ class EnemyGenerator {
     func spawnFastEnemyAt(position: CGPoint){
         let enemy = EnemyFast(textureName: "enemy-1")
         gameScene.enemyLayer.addChild(enemy)
+        enemy.setupFireEffect()
         enemy.position = position
         if let phantom = gameScene.playerPhantom{
             enemy.moveToward((phantom.position-position).normalized()*enemy.moveSpeed)
