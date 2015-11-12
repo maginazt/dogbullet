@@ -18,7 +18,7 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                if !gameScene.stopTimeEnabled{
+                if !gameScene.stopTimeEnabled && !gameScene.turnCatEnabled{
                     self.spawnGameProps()
                 }
             })])))
