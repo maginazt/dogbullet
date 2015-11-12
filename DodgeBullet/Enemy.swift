@@ -11,6 +11,7 @@ import SpriteKit
 class Enemy: SKNode{
     
     let sprite: AnimatingSprite
+    static let runningActionKey = "RunningActionKey"
     var effect: SKEmitterNode?
     
     let moveSpeed: CGFloat
@@ -55,6 +56,7 @@ class Enemy: SKNode{
     }
     
     func turnCat(){
+        sprite.removeActionForKey("purge")
         sprite.color = SKColor.purpleColor()
         sprite.colorBlendFactor = 0.9
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
@@ -63,7 +65,8 @@ class Enemy: SKNode{
                 currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
             }
         }
-        effect?.removeFromParent()
+        effect?.hidden = true
+        effect?.targetNode = nil
     }
     
     func resumeFromCat(){
@@ -72,23 +75,44 @@ class Enemy: SKNode{
                 currentSpeed = moveSpeed
             }
         }
-        if let e = effect{
-            addChild(e)
+    }
+    
+    func purge(){
+        if let gameScene = scene as? GameScene{
+            if !gameScene.stopTimeEnabled{
+                currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+            }
         }
+        if sprite.actionForKey("purge") == nil{
+            sprite.runAction(SKAction.repeatActionForever(SKAction.sequence([
+                SKAction.colorizeWithColor(SKColor.blackColor(), colorBlendFactor: 0.9, duration: 0.5),
+                SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 0.5)])), withKey: "purge")
+            effect?.hidden = true
+            effect?.targetNode = nil
+        }
+    }
+    
+    func resumeFromPurge(){
+        if let gameScene = scene as? GameScene{
+            if !gameScene.stopTimeEnabled{
+                currentSpeed = moveSpeed
+            }
+        }
+        sprite.removeActionForKey("purge")
     }
 }
 class EnemyNormal: Enemy {
     
     init(textureName: String) {
         super.init(textureName: textureName, moveSpeed: CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
-        physicsBody = SKPhysicsBody(circleOfRadius: sprite.texture!.size().width/11, center: CGPointMake(sprite.texture!.size().width/5, 0))
+        physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(sprite.texture!.size().width*0.4, sprite.texture!.size().height*0.15))
         physicsBody?.allowsRotation = false
         physicsBody?.linearDamping = 0.0
         physicsBody?.restitution = 1.0
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
-        sprite.runAction(sprite.runningAnim)
+        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -96,9 +120,14 @@ class EnemyNormal: Enemy {
     }
     
     override func resumeFromCat() {
-        sprite.color = SKColor.whiteColor()
+        sprite.runAction(SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
         super.resumeFromCat()
+    }
+    
+    override func resumeFromPurge() {
+        super.resumeFromPurge()
+        sprite.color = SKColor.whiteColor()
     }
 }
 
@@ -115,7 +144,7 @@ class EnemySlow: Enemy {
         physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
-        sprite.runAction(sprite.runningAnim)
+        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
     }
     
     func setupGhostEffect(){
@@ -131,9 +160,16 @@ class EnemySlow: Enemy {
     }
     
     override func resumeFromCat() {
-        sprite.color = SKColor.blueColor()
+        sprite.runAction(SKAction.colorizeWithColor(SKColor.blueColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
+        effect?.hidden = false
         super.resumeFromCat()
+    }
+    
+    override func resumeFromPurge() {
+        super.resumeFromPurge()
+        sprite.color = SKColor.blueColor()
+        effect?.hidden = false
     }
     
 }
@@ -144,14 +180,14 @@ class EnemyFast: Enemy{
         super.init(textureName: textureName, moveSpeed: CGFloat(GameSpeed.EnemyFastSpeed.rawValue))
         sprite.color = SKColor.redColor()
         sprite.colorBlendFactor = 0.9
-        physicsBody = SKPhysicsBody(circleOfRadius: sprite.texture!.size().width/11, center: CGPointMake(sprite.texture!.size().width/5, 0))
+        physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(sprite.texture!.size().width*0.4, sprite.texture!.size().height*0.15))
         physicsBody?.allowsRotation = false
         physicsBody?.linearDamping = 0.0
         physicsBody?.restitution = 1.0
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
-        sprite.runAction(sprite.runningAnim)
+        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -168,8 +204,17 @@ class EnemyFast: Enemy{
     }
     
     override func resumeFromCat() {
-        sprite.color = SKColor.redColor()
+        sprite.runAction(SKAction.colorizeWithColor(SKColor.redColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
+        effect?.hidden = false
+        effect?.targetNode = scene
         super.resumeFromCat()
+    }
+    
+    override func resumeFromPurge() {
+        super.resumeFromPurge()
+        sprite.color = SKColor.redColor()
+        effect?.hidden = false
+        effect?.targetNode = scene
     }
 }

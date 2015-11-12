@@ -16,7 +16,7 @@ class GamePropsGenerator : GamePropsDelegate {
         self.gameScene = gameScene
         //道具生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 3))),
             SKAction.runBlock({ () -> Void in
                 if !gameScene.stopTimeEnabled && !gameScene.turnCatEnabled{
                     self.spawnGameProps()
@@ -26,6 +26,9 @@ class GamePropsGenerator : GamePropsDelegate {
     
     func spawnGameProps(){
         let gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
+        if gameProps.type == .DogFood && gameScene.dogFoodArea != nil{
+            return
+        }
         gameProps.position = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize/2, gameScene.gamePropsBanner.gridSize*2))
         gameScene.gamePropsLayer.addChild(gameProps)
     }
@@ -35,10 +38,7 @@ class GamePropsGenerator : GamePropsDelegate {
         if gameScene.gamePropsMap.keys.contains(gameProps.type){
             let oldGameProps = gameScene.gamePropsMap[gameProps.type]!
             oldGameProps.resetEffectTimer()
-            if gameProps.type == .DogFood{
-                addDogFoodEffect(gameProps.position)
-            }
-            else if gameProps.type == .WhosYourDaddy{
+            if gameProps.type == .WhosYourDaddy{
                 addWhosYourDaddyEffect()
             }
             gameProps.removeFromParent()
@@ -101,9 +101,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addDogFoodEffect(position: CGPoint){
         gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
-        gameScene.gamePropsLayer.childNodeWithName("dogFood")?.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.3),
-            SKAction.removeFromParent()]))
+        //狗粮
         let food = SKSpriteNode(imageNamed: "food")
         food.position = position
         food.name = "dogFood"
@@ -118,6 +116,15 @@ class GamePropsGenerator : GamePropsDelegate {
             SKAction.sequence([scaleUpFull, SKAction.scaleTo(1.5, duration: 0.2), scaleUpHalf, SKAction.scaleTo(1.5, duration: 0.1), scaleUpQualter, SKAction.scaleTo(1.5, duration: 0.05)]),
             SKAction.rotateByAngle(CGFloat(7*M_PI), duration: 0.7)]))
         gameScene.gamePropsLayer.addChild(food)
+        //尘土
+        let dust = SKSpriteNode(imageNamed: "dust-1")
+        dust.alpha = 0
+        dust.xScale = 2
+        dust.yScale = 2
+        dust.position = position
+        dust.zPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue) + 1
+        dust.name = "dust"
+        gameScene.gamePropsLayer.addChild(dust)
     }
     
     private func addRockEffect(position: CGPoint){
@@ -127,14 +134,11 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func spawnRock(position: CGPoint){
-        let rock = SKLabelNode(fontNamed: "Arial")
-        rock.verticalAlignmentMode = .Center
-        rock.fontColor = SKColor.greenColor()
-        rock.fontSize = 60
-        rock.text = "•"
+        let rock = SKSpriteNode(texture: SKTexture(imageNamed: "ammo"), color: SKColor.whiteColor(), size: CGSizeMake(20, 20))
+        rock.runAction(SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1)))
         rock.position = position
         gameScene.addChild(rock)
-        rock.physicsBody = SKPhysicsBody(circleOfRadius: 6)
+        rock.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         rock.physicsBody?.usesPreciseCollisionDetection = true
         rock.physicsBody?.linearDamping = 0
         rock.physicsBody?.velocity = CGVector(point: angleToDirection(CGFloat.random(min: 0, max: CGFloat(M_PI*2.0)))*CGFloat(GameSpeed.RockSpeed.rawValue))
@@ -187,7 +191,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func removePhantomEffect(){
         gameScene.playerPhantom?.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.3),
+            SKAction.fadeOutWithDuration(0.5),
             SKAction.removeFromParent()]))
         gameScene.playerPhantom = nil
     }
@@ -195,27 +199,29 @@ class GamePropsGenerator : GamePropsDelegate {
     private func removeDogFoodEffect(){
         gameScene.dogFoodArea = nil
         gameScene.gamePropsLayer.childNodeWithName("dogFood")?.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.3),
+            SKAction.fadeOutWithDuration(0.5),
+            SKAction.removeFromParent()]))
+        gameScene.gamePropsLayer.childNodeWithName("dust")?.removeAllActions()
+        gameScene.gamePropsLayer.childNodeWithName("dust")?.runAction(SKAction.sequence([
+            SKAction.fadeOutWithDuration(2),
             SKAction.removeFromParent()]))
     }
     
     private func removeWhosYourDaddyEffect(){
         gameScene.shieldCount = 0
         gameScene.player.childNodeWithName("shield")?.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.3),
+            SKAction.fadeOutWithDuration(0.5),
             SKAction.removeFromParent()]))
     }
     
     private func removeSlowDownEffect(){
         gameScene.slowDownEnabled = false
         gameScene.player.childNodeWithName("circle")?.runAction(SKAction.sequence([
-            SKAction.fadeOutWithDuration(0.3),
+            SKAction.fadeOutWithDuration(0.5),
             SKAction.removeFromParent()]))
         for enemyNode in gameScene.enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
-                if !gameScene.stopTimeEnabled{
-                    enemy.currentSpeed = enemy.moveSpeed
-                }
+                enemy.resumeFromPurge()
             }
         }
     }

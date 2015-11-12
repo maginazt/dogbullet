@@ -41,15 +41,15 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                if !self.gameScene.stopTimeEnabled{
-                    self.spawnSlowEnemy()
-                }
+                self.spawnSlowEnemy()
             })])))
         //快速敌人生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
             SKAction.runBlock({ () -> Void in
-                self.spawnFastEnemy()
+                if !self.gameScene.stopTimeEnabled{
+                    self.spawnFastEnemy()
+                }
             })])))
     }
     
@@ -104,6 +104,9 @@ class EnemyGenerator {
                     SKAction.waitForDuration(0.4),
                     SKAction.runBlock({ () -> Void in
                         let enemy = EnemySlow(textureName: "enemy-1")
+                        if self.gameScene.stopTimeEnabled{
+                            enemy.paused = true
+                        }
                         self.slowEnemies.append(enemy)
                         self.gameScene.enemyLayer.addChild(enemy)
                         enemy.setupGhostEffect()

@@ -33,7 +33,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     let playerKickActionKey = "playerKickAction"
     
     var playerPhantom: Player?//用户幻象
-    var stopTimeEnabled = false//时间静止效果
     var dogFoodArea: CGRect?//狗粮区域
     var shieldCount = 0//护盾次数
     var slowDownEnabled = false//减速光环效果
@@ -48,7 +47,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var deltaTime: NSTimeInterval = 0
     // 分钟奖励
     var turnCatEnabled = false//变猫效果
+    var stopTimeEnabled = false//时间静止效果
     var nextMinute = 1
+    let maxBonusTime: NSTimeInterval = 10
     var bonusTime: NSTimeInterval = 10
     
     /*   初始化   */
@@ -226,13 +227,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.EnemySlow.rawValue | PhysicsCategory.Player.rawValue:
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
+            let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
             if !stopTimeEnabled{
                 if shieldCount > 0{
                     shieldCount--
                     if let shield = player.childNodeWithName("shield") as? SKSpriteNode{
                         shield.alpha /= 2
                     }
-                    let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
                     if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
                         if let enemy = enemyBody.node as? Enemy{
                             let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed*2
@@ -251,7 +252,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         gamePropsGenerator.disableEffect(.WhosYourDaddy)
                     }
                 }
-                else{
+                else if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
 //                    handleGameOver()
                 }
             }
@@ -313,12 +314,21 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             rockBody.node?.removeFromParent()
             if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
                 enemyBody.velocity = CGVectorMake(0, 0)
+                if let enem = enemyBody.node as? Enemy{
+                    enem.sprite.removeActionForKey(Enemy.runningActionKey)
+                }
                 enemyBody.node?.runAction(SKAction.sequence([
                     SKAction.waitForDuration(2),
                     SKAction.runBlock({ () -> Void in
                         if let enemy = enemyBody.node as? Enemy{
                             if !self.stopTimeEnabled{
-                                enemy.currentSpeed = enemy.moveSpeed
+                                enemy.sprite.runAction(enemy.sprite.runningAnim, withKey: Enemy.runningActionKey)
+                                if self.turnCatEnabled{
+                                    enemy.currentSpeed = GameSpeed.CatSpeed.rawValue
+                                }
+                                else{
+                                    enemy.currentSpeed = enemy.moveSpeed
+                                }
                             }
                         }
                     })]), withKey: hitRockActionKey)
@@ -469,18 +479,33 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func addTurnCatEffect(){
+        //开启变猫效果
+        bonusTime = maxBonusTime
         turnCatEnabled = true
         nextMinute++
         lastTimeStamp = 0.0
+        //取消道具效果
+        for type in gamePropsMap.keys{
+            gamePropsGenerator.disableEffect(type)
+        }
+        for node in gamePropsLayer.children{
+            node.removeFromParent()
+        }
+        gamePropsBanner.queue.removeAll()
+        //时间静止
+        stopTimeEnabled = true
         for enemyNode in enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
                 enemy.turnCat()
+                enemy.paused = true
+                enemy.currentSpeed = 0
             }
         }
+        //开启倒计时
         timeLabel.text = NSString(format: "%04.1f", bonusTime) as String
         let originColor = timeLabel.fontColor
         timeLabel.fontColor = SKColor.purpleColor()
-        
+        //弹出提示
         let instructionLabel = SKLabelNode(fontNamed: "Arial")
         instructionLabel.fontSize = 80
         instructionLabel.fontColor = SKColor.redColor()
@@ -488,19 +513,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         instructionLabel.position = CGPointMake(CGRectGetMidX(playableArea), CGRectGetMidY(playableArea))
         addChild(instructionLabel)
         
-        stopTimeEnabled = true
-        for enemyNode in enemyLayer.children{
-            if let enemy = enemyNode as? Enemy{
-                enemy.paused = true
-                enemy.currentSpeed = 0
-            }
-        }
-        
         instructionLabel.runAction(SKAction.sequence([
             SKAction.group([
                 SKAction.moveByX(0, y: 300, duration: 1.5),
                 SKAction.fadeOutWithDuration(1.5)]),
             SKAction.removeFromParent()])){
+                //取消时间静止
                 self.stopTimeEnabled = false
                 for enemyNode in self.enemyLayer.children{
                     if let enemy = enemyNode as? Enemy{
@@ -522,6 +540,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                             break
                         }
                         if self.bonusTime < 0{
+                            //取消变猫效果
                             self.turnCatEnabled = false
                             for enemyNode in self.enemyLayer.children{
                                 if let enemy = enemyNode as? Enemy{
@@ -530,7 +549,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                             }
                             self.timeLabel.fontColor = originColor
                             self.removeActionForKey("TurnCatAction")
-                            self.bonusTime = 10
                         }
                     })])), withKey: "TurnCatAction")
         }
@@ -541,6 +559,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         if !stopTimeEnabled{
             //所有狗都朝向狗粮
             if dogFoodArea != nil && !turnCatEnabled{
+                var dogIn = false
                 for enemyNode in enemyLayer.children{
                     if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil{
                         if let enemy = enemyNode as? Enemy{
@@ -548,6 +567,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                             enemy.faceCurrentDirection()
                         }
                     }
+                    if dogFoodArea!.contains(enemyNode.position){
+                        dogIn = true
+                    }
+                }
+                let dust = gamePropsLayer.childNodeWithName("dust")
+                if dogIn && dust?.actionForKey("dustIn") == nil{
+                    dust?.runAction(SKAction.group([
+                        SKAction.fadeInWithDuration(3),
+                        SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "dust", numOfPics: 14, timePerFrame: 0.05))]), withKey: "dustIn")
                 }
             }
             else{
@@ -579,10 +607,10 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil && enemyNode.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
                         if let enemy = enemyNode as? Enemy{
                             if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
-                                enemy.currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+                                enemy.purge()
                             }
                             else{
-                                enemy.currentSpeed = enemy.moveSpeed
+                                enemy.resumeFromPurge()
                             }
                         }
                     }
