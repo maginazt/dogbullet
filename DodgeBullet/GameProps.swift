@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 class GameProps: SKSpriteNode {
     
-    static let spinNumber = 10
+    static let showTime: NSTimeInterval = 10
     static let blinkNumber = 10
     // 有效时间
     static let maxEffectTime = 10
@@ -18,20 +18,12 @@ class GameProps: SKSpriteNode {
     
     static let SpinActionKey = "spinActionKey"
     static let spinAnimate: SKAction = {
-        let spin = SKAction.sequence([
-            SKAction.scaleXTo(0, duration: 0.3),
-            SKAction.scaleXTo(-1, duration: 0.2),
-            SKAction.scaleXTo(0, duration: 0.2),
-            SKAction.scaleXTo(1, duration: 0.3)])
-        spin.timingMode = .EaseInEaseOut
-        
         let blink = SKAction.sequence([
             SKAction.fadeOutWithDuration(0.25),
             SKAction.fadeInWithDuration(0.25)])
         
         return SKAction.sequence([
-//            SKAction.repeatAction(spin, count: GameProps.spinNumber),
-            SKAction.waitForDuration(NSTimeInterval(GameProps.spinNumber)),
+            SKAction.waitForDuration(GameProps.showTime),
             SKAction.repeatAction(blink, count: GameProps.blinkNumber),
             SKAction.removeFromParent()])
     }()
@@ -43,8 +35,8 @@ class GameProps: SKSpriteNode {
     var delegate: GamePropsDelegate?
     
     init(gamePropsType: GamePropsType){
-//        type = gamePropsType
-        type = .SlowDown
+        type = gamePropsType
+//        type = .WhosYourDaddy
         let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{

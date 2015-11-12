@@ -10,7 +10,6 @@ import Foundation
 import SpriteKit
 class AnimatingSprite: SKSpriteNode {
     
-    var runningAnim: SKAction!
     var stopTexture: SKTexture!
     
     init(t: SKTexture) {

@@ -10,8 +10,15 @@ import Foundation
 import SpriteKit
 class Enemy: SKNode{
     
-    let sprite: AnimatingSprite
-    static let runningActionKey = "RunningActionKey"
+    static let runningActionKey = "runningActionKey"
+    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters", prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
+    
+    static let purgeActionKey = "purgeActionKey"
+    static let purgeAnim = SKAction.repeatActionForever(SKAction.sequence([
+        SKAction.colorizeWithColor(SKColor.blackColor(), colorBlendFactor: 0.9, duration: 0.5),
+        SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 0.5)]))
+    
+    let sprite: SKSpriteNode
     var effect: SKEmitterNode?
     
     let moveSpeed: CGFloat
@@ -27,10 +34,9 @@ class Enemy: SKNode{
     init(textureName: String, moveSpeed: CGFloat) {
         let atlas = SKTextureAtlas(named: "characters")
         let texture = atlas.textureNamed(textureName)
-        sprite = AnimatingSprite(t: texture)
+        sprite = SKSpriteNode(texture: texture)
         sprite.xScale = 0.7
         sprite.yScale = 0.7
-        sprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters", prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
         self.moveSpeed = moveSpeed
         super.init()
         addChild(sprite)
@@ -42,11 +48,6 @@ class Enemy: SKNode{
     
     func moveToward(target: CGPoint){
         physicsBody?.velocity = CGVector(point: target)
-        if let gameScene = scene as? GameScene{
-            if gameScene.stopTimeEnabled{
-                currentSpeed = 0
-            }
-        }
     }
     
     func faceCurrentDirection(){
@@ -56,49 +57,30 @@ class Enemy: SKNode{
     }
     
     func turnCat(){
-        sprite.removeActionForKey("purge")
+        currentSpeed = GameSpeed.CatSpeed.rawValue
         sprite.color = SKColor.purpleColor()
         sprite.colorBlendFactor = 0.9
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
-        if let gameScene = scene as? GameScene{
-            if !gameScene.stopTimeEnabled{
-                currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
-            }
-        }
         effect?.hidden = true
         effect?.targetNode = nil
     }
     
     func resumeFromCat(){
-        if let gameScene = scene as? GameScene{
-            if !gameScene.stopTimeEnabled{
-                currentSpeed = moveSpeed
-            }
-        }
+        currentSpeed = moveSpeed
     }
     
     func purge(){
-        if let gameScene = scene as? GameScene{
-            if !gameScene.stopTimeEnabled{
-                currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
-            }
-        }
-        if sprite.actionForKey("purge") == nil{
-            sprite.runAction(SKAction.repeatActionForever(SKAction.sequence([
-                SKAction.colorizeWithColor(SKColor.blackColor(), colorBlendFactor: 0.9, duration: 0.5),
-                SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 0.5)])), withKey: "purge")
+        currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+        if sprite.actionForKey(Enemy.purgeActionKey) == nil{
+            sprite.runAction(Enemy.purgeAnim, withKey: Enemy.purgeActionKey)
             effect?.hidden = true
             effect?.targetNode = nil
         }
     }
     
     func resumeFromPurge(){
-        if let gameScene = scene as? GameScene{
-            if !gameScene.stopTimeEnabled{
-                currentSpeed = moveSpeed
-            }
-        }
-        sprite.removeActionForKey("purge")
+        currentSpeed = moveSpeed
+        sprite.removeActionForKey(Enemy.purgeActionKey)
     }
 }
 class EnemyNormal: Enemy {
@@ -112,7 +94,7 @@ class EnemyNormal: Enemy {
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
-        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
+        sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -144,7 +126,7 @@ class EnemySlow: Enemy {
         physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue
-        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
+        sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
     }
     
     func setupGhostEffect(){
@@ -187,7 +169,7 @@ class EnemyFast: Enemy{
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
         physicsBody?.collisionBitMask = PhysicsCategory.None.rawValue
         physicsBody?.contactTestBitMask = PhysicsCategory.Player.rawValue | PhysicsCategory.EnemyCageEdge.rawValue
-        sprite.runAction(sprite.runningAnim, withKey: Enemy.runningActionKey)
+        sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
     }
     
     required init?(coder aDecoder: NSCoder) {

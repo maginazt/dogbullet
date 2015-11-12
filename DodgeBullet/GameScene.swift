@@ -10,9 +10,24 @@ import SpriteKit
 
 class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
+    static let hitRockActionKey = "hitRockAction"
+    static let playerKickActionKey = "playerKickAction"
+    static let turnCatActionKey = "TurnCatAction"
+    
+    static let bonusTimeAction = SKAction.sequence([
+        SKAction.moveByX(0, y: 100, duration: 0.5),
+        SKAction.fadeOutWithDuration(0.2),
+        SKAction.removeFromParent()])
+    static let showInstructionAnim = SKAction.sequence([
+        SKAction.group([
+            SKAction.moveByX(0, y: 300, duration: 1.5),
+            SKAction.fadeOutWithDuration(1.5)]),
+        SKAction.removeFromParent()])
+    
+    static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
+    
     var forceTouchAvailable: Bool = false
     var initialing = true
-    var onScreenControlEnabled = false
     //当前移动速度
     var moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
@@ -28,9 +43,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var gamePropsGenerator: GamePropsGenerator!
     var gamePropsMap = [GamePropsType:GameProps]()//正在起作用的道具集合
     var gamePropsBanner: GamePropsBanner!//正在起作用的道具显示区域
-    
-    let hitRockActionKey = "hitRockAction"
-    let playerKickActionKey = "playerKickAction"
     
     var playerPhantom: Player?//用户幻象
     var dogFoodArea: CGRect?//狗粮区域
@@ -107,7 +119,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         player = Player()
         player.position = CGPointMake(size.width/2, size.height/2)
         addChild(player)
-        player.setupTail()
+        player.setupTail("playertail")
     }
     
     private func setupEnemy(){
@@ -156,27 +168,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func setupUI(){
-//        let timeLabel = SKNode()
-//        timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
-//        timeLabel.position = CGPointMake(CGRectGetMinX(playableArea)+30, CGRectGetMaxY(playableArea)-80)
-//        addChild(timeLabel)
-//        currentTimeLabel = SKLabelNode(fontNamed: "Chalkduster")
-//        currentTimeLabel.name = "ct"
-//        currentTimeLabel.fontColor = SKColor.blackColor()
-//        currentTimeLabel.fontSize = 50
-//        currentTimeLabel.text = NSString(format: "CT: %2.2f", timePassed) as String
-//        currentTimeLabel.horizontalAlignmentMode = .Left
-//        currentTimeLabel.position = CGPointMake(0, 30)
-//        timeLabel.addChild(currentTimeLabel)
-//        
-//        bestRecordLabel = SKLabelNode(fontNamed: "Chalkduster")
-//        bestRecordLabel.name = "br"
-//        bestRecordLabel.fontColor = SKColor.blackColor()
-//        bestRecordLabel.fontSize = 50
-//        bestRecordLabel.text = NSString(format: "BR: %2.2f", UserDocuments.bestRecord) as String
-//        bestRecordLabel.horizontalAlignmentMode = .Left
-//        bestRecordLabel.position = CGPointMake(0, -30)
-//        timeLabel.addChild(bestRecordLabel)
         timeLabel = SKLabelNode(fontNamed: "Arial")
         timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         timeLabel.position = CGPointMake(CGRectGetMidX(playableArea)-60, CGRectGetMaxY(playableArea)-80)
@@ -228,33 +219,32 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
-            if !stopTimeEnabled{
-                if shieldCount > 0{
-                    shieldCount--
-                    if let shield = player.childNodeWithName("shield") as? SKSpriteNode{
-                        shield.alpha /= 2
-                    }
-                    if enemyBody.node?.actionForKey(playerKickActionKey) == nil{
-                        if let enemy = enemyBody.node as? Enemy{
-                            let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed*2
-                            enemyBody.velocity = CGVectorMake(0, 0)
-                            enemy.runAction(SKAction.sequence([
-                                SKAction.group([
-                                    SKAction.moveBy(CGVector(point: nextVelocity), duration: 1),
-                                    SKAction.rotateByAngle(CGFloat(M_PI*4.0), duration: 1)]),
-                                SKAction.runBlock({ () -> Void in
-                                    enemy.moveToward(nextVelocity)
-                                    enemy.faceCurrentDirection()
-                                })]), withKey: playerKickActionKey)
-                        }
-                    }
-                    if shieldCount <= 0{
-                        gamePropsGenerator.disableEffect(.WhosYourDaddy)
-                    }
+            if enemyBody.node?.actionForKey(GameScene.hitRockActionKey) != nil{
+                break
+            }
+            else if shieldCount > 0{
+                shieldCount--
+                if let shield = player.childNodeWithName("shield") as? SKSpriteNode{
+                    shield.alpha /= 2
                 }
-                else if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
-//                    handleGameOver()
+                if let enemy = enemyBody.node as? Enemy{
+                    let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed
+                    enemyBody.velocity = CGVectorMake(0, 0)
+                    enemy.runAction(SKAction.sequence([
+                        SKAction.group([
+                            SKAction.moveBy(CGVector(point: nextVelocity.normalized()*400), duration: 1),
+                            SKAction.rotateByAngle(CGFloat(M_PI*4.0), duration: 1)]),
+                        SKAction.runBlock({ () -> Void in
+                            enemy.moveToward(nextVelocity)
+                            enemy.faceCurrentDirection()
+                        })]), withKey: GameScene.playerKickActionKey)
                 }
+                if shieldCount <= 0{
+                    gamePropsGenerator.disableEffect(.WhosYourDaddy)
+                }
+            }
+            else{
+//              handleGameOver()
             }
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -312,7 +302,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 enemyBody = contact.bodyA
             }
             rockBody.node?.removeFromParent()
-            if enemyBody.node?.actionForKey(hitRockActionKey) == nil{
+            if enemyBody.node?.actionForKey(GameScene.hitRockActionKey) == nil{
                 enemyBody.velocity = CGVectorMake(0, 0)
                 if let enem = enemyBody.node as? Enemy{
                     enem.sprite.removeActionForKey(Enemy.runningActionKey)
@@ -322,26 +312,16 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     SKAction.runBlock({ () -> Void in
                         if let enemy = enemyBody.node as? Enemy{
                             if !self.stopTimeEnabled{
-                                enemy.sprite.runAction(enemy.sprite.runningAnim, withKey: Enemy.runningActionKey)
-                                if self.turnCatEnabled{
-                                    enemy.currentSpeed = GameSpeed.CatSpeed.rawValue
-                                }
-                                else{
-                                    enemy.currentSpeed = enemy.moveSpeed
-                                }
+                                enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
+                                enemy.currentSpeed = enemy.moveSpeed
                             }
                         }
-                    })]), withKey: hitRockActionKey)
+                    })]), withKey: GameScene.hitRockActionKey)
             }
         default:
             break
         }
     }
-    
-    let bonusTimeAction = SKAction.sequence([
-        SKAction.moveByX(0, y: 100, duration: 0.5),
-        SKAction.fadeOutWithDuration(0.2),
-        SKAction.removeFromParent()])
     
     func showBonusTimeEffect(position: CGPoint){
         let bonusLabel = SKLabelNode(fontNamed: "Arial")
@@ -350,11 +330,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         bonusLabel.text = "+0.1s"
         bonusLabel.position = position
         addChild(bonusLabel)
-        bonusLabel.runAction(bonusTimeAction)
+        bonusLabel.runAction(GameScene.bonusTimeAction)
     }
     
     /*    用户手势处理    */
-    //双击手势
+    //双击手势 设置摇杆位置
     func handleDoubleTapGesture(sender: UITapGestureRecognizer){
         if sender.state == .Ended{
             var loc = sender.locationInView(view)
@@ -373,6 +353,48 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 analog.center = loc
             }
+        }
+    }
+    
+    let maxStoredPoint = 30
+    var previousPoints = [CGPoint]()
+    //拖动手势 触摸屏幕控制
+    func handlePanGesture(sender: UIPanGestureRecognizer){
+        var v = sender.velocityInView(view)
+        v.y *= -1
+        if sender.state == .Began{
+            previousPoints.append(v)
+        }
+        else if sender.state == .Changed{
+            previousPoints.append(v)
+            if previousPoints.count > 1 && previousPoints.count <= maxStoredPoint{
+                let prev = previousPoints.first!
+                var avg = CGPointZero
+                for index in 1 ..< previousPoints.count{
+                    let point = previousPoints[index]
+                    avg.x += point.x * CGFloat(previousPoints.count-index)
+                    avg.y += point.y * CGFloat(previousPoints.count-index)
+                }
+                avg.x /= CGFloat(previousPoints.count-1)
+                avg.y /= CGFloat(previousPoints.count-1)
+                player.moveToward((avg-prev).normalized() * moveSpeed)
+            }
+            else if previousPoints.count > maxStoredPoint{
+                let prev = previousPoints.removeFirst()
+                var avg = CGPointZero
+                for index in 0 ..< previousPoints.count{
+                    let point = previousPoints[index]
+                    avg.x += point.x * CGFloat(previousPoints.count-index)
+                    avg.y += point.y * CGFloat(previousPoints.count-index)
+                }
+                avg.x /= CGFloat(previousPoints.count)
+                avg.y /= CGFloat(previousPoints.count)
+                player.moveToward((avg-prev).normalized() * moveSpeed)
+            }
+        }
+        else if sender.state == .Ended{
+            previousPoints.removeAll()
+            player.moveToward(CGPointZero)
         }
     }
     
@@ -404,36 +426,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     handleMainMenuAction()
                 }
             }
-        }
-    }
-    
-    var previousPoints = [CGPoint]()
-    
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !initialing && onScreenControlEnabled{
-            let atouch = touches.first
-            if let touch = atouch{
-                let touchPos = touch.locationInNode(self)
-                previousPoints.append(touchPos)
-                if previousPoints.count > 15{
-                    let prev = previousPoints.removeFirst()
-                    var avg = CGPointZero
-                    for point in previousPoints{
-                        avg.x += point.x
-                        avg.y += point.y
-                    }
-                    avg.x /= CGFloat(previousPoints.count)
-                    avg.y /= CGFloat(previousPoints.count)
-                    player.moveToward((avg-prev).normalized() * moveSpeed)
-                }
-            }
-        }
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !initialing && onScreenControlEnabled{
-            previousPoints.removeAll()
-            player.moveToward(CGPointZero)
         }
     }
     
@@ -499,6 +491,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 enemy.turnCat()
                 enemy.paused = true
                 enemy.currentSpeed = 0
+                enemy.removeActionForKey(GameScene.playerKickActionKey)
+                enemy.removeActionForKey(GameScene.hitRockActionKey)
             }
         }
         //开启倒计时
@@ -513,11 +507,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         instructionLabel.position = CGPointMake(CGRectGetMidX(playableArea), CGRectGetMidY(playableArea))
         addChild(instructionLabel)
         
-        instructionLabel.runAction(SKAction.sequence([
-            SKAction.group([
-                SKAction.moveByX(0, y: 300, duration: 1.5),
-                SKAction.fadeOutWithDuration(1.5)]),
-            SKAction.removeFromParent()])){
+        instructionLabel.runAction(GameScene.showInstructionAnim){
                 //取消时间静止
                 self.stopTimeEnabled = false
                 for enemyNode in self.enemyLayer.children{
@@ -548,9 +538,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                                 }
                             }
                             self.timeLabel.fontColor = originColor
-                            self.removeActionForKey("TurnCatAction")
+                            self.removeActionForKey(GameScene.turnCatActionKey)
                         }
-                    })])), withKey: "TurnCatAction")
+                    })])), withKey: GameScene.turnCatActionKey)
         }
     }
     
@@ -561,7 +551,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if dogFoodArea != nil && !turnCatEnabled{
                 var dogIn = false
                 for enemyNode in enemyLayer.children{
-                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil{
+                    if enemyNode.actionForKey(GameScene.hitRockActionKey) == nil && enemyNode.actionForKey(GameScene.playerKickActionKey) == nil{
                         if let enemy = enemyNode as? Enemy{
                             enemy.moveToward((randomPointInRect(dogFoodArea!)-enemy.position).normalized()*enemy.moveSpeed)
                             enemy.faceCurrentDirection()
@@ -572,10 +562,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     }
                 }
                 let dust = gamePropsLayer.childNodeWithName("dust")
-                if dogIn && dust?.actionForKey("dustIn") == nil{
-                    dust?.runAction(SKAction.group([
-                        SKAction.fadeInWithDuration(3),
-                        SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "dust", numOfPics: 14, timePerFrame: 0.05))]), withKey: "dustIn")
+                if dogIn && dust?.actionForKey(GamePropsGenerator.dustInActionKey) == nil{
+                    dust?.runAction(GamePropsGenerator.dustInAnim, withKey: GamePropsGenerator.dustInActionKey)
                 }
             }
             else{
@@ -585,7 +573,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 //慢速敌人始终朝向player
                 for enemy in enemyGenerator.slowEnemies{
-                    if enemy.actionForKey(hitRockActionKey) == nil && enemy.actionForKey(playerKickActionKey) == nil{
+                    if enemy.actionForKey(GameScene.hitRockActionKey) == nil && enemy.actionForKey(GameScene.playerKickActionKey) == nil{
                         var speed = enemy.moveSpeed
                         if enemy.physicsBody?.categoryBitMask == PhysicsCategory.Cat.rawValue{
                             speed = CGFloat(GameSpeed.CatSpeed.rawValue)
@@ -604,7 +592,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             enemiesToAdjustDirection.removeAll()
             if slowDownEnabled{
                 for enemyNode in enemyLayer.children{
-                    if enemyNode.actionForKey(hitRockActionKey) == nil && enemyNode.actionForKey(playerKickActionKey) == nil && enemyNode.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
+                    if enemyNode.actionForKey(GameScene.hitRockActionKey) == nil && enemyNode.actionForKey(GameScene.playerKickActionKey) == nil && enemyNode.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
                         if let enemy = enemyNode as? Enemy{
                             if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
                                 enemy.purge()
@@ -617,6 +605,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
         }
+        else{
+            for enemy in enemiesToAdjustDirection{
+                enemy.currentSpeed = 0
+            }
+        }
     }
     
     /*    处理游戏事件    */
@@ -625,7 +618,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gameOver.size = size
         gameOver.scaleMode = scaleMode
         gameOver.result = timePassed
-        view?.presentScene(gameOver, transition: SKTransition.flipVerticalWithDuration(0.3))
+        view?.presentScene(gameOver, transition: GameScene.flipTransition)
     }
     
     func resumeGame(){

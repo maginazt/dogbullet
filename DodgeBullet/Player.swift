@@ -11,6 +11,9 @@ import Foundation
 import SpriteKit
 class Player: SKNode {
     
+    static let runningActionKey = "runningActionKey"
+    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters",prefix: "player", numOfPics: 4, timePerFrame: 0.1))
+    
     let mainSprite: AnimatingSprite
     var tail: SKEmitterNode!
     let mainBody: SKPhysicsBody
@@ -20,25 +23,6 @@ class Player: SKNode {
     var fireRect: CGRect{
         let gameScene = scene as! GameScene
         return CGRectIntersection(gameScene.playableArea, CGRect(origin: CGPointMake(position.x-fireLength/2, position.y-fireLength/2), size: CGSizeMake(fireLength, fireLength)))
-//        var lowerX = position.x - fireLength/2
-//        var lowerY = position.y - fireLength/2
-//        var width: CGFloat = fireLength
-//        var height: CGFloat = fireLength
-//        if lowerX < CGRectGetMinX(gameScene.playableArea){
-//            width = fireLength + lowerX - CGRectGetMinX(gameScene.playableArea)
-//            lowerX = CGRectGetMinX(gameScene.playableArea)
-//        }
-//        if lowerY < CGRectGetMinY(gameScene.playableArea){
-//            height = fireLength + lowerY - CGRectGetMinY(gameScene.playableArea)
-//            lowerY = CGRectGetMinY(gameScene.playableArea)
-//        }
-//        if lowerX + width > CGRectGetMaxX(gameScene.playableArea){
-//            width = CGRectGetMaxX(gameScene.playableArea) - lowerX
-//        }
-//        if lowerY + height > CGRectGetMaxY(gameScene.playableArea){
-//            height = CGRectGetMaxY(gameScene.playableArea) - lowerY
-//        }
-//        return CGRectMake(lowerX, lowerY, width, height)
     }
     
     var fireRectNarrow: CGRect{
@@ -51,7 +35,6 @@ class Player: SKNode {
         let atlas = SKTextureAtlas(named: "characters")
         let texture = atlas.textureNamed("player-0")
         mainSprite = AnimatingSprite(t: texture)
-        mainSprite.runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters",prefix: "player", numOfPics: 4, timePerFrame: 0.1))
         mainSprite.stopTexture = texture
         mainBody = SKPhysicsBody(circleOfRadius: texture.size().width/5)
         mainBody.allowsRotation = false
@@ -89,23 +72,13 @@ class Player: SKNode {
         if tail != nil{
             tail.emissionAngle = zRotation + CGFloat(M_PI)
         }
-        if !mainSprite.hasActions(){
-            mainSprite.runAction(mainSprite.runningAnim)
+        if mainSprite.actionForKey(Player.runningActionKey) == nil{
+            mainSprite.runAction(Player.runningAnim, withKey: Player.runningActionKey)
         }
     }
     
-    func setupTail(){
-        if let emitter = SKEmitterNode(fileNamed: "playertail"){
-//            emitter.position = CGPointMake(-mainSprite.size.width/5, -mainSprite.size.height/5)
-            emitter.targetNode = scene
-            tail = emitter
-            tail.particleSpeed = 0.0
-            addChild(tail)
-        }
-    }
-    
-    func setupPhantomTail(){
-        if let emitter = SKEmitterNode(fileNamed: "phantomtail"){
+    func setupTail(emitterFileName: String){
+        if let emitter = SKEmitterNode(fileNamed: emitterFileName){
             emitter.targetNode = scene
             tail = emitter
             tail.particleSpeed = 0.0

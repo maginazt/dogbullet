@@ -10,6 +10,11 @@ import Foundation
 import SpriteKit
 class EnemyGenerator {
     
+    static let spawnAnim = SKAction.sequence([
+        AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "enemyShow", numOfPics: 8, timePerFrame: 0.1),
+        SKAction.removeFromParent()
+        ])
+    
     static let enemyDistance: CGFloat = 200
     let maxNormalEnemyCount = 40
     let maxSlowEnemyCount = 5
@@ -86,20 +91,19 @@ class EnemyGenerator {
         if gameScene.turnCatEnabled{
             enemy.turnCat()
         }
+        if gameScene.stopTimeEnabled{
+            enemy.currentSpeed = 0
+        }
     }
     
     func spawnSlowEnemy(){
         if slowEnemies.count < maxSlowEnemyCount{
             let spawnPoint = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize, gameScene.gamePropsBanner.gridSize))
-            let spawnAnimation = AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "enemyShow", numOfPics: 8, timePerFrame: 0.1)
             let spawnNode = SKSpriteNode(color: SKColor.whiteColor(), size: CGSizeMake(50, 50))
             spawnNode.position = spawnPoint
             gameScene.enemyLayer.addChild(spawnNode)
             spawnNode.runAction(SKAction.group([
-                SKAction.sequence([
-                    spawnAnimation,
-                    SKAction.removeFromParent()
-                    ]),
+                EnemyGenerator.spawnAnim,
                 SKAction.sequence([
                     SKAction.waitForDuration(0.4),
                     SKAction.runBlock({ () -> Void in
@@ -113,6 +117,9 @@ class EnemyGenerator {
                         enemy.position = spawnPoint
                         if self.gameScene.turnCatEnabled{
                             enemy.turnCat()
+                        }
+                        if self.gameScene.stopTimeEnabled{
+                            enemy.currentSpeed = 0
                         }
                         enemy.runAction(SKAction.sequence([
                             SKAction.waitForDuration(10),
@@ -208,6 +215,9 @@ class EnemyGenerator {
         
         if gameScene.turnCatEnabled{
             enemy.turnCat()
+        }
+        if gameScene.stopTimeEnabled{
+            enemy.currentSpeed = 0
         }
     }
 }
