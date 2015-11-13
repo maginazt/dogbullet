@@ -11,7 +11,7 @@ import SpriteKit
 class Enemy: SKNode{
     
     static let runningActionKey = "runningActionKey"
-    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters", prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
+    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.characterAtlas, prefix: "enemy", numOfPics: 2, timePerFrame: 0.1))
     
     static let purgeActionKey = "purgeActionKey"
     static let purgeAnim = SKAction.repeatActionForever(SKAction.sequence([
@@ -32,8 +32,7 @@ class Enemy: SKNode{
     }
     
     init(textureName: String, moveSpeed: CGFloat) {
-        let atlas = SKTextureAtlas(named: "characters")
-        let texture = atlas.textureNamed(textureName)
+        let texture = Resources.characterAtlas.textureNamed(textureName)
         sprite = SKSpriteNode(texture: texture)
         sprite.xScale = 0.7
         sprite.yScale = 0.7
@@ -58,7 +57,7 @@ class Enemy: SKNode{
     
     func turnCat(){
         currentSpeed = GameSpeed.CatSpeed.rawValue
-        sprite.color = SKColor.purpleColor()
+        sprite.color = SKColor.goldColor()
         sprite.colorBlendFactor = 0.9
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         effect?.hidden = true

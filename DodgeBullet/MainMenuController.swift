@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 class MainMenuController: UIViewController {
     override func viewDidLoad() {
+        super.viewDidLoad()
         if UserDocuments.musicStatus{
             SKTAudio.sharedInstance().playBackgroundMusic("backgroundMusic.mp3")
         }

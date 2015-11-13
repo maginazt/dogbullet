@@ -9,7 +9,7 @@
         <!--Main Menu Controller-->
         <scene sceneID="8mp-45-7rC">
             <objects>
-                <viewController id="thn-aI-dYS" customClass="MainMenuController" customModule="DodgeBullet" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainMenuController" id="thn-aI-dYS" customClass="MainMenuController" customModule="DodgeBullet" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ajn-z3-5b8"/>
                         <viewControllerLayoutGuide type="bottom" id="7z4-wb-iH4"/>
@@ -197,12 +197,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="thn-aI-dYS" kind="relationship" relationship="rootViewController" id="dHX-lW-48u"/>
+                        <segue destination="thn-aI-dYS" kind="relationship" relationship="rootViewController" id="gU8-tf-VjY"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XZM-qO-sKl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-442" y="948"/>
+            <point key="canvasLocation" x="-534" y="948"/>
         </scene>
     </scenes>
 </document>

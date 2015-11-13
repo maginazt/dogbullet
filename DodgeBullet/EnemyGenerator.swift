@@ -11,7 +11,7 @@ import SpriteKit
 class EnemyGenerator {
     
     static let spawnAnim = SKAction.sequence([
-        AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "enemyShow", numOfPics: 8, timePerFrame: 0.1),
+        AnimatingSprite.createAnimWithAtlas(Resources.effectAtlas, prefix: "enemyShow", numOfPics: 8, timePerFrame: 0.1),
         SKAction.removeFromParent()
         ])
     

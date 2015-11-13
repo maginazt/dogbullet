@@ -37,19 +37,18 @@ class GameProps: SKSpriteNode {
     init(gamePropsType: GamePropsType){
         type = gamePropsType
 //        type = .WhosYourDaddy
-        let atlas = SKTextureAtlas(named: "characters")
         var texture: SKTexture!
         switch type{
         case .DogFood:
-            texture = atlas.textureNamed("dogFood")
+            texture = Resources.characterAtlas.textureNamed("dogFood")
         case .Phantom:
-            texture = atlas.textureNamed("phantom")
+            texture = Resources.characterAtlas.textureNamed("phantom")
         case .SlowDown:
-            texture = atlas.textureNamed("slowDown")
+            texture = Resources.characterAtlas.textureNamed("slowDown")
         case .Rock:
-            texture = atlas.textureNamed("rock")
+            texture = Resources.characterAtlas.textureNamed("rock")
         default:
-            texture = atlas.textureNamed("whosYourDaddy")
+            texture = Resources.characterAtlas.textureNamed("whosYourDaddy")
         }
         super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(75, 75))
         physicsBody = SKPhysicsBody(circleOfRadius: size.width/2)

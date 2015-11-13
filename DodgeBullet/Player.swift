@@ -12,7 +12,7 @@ import SpriteKit
 class Player: SKNode {
     
     static let runningActionKey = "runningActionKey"
-    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("characters",prefix: "player", numOfPics: 4, timePerFrame: 0.1))
+    static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.characterAtlas,prefix: "player", numOfPics: 4, timePerFrame: 0.1))
     
     let mainSprite: AnimatingSprite
     var tail: SKEmitterNode!
@@ -32,8 +32,7 @@ class Player: SKNode {
     
     override init() {
 //        let texture = SKTexture(imageNamed: "Spaceship")
-        let atlas = SKTextureAtlas(named: "characters")
-        let texture = atlas.textureNamed("player-0")
+        let texture = Resources.characterAtlas.textureNamed("player-0")
         mainSprite = AnimatingSprite(t: texture)
         mainSprite.stopTexture = texture
         mainBody = SKPhysicsBody(circleOfRadius: texture.size().width/5)
