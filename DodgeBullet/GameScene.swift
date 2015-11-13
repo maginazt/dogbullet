@@ -26,10 +26,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
     
-    var forceTouchAvailable: Bool = false
     var initialing = true
     //当前移动速度
-    var moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
+    let moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
     var playableArea = CGRectMake(0, 0, 0, 0)
     //用户与敌人
@@ -51,8 +50,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     //游戏内菜单
     var inGameMenu: SKNode!
     //时间标识
-//    var currentTimeLabel: SKLabelNode!
-//    var bestRecordLabel: SKLabelNode!
     var timeLabel: SKLabelNode!
     var timePassed: NSTimeInterval = 0
     var lastTimeStamp: NSTimeInterval = 0
