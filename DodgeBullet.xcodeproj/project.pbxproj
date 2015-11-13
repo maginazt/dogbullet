@@ -54,6 +54,7 @@
 		4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */; };
 		4CE160A41BEF345A00630B28 /* playertail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A21BEF345A00630B28 /* playertail.sks */; };
 		4CE160A51BEF345A00630B28 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A31BEF345A00630B28 /* spark.png */; };
+		CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46C0461BF56C5B002FD0C6 /* Resources.swift */; };
 		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; };
 /* End PBXBuildFile section */
 
@@ -119,6 +120,7 @@
 		4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsGenerator.swift; sourceTree = "<group>"; };
 		4CE160A21BEF345A00630B28 /* playertail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = playertail.sks; sourceTree = "<group>"; };
 		4CE160A31BEF345A00630B28 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		CE46C0461BF56C5B002FD0C6 /* Resources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -283,6 +285,7 @@
 				4C8F4C6B1BCBCB8800F93F83 /* entity */,
 				4C4468051BCA3CD100FC0A7F /* SKTUtils */,
 				4CA49B691BC9EC5900589D3C /* AppDelegate.swift */,
+				CE46C0461BF56C5B002FD0C6 /* Resources.swift */,
 				4C4468261BCA61AE00FC0A7F /* Types.swift */,
 				4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */,
 				4CA49B711BC9EC5900589D3C /* Main.storyboard */,
@@ -422,6 +425,7 @@
 				4C4468131BCA3CD100FC0A7F /* CGPoint+Extensions.swift in Sources */,
 				4C44681B1BCA3CD100FC0A7F /* SKTEffects.swift in Sources */,
 				4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */,
+				CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */,
 				4C4468161BCA3CD100FC0A7F /* SKAction+Extensions.swift in Sources */,
 				4CA49B6E1BC9EC5900589D3C /* GameScene.swift in Sources */,
 				4C4468271BCA61AE00FC0A7F /* Types.swift in Sources */,

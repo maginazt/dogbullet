@@ -13,7 +13,7 @@ class GamePropsGenerator : GamePropsDelegate {
     static let dustInActionKey = "dustInAction"
     static let dustInAnim = SKAction.group([
         SKAction.fadeInWithDuration(3),
-        SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "dust", numOfPics: 14, timePerFrame: 0.05))])
+        SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.effectAtlas, prefix: "dust", numOfPics: 14, timePerFrame: 0.05))])
     
     static let dogFoodAnim: SKAction = {
         let moveUpFull = SKAction.moveByX(0, y: 200, duration: 0.2)
@@ -28,8 +28,8 @@ class GamePropsGenerator : GamePropsDelegate {
             SKAction.rotateByAngle(CGFloat(7*M_PI), duration: 0.7)])
     }()
     static let rockAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1))
-    static let shieldAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25))
-    static let slowDownAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlasNamed("effects", prefix: "slow", numOfPics: 9, timePerFrame: 0.12))
+    static let shieldAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.effectAtlas, prefix: "unbreakable", numOfPics: 10, timePerFrame: 0.25))
+    static let slowDownAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.effectAtlas, prefix: "slow", numOfPics: 9, timePerFrame: 0.12))
     static let fadeout0_5Anim = SKAction.sequence([
         SKAction.fadeOutWithDuration(0.5),
         SKAction.removeFromParent()])
@@ -129,13 +129,13 @@ class GamePropsGenerator : GamePropsDelegate {
     private func addDogFoodEffect(position: CGPoint){
         gameScene.dogFoodArea = CGRectMake(position.x-50, position.y-25, 100, 50)
         //狗粮
-        let food = SKSpriteNode(imageNamed: "food")
+        let food = SKSpriteNode(texture: Resources.characterAtlas.textureNamed("food"))
         food.position = position
         food.name = "dogFood"
         food.runAction(GamePropsGenerator.dogFoodAnim)
         gameScene.gamePropsLayer.addChild(food)
         //尘土
-        let dust = SKSpriteNode(imageNamed: "dust-1")
+        let dust = SKSpriteNode(texture: Resources.effectAtlas.textureNamed("dust-1"))
         dust.alpha = 0
         dust.xScale = 2
         dust.yScale = 2
@@ -152,7 +152,7 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func spawnRock(position: CGPoint){
-        let rock = SKSpriteNode(texture: SKTexture(imageNamed: "ammo"), color: SKColor.whiteColor(), size: CGSizeMake(20, 20))
+        let rock = SKSpriteNode(texture: Resources.characterAtlas.textureNamed("ammo"), color: SKColor.whiteColor(), size: CGSizeMake(20, 20))
         rock.runAction(GamePropsGenerator.rockAnim)
         rock.position = position
         gameScene.addChild(rock)
@@ -170,7 +170,7 @@ class GamePropsGenerator : GamePropsDelegate {
     private func addWhosYourDaddyEffect(){
         gameScene.shieldCount = maxShieldCount
         gameScene.player.childNodeWithName("shield")?.removeFromParent()
-        let shield = SKSpriteNode(texture: SKTextureAtlas(named: "effects").textureNamed("unbreakable-1"))
+        let shield = SKSpriteNode(texture: Resources.effectAtlas.textureNamed("unbreakable-1"))
         shield.name = "shield"
         shield.runAction(GamePropsGenerator.shieldAnim)
         gameScene.player.addChild(shield)
@@ -180,7 +180,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     private func addSlowDownEffect(){
         gameScene.slowDownEnabled = true
-        let circle = SKSpriteNode(texture: SKTextureAtlas(named: "effects").textureNamed("slow-1"))
+        let circle = SKSpriteNode(texture: Resources.effectAtlas.textureNamed("slow-1"))
         circle.xScale = 2
         circle.yScale = 2
         circle.name = "circle"

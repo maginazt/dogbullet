@@ -20,8 +20,7 @@ class AnimatingSprite: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class func createAnimWithAtlasNamed(atlasName: String, prefix: String, numOfPics: Int, timePerFrame: NSTimeInterval) -> SKAction{
-        let atlas = SKTextureAtlas(named: atlasName)
+    class func createAnimWithAtlas(atlas: SKTextureAtlas, prefix: String, numOfPics: Int, timePerFrame: NSTimeInterval) -> SKAction{
         var textures = [SKTexture]()
         for i in 1 ... numOfPics{
             textures.append(atlas.textureNamed(NSString(format: "%@-%d", prefix, i) as String))
