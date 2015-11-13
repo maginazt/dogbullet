@@ -55,6 +55,7 @@
 		4CE160A41BEF345A00630B28 /* playertail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A21BEF345A00630B28 /* playertail.sks */; };
 		4CE160A51BEF345A00630B28 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A31BEF345A00630B28 /* spark.png */; };
 		CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46C0461BF56C5B002FD0C6 /* Resources.swift */; };
+		CE46C0491BF58720002FD0C6 /* LoadingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46C0481BF58720002FD0C6 /* LoadingController.swift */; };
 		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; };
 /* End PBXBuildFile section */
 
@@ -121,6 +122,7 @@
 		4CE160A21BEF345A00630B28 /* playertail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = playertail.sks; sourceTree = "<group>"; };
 		4CE160A31BEF345A00630B28 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		CE46C0461BF56C5B002FD0C6 /* Resources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
+		CE46C0481BF58720002FD0C6 /* LoadingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingController.swift; sourceTree = "<group>"; };
 		CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -208,6 +210,7 @@
 				4C7259C61BCFC07500B04FC6 /* MainMenuController.swift */,
 				4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */,
 				4CA49B6F1BC9EC5900589D3C /* GameViewController.swift */,
+				CE46C0481BF58720002FD0C6 /* LoadingController.swift */,
 			);
 			name = viewcontrollers;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */,
 				CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */,
 				4C4468131BCA3CD100FC0A7F /* CGPoint+Extensions.swift in Sources */,
+				CE46C0491BF58720002FD0C6 /* LoadingController.swift in Sources */,
 				4C44681B1BCA3CD100FC0A7F /* SKTEffects.swift in Sources */,
 				4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */,
 				CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */,

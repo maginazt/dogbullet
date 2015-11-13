@@ -76,7 +76,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     override func didMoveToView(view: SKView) {
-        backgroundColor = SKColor(red: 242.0/255.0, green: 244.0/255.0, blue: 245.0/255.0, alpha: 1)
+        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
         initialing = true
         setupPlayableArea()
         setupEnemyCage()
@@ -325,7 +325,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     func showBonusTimeEffect(position: CGPoint){
         let bonusLabel = SKLabelNode(fontNamed: "Arial")
-        bonusLabel.fontColor = SKColor.purpleColor()
+        bonusLabel.fontColor = SKColor.goldColor()
         bonusLabel.fontSize = 50
         bonusLabel.text = "+0.1s"
         bonusLabel.position = position
@@ -498,7 +498,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         //开启倒计时
         timeLabel.text = NSString(format: "%04.1f", bonusTime) as String
         let originColor = timeLabel.fontColor
-        timeLabel.fontColor = SKColor.purpleColor()
+        timeLabel.fontColor = SKColor.goldColor()
         //弹出提示
         let instructionLabel = SKLabelNode(fontNamed: "Arial")
         instructionLabel.fontSize = 80
@@ -523,7 +523,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         self.timeLabel.text = NSString(format: "%04.1f", self.bonusTime) as String
                         switch self.bonusTime{
                         case 4 ... 10:
-                            self.timeLabel.fontColor = SKColor.purpleColor()
+                            self.timeLabel.fontColor = SKColor.goldColor()
                         case 0 ... 3:
                             self.timeLabel.fontColor = SKColor.redColor()
                         default:

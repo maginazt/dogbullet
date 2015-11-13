@@ -13,9 +13,9 @@ class Resources{
     static let characterAtlas = SKTextureAtlas(named: "characters")
     static let effectAtlas = SKTextureAtlas(named: "effects")
     
-    static func loadResources(completionHandler: () -> Void){
-        SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]) {
-            completionHandler()
+    static func loadResources(completionHandler: (() -> Void)?){
+        SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]){
+            completionHandler?()
         }
     }
 }

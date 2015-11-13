@@ -57,7 +57,7 @@ class Enemy: SKNode{
     
     func turnCat(){
         currentSpeed = GameSpeed.CatSpeed.rawValue
-        sprite.color = SKColor.purpleColor()
+        sprite.color = SKColor.goldColor()
         sprite.colorBlendFactor = 0.9
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         effect?.hidden = true
