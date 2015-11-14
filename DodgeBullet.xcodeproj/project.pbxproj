@@ -50,6 +50,9 @@
 		4CA7049F1BD33393008F0932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7049E1BD33393008F0932 /* GameView.swift */; };
 		4CA8A7DA1BD1CA9E007C5F0E /* UserDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */; };
 		4CA8A7DF1BD1D3A7007C5F0E /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */; };
+		4CAC5EA81BF6D13900F5575C /* footprint.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CAC5EA61BF6D13900F5575C /* footprint.png */; };
+		4CAC5EAB1BF6D1CF00F5575C /* footprint.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CAC5EAA1BF6D1CF00F5575C /* footprint.sks */; };
+		4CAC5EAF1BF6D1EC00F5575C /* dizzy.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CAC5EAE1BF6D1EC00F5575C /* dizzy.sks */; };
 		4CD5E5831BDCB1AA00463460 /* GameProps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5821BDCB1AA00463460 /* GameProps.swift */; };
 		4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */; };
 		4CE160A41BEF345A00630B28 /* playertail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A21BEF345A00630B28 /* playertail.sks */; };
@@ -117,6 +120,9 @@
 		4CA7049E1BD33393008F0932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDocuments.swift; sourceTree = "<group>"; };
 		4CA8A7DE1BD1D3A7007C5F0E /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		4CAC5EA61BF6D13900F5575C /* footprint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = footprint.png; sourceTree = "<group>"; };
+		4CAC5EAA1BF6D1CF00F5575C /* footprint.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = footprint.sks; sourceTree = "<group>"; };
+		4CAC5EAE1BF6D1EC00F5575C /* dizzy.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = dizzy.sks; sourceTree = "<group>"; };
 		4CD5E5821BDCB1AA00463460 /* GameProps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameProps.swift; sourceTree = "<group>"; };
 		4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsGenerator.swift; sourceTree = "<group>"; };
 		4CE160A21BEF345A00630B28 /* playertail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = playertail.sks; sourceTree = "<group>"; };
@@ -250,6 +256,7 @@
 		4C9158281BCE8025005C958B /* emittersystem */ = {
 			isa = PBXGroup;
 			children = (
+				4CAC5EA61BF6D13900F5575C /* footprint.png */,
 				4C8B21221BF236050036EC44 /* phantomtail.sks */,
 				4C7D47861BF0CD7600E5114D /* Star.png */,
 				4CE160A21BEF345A00630B28 /* playertail.sks */,
@@ -257,6 +264,8 @@
 				4C7D47881BF0CD9C00E5114D /* enemytail.sks */,
 				4C6825281BF35F6A0038B0A7 /* firetail.sks */,
 				4C68252A1BF367A80038B0A7 /* ghostlight.sks */,
+				4CAC5EAA1BF6D1CF00F5575C /* footprint.sks */,
+				4CAC5EAE1BF6D1EC00F5575C /* dizzy.sks */,
 			);
 			name = emittersystem;
 			sourceTree = "<group>";
@@ -390,6 +399,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CAC5EAB1BF6D1CF00F5575C /* footprint.sks in Resources */,
 				4CE160A51BEF345A00630B28 /* spark.png in Resources */,
 				4C7D47871BF0CD7600E5114D /* Star.png in Resources */,
 				4C8863FA1BD5030600496482 /* button_press.wav in Resources */,
@@ -404,7 +414,9 @@
 				4C7D47891BF0CD9C00E5114D /* enemytail.sks in Resources */,
 				4CA49B731BC9EC5900589D3C /* Main.storyboard in Resources */,
 				4C8863F91BD5030600496482 /* backgroundMusic.mp3 in Resources */,
+				4CAC5EAF1BF6D1EC00F5575C /* dizzy.sks in Resources */,
 				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,
+				4CAC5EA81BF6D13900F5575C /* footprint.png in Resources */,
 				4C8863F81BD5030600496482 /* knob@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

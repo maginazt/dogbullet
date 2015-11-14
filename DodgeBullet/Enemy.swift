@@ -66,6 +66,8 @@ class Enemy: SKNode{
     
     func resumeFromCat(){
         currentSpeed = moveSpeed
+        effect?.hidden = false
+        effect?.targetNode = scene
     }
     
     func purge(){
@@ -80,12 +82,16 @@ class Enemy: SKNode{
     func resumeFromPurge(){
         currentSpeed = moveSpeed
         sprite.removeActionForKey(Enemy.purgeActionKey)
+        effect?.hidden = false
+        effect?.targetNode = scene
     }
 }
 class EnemyNormal: Enemy {
     
     init(textureName: String) {
         super.init(textureName: textureName, moveSpeed: CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
+        sprite.color = SKColor.greenColor()
+        sprite.colorBlendFactor = 0.9
         physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(sprite.texture!.size().width*0.4, sprite.texture!.size().height*0.15))
         physicsBody?.allowsRotation = false
         physicsBody?.linearDamping = 0.0
@@ -100,15 +106,29 @@ class EnemyNormal: Enemy {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupFootPrintEffect(){
+        if let emitter = SKEmitterNode(fileNamed: "footprint"){
+            effect = emitter
+            emitter.position = CGPointMake(-sprite.texture!.size().width/3, 0)
+            emitter.targetNode = scene
+            addChild(emitter)
+        }
+    }
+    
+    override func faceCurrentDirection() {
+        super.faceCurrentDirection()
+        effect?.particleRotation = zRotation
+    }
+    
     override func resumeFromCat() {
-        sprite.runAction(SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 1))
+        sprite.runAction(SKAction.colorizeWithColor(SKColor.greenColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
         super.resumeFromCat()
     }
     
     override func resumeFromPurge() {
         super.resumeFromPurge()
-        sprite.color = SKColor.whiteColor()
+        sprite.color = SKColor.greenColor()
     }
 }
 
@@ -131,7 +151,8 @@ class EnemySlow: Enemy {
     func setupGhostEffect(){
         if let emitter = SKEmitterNode(fileNamed: "ghostlight"){
             effect = emitter
-            emitter.position = CGPointMake(-sprite.texture!.size().width/6, 0)
+            emitter.targetNode = scene
+//            emitter.position = CGPointMake(-sprite.texture!.size().width/11, 0)
             addChild(emitter)
         }
     }
@@ -143,14 +164,12 @@ class EnemySlow: Enemy {
     override func resumeFromCat() {
         sprite.runAction(SKAction.colorizeWithColor(SKColor.blueColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemySlow.rawValue
-        effect?.hidden = false
         super.resumeFromCat()
     }
     
     override func resumeFromPurge() {
         super.resumeFromPurge()
         sprite.color = SKColor.blueColor()
-        effect?.hidden = false
     }
     
 }
@@ -187,15 +206,11 @@ class EnemyFast: Enemy{
     override func resumeFromCat() {
         sprite.runAction(SKAction.colorizeWithColor(SKColor.redColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyFast.rawValue
-        effect?.hidden = false
-        effect?.targetNode = scene
         super.resumeFromCat()
     }
     
     override func resumeFromPurge() {
         super.resumeFromPurge()
         sprite.color = SKColor.redColor()
-        effect?.hidden = false
-        effect?.targetNode = scene
     }
 }

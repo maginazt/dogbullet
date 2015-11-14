@@ -84,6 +84,7 @@ class EnemyGenerator {
         let enemy = EnemyNormal(textureName: "enemy-1")
         normalEnemies.append(enemy)
         gameScene.enemyLayer.addChild(enemy)
+//        enemy.setupFootPrintEffect()
         enemy.position = position
         enemy.moveToward((targetPos-position).normalized()*enemy.moveSpeed)
         enemy.faceCurrentDirection()

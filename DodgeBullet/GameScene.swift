@@ -18,15 +18,27 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         SKAction.moveByX(0, y: 100, duration: 0.5),
         SKAction.fadeOutWithDuration(0.2),
         SKAction.removeFromParent()])
-    static let showInstructionAnim = SKAction.sequence([
-        SKAction.group([
-            SKAction.moveByX(0, y: 300, duration: 1.5),
-            SKAction.fadeOutWithDuration(1.5)]),
-        SKAction.removeFromParent()])
+    static let showInstructionAnim: SKAction = {
+        let action = SKAction.sequence([
+            SKAction.group([
+                SKAction.moveByX(0, y: 300, duration: 1.5),
+                SKAction.fadeOutWithDuration(1.5)]),
+            SKAction.removeFromParent()])
+        action.timingMode = .EaseIn
+        return action
+    }()
+    static let showTimeAnim: SKAction = {
+        let action = SKAction.group([
+            SKAction.moveByX(0, y: -200, duration: 1),
+            SKAction.scaleTo(2, duration: 1)])
+        action.timingMode = .EaseOut
+        return action
+    }()
     
     static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
     
     var initialing = true
+    var isGameOver = false
     //当前移动速度
     let moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
@@ -48,7 +60,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var shieldCount = 0//护盾次数
     var slowDownEnabled = false//减速光环效果
     //游戏内菜单
+    var pauseButton: SKNode!
     var inGameMenu: SKNode!
+    var gameOverMenu: SKNode!
     //时间标识
     var timeLabel: SKLabelNode!
     var timePassed: NSTimeInterval = 0
@@ -81,6 +95,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         setupEnemy()
         setupGameProps()
         setupInGameMenu()
+        setupGameOverMenu()
         setupUI()
         initialing = false
     }
@@ -140,7 +155,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         inGameMenu.hidden = true
         let resume = SKLabelNode(fontNamed: "Chalkduster")
         resume.fontColor = SKColor.orangeColor()
-        resume.fontSize = 80
+        resume.fontSize = 70
         resume.text = "Resume Game"
         resume.name = "resume"
         resume.position = CGPointMake(size.width/2, size.height/2+200)
@@ -148,20 +163,51 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         let settings = SKLabelNode(fontNamed: "Chalkduster")
         settings.fontColor = SKColor.blueColor()
-        settings.fontSize = 80
+        settings.fontSize = 70
         settings.text = "Settings"
         settings.name = "settings"
         settings.position = CGPointMake(size.width/2, size.height/2)
         inGameMenu.addChild(settings)
         
+        let restart = SKLabelNode(fontNamed: "Chalkduster")
+        restart.name = "restart"
+        restart.fontColor = SKColor.blueColor()
+        restart.fontSize = 70
+        restart.position = CGPointMake(size.width/2-250, size.height/2-200)
+        restart.text = "Restart"
+        inGameMenu.addChild(restart)
+        
         let mainMenu = SKLabelNode(fontNamed: "Chalkduster")
         mainMenu.fontColor = SKColor.blueColor()
-        mainMenu.fontSize = 80
+        mainMenu.fontSize = 70
         mainMenu.text = "Main Menu"
         mainMenu.name = "mainMenu"
-        mainMenu.position = CGPointMake(size.width/2, size.height/2-200)
+        mainMenu.position = CGPointMake(size.width/2+250, size.height/2-200)
         inGameMenu.addChild(mainMenu)
         addChild(inGameMenu)
+    }
+    
+    func setupGameOverMenu(){
+        gameOverMenu = SKNode()
+        gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
+        gameOverMenu.hidden = true
+        
+        let restart = SKLabelNode(fontNamed: "Chalkduster")
+        restart.name = "restart"
+        restart.fontColor = SKColor.blueColor()
+        restart.fontSize = 70
+        restart.position = CGPointMake(size.width/2-250, size.height/2-50)
+        restart.text = "Restart"
+        gameOverMenu.addChild(restart)
+        
+        let mainMenu = SKLabelNode(fontNamed: "Chalkduster")
+        mainMenu.name = "mainMenu"
+        mainMenu.fontColor = SKColor.orangeColor()
+        mainMenu.fontSize = 70
+        mainMenu.position = CGPointMake(size.width/2+250, size.height/2-50)
+        mainMenu.text = "Main Menu"
+        gameOverMenu.addChild(mainMenu)
+        addChild(gameOverMenu)
     }
     
     func setupUI(){
@@ -179,6 +225,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         pauseLabel.fontSize = 50
         pauseLabel.text = "pause"
         pauseLabel.position = CGPointMake(CGRectGetMinX(playableArea)+70, CGRectGetMaxY(playableArea)-80)
+        pauseButton = pauseLabel
         addChild(pauseLabel)
     }
     
@@ -241,7 +288,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             else{
-//              handleGameOver()
+                handleGameOver()
             }
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -300,14 +347,19 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             }
             rockBody.node?.removeFromParent()
             if enemyBody.node?.actionForKey(GameScene.hitRockActionKey) == nil{
-                enemyBody.velocity = CGVectorMake(0, 0)
+                let dizzy = SKEmitterNode(fileNamed: "dizzy")!
                 if let enem = enemyBody.node as? Enemy{
+                    enem.currentSpeed = 0
                     enem.sprite.removeActionForKey(Enemy.runningActionKey)
+                    dizzy.position = CGPointMake(enem.sprite.texture!.size().width/5, 0)
+                    dizzy.name = "dizzy"
+                    enem.addChild(dizzy)
                 }
                 enemyBody.node?.runAction(SKAction.sequence([
                     SKAction.waitForDuration(2),
                     SKAction.runBlock({ () -> Void in
                         if let enemy = enemyBody.node as? Enemy{
+                            dizzy.removeFromParent()
                             if !self.stopTimeEnabled{
                                 enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
                                 enemy.currentSpeed = enemy.moveSpeed
@@ -357,41 +409,43 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var previousPoints = [CGPoint]()
     //拖动手势 触摸屏幕控制
     func handlePanGesture(sender: UIPanGestureRecognizer){
-        var v = sender.velocityInView(view)
-        v.y *= -1
-        if sender.state == .Began{
-            previousPoints.append(v)
-        }
-        else if sender.state == .Changed{
-            previousPoints.append(v)
-            if previousPoints.count > 1 && previousPoints.count <= maxStoredPoint{
-                let prev = previousPoints.first!
-                var avg = CGPointZero
-                for index in 1 ..< previousPoints.count{
-                    let point = previousPoints[index]
-                    avg.x += point.x * CGFloat(previousPoints.count-index)
-                    avg.y += point.y * CGFloat(previousPoints.count-index)
-                }
-                avg.x /= CGFloat(previousPoints.count-1)
-                avg.y /= CGFloat(previousPoints.count-1)
-                player.moveToward((avg-prev).normalized() * moveSpeed)
+        if !isGameOver{
+            var v = sender.velocityInView(view)
+            v.y *= -1
+            if sender.state == .Began{
+                previousPoints.append(v)
             }
-            else if previousPoints.count > maxStoredPoint{
-                let prev = previousPoints.removeFirst()
-                var avg = CGPointZero
-                for index in 0 ..< previousPoints.count{
-                    let point = previousPoints[index]
-                    avg.x += point.x * CGFloat(previousPoints.count-index)
-                    avg.y += point.y * CGFloat(previousPoints.count-index)
+            else if sender.state == .Changed{
+                previousPoints.append(v)
+                if previousPoints.count > 1 && previousPoints.count <= maxStoredPoint{
+                    let prev = previousPoints.first!
+                    var avg = CGPointZero
+                    for index in 1 ..< previousPoints.count{
+                        let point = previousPoints[index]
+                        avg.x += point.x * CGFloat(previousPoints.count-index)
+                        avg.y += point.y * CGFloat(previousPoints.count-index)
+                    }
+                    avg.x /= CGFloat(previousPoints.count-1)
+                    avg.y /= CGFloat(previousPoints.count-1)
+                    player.moveToward((avg-prev).normalized() * moveSpeed)
                 }
-                avg.x /= CGFloat(previousPoints.count)
-                avg.y /= CGFloat(previousPoints.count)
-                player.moveToward((avg-prev).normalized() * moveSpeed)
+                else if previousPoints.count > maxStoredPoint{
+                    let prev = previousPoints.removeFirst()
+                    var avg = CGPointZero
+                    for index in 0 ..< previousPoints.count{
+                        let point = previousPoints[index]
+                        avg.x += point.x * CGFloat(previousPoints.count-index)
+                        avg.y += point.y * CGFloat(previousPoints.count-index)
+                    }
+                    avg.x /= CGFloat(previousPoints.count)
+                    avg.y /= CGFloat(previousPoints.count)
+                    player.moveToward((avg-prev).normalized() * moveSpeed)
+                }
             }
-        }
-        else if sender.state == .Ended{
-            previousPoints.removeAll()
-            player.moveToward(CGPointZero)
+            else if sender.state == .Ended{
+                previousPoints.removeAll()
+                player.moveToward(CGPointZero)
+            }
         }
     }
     
@@ -400,27 +454,44 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         let atouch = touches.first
         if let touch = atouch{
             let touchPos = touch.locationInNode(self)
-            let pause = childNodeWithName("pause")
             if !paused{
-                if pause!.containsPoint(touchPos){
+                if pauseButton.containsPoint(touchPos){
                     pauseGame()
-                    pause?.hidden = true
+                    pauseButton.hidden = true
                 }
             }
             else{
-                let resume = inGameMenu.childNodeWithName("resume")
-                if resume!.containsPoint(touchPos){
-                    resumeGame()
-                    pause?.hidden = false
+                //游戏内菜单
+                if !inGameMenu.hidden{
+                    let resume = inGameMenu.childNodeWithName("resume")
+                    if resume!.containsPoint(touchPos){
+                        resumeGame()
+                        pauseButton.hidden = false
+                    }
+                    let settings = inGameMenu.childNodeWithName("settings")
+                    if settings!.containsPoint(touchPos){
+                        let navc = view?.window?.rootViewController as! UINavigationController
+                        navc.pushViewController((navc.storyboard?.instantiateViewControllerWithIdentifier("SettingsController"))!, animated: true)
+                    }
+                    let mainMenu = inGameMenu.childNodeWithName("mainMenu")
+                    if mainMenu!.containsPoint(touchPos){
+                        handleMainMenuAction()
+                    }
+                    let restart = inGameMenu.childNodeWithName("restart")
+                    if restart!.containsPoint(touchPos){
+                        restartGame()
+                    }
                 }
-                let settings = inGameMenu.childNodeWithName("settings")
-                if settings!.containsPoint(touchPos){
-                    let navc = view?.window?.rootViewController as! UINavigationController
-                    navc.pushViewController((navc.storyboard?.instantiateViewControllerWithIdentifier("SettingsController"))!, animated: true)
-                }
-                let mainMenu = inGameMenu.childNodeWithName("mainMenu")
-                if mainMenu!.containsPoint(touchPos){
-                    handleMainMenuAction()
+                else if !gameOverMenu.hidden{
+                    //游戏结束菜单
+                    let mainMenuOver = gameOverMenu.childNodeWithName("mainMenu")
+                    if mainMenuOver!.containsPoint(touchPos){
+                        (view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
+                    }
+                    let restartOver = gameOverMenu.childNodeWithName("restart")
+                    if restartOver!.containsPoint(touchPos){
+                        restartGame()
+                    }
                 }
             }
         }
@@ -439,11 +510,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     /*   主刷新循环   */
     override func update(currentTime: NSTimeInterval) {
-        if !inGameMenu.hidden && !paused{
+        if (!inGameMenu.hidden || !gameOverMenu.hidden) && !paused{
             lastTimeStamp = 0.0
             paused = true
         }
-        if paused{
+        if paused || isGameOver{
             return
         }
         if !turnCatEnabled{
@@ -490,6 +561,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 enemy.currentSpeed = 0
                 enemy.removeActionForKey(GameScene.playerKickActionKey)
                 enemy.removeActionForKey(GameScene.hitRockActionKey)
+                enemy.childNodeWithName("dizzy")?.removeFromParent()
             }
         }
         //开启倒计时
@@ -611,11 +683,17 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     /*    处理游戏事件    */
     func handleGameOver(){
-        let gameOver = GameOverScene()
-        gameOver.size = size
-        gameOver.scaleMode = scaleMode
-        gameOver.result = timePassed
-        view?.presentScene(gameOver, transition: GameScene.flipTransition)
+        isGameOver = true
+        physicsWorld.speed = 0.0
+        removeAllActions()
+        pauseButton.hidden = true
+        timeLabel.runAction(GameScene.showTimeAnim){
+            self.paused = true
+            self.gameOverMenu.hidden = false
+            if self.timePassed > UserDocuments.bestRecord{
+                UserDocuments.bestRecord = self.timePassed
+            }
+        }
     }
     
     func resumeGame(){
@@ -641,16 +719,18 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
     }
     
-    /*   PlayerControllerDelegate   */
-    func moveByDirection(direction: CGPoint) {
-        if !initialing{
-            player.moveToward(direction*moveSpeed)
-        }
+    func restartGame(){
+        let scene = GameScene(size: size)
+        scene.scaleMode = scaleMode
+        let gameView = view as! GameView
+        gameView.setupController(scene)
+        gameView.presentScene(scene, transition: GameScene.flipTransition)
     }
     
-    deinit{
-        if timePassed > UserDocuments.bestRecord{
-            UserDocuments.bestRecord = timePassed
+    /*   PlayerControllerDelegate   */
+    func moveByDirection(direction: CGPoint) {
+        if !initialing && !isGameOver{
+            player.moveToward(direction*moveSpeed)
         }
     }
 }
