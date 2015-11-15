@@ -90,8 +90,6 @@ class EnemyNormal: Enemy {
     
     init(textureName: String) {
         super.init(textureName: textureName, moveSpeed: CGFloat(GameSpeed.EnemyNormalSpeed.rawValue))
-        sprite.color = SKColor.greenColor()
-        sprite.colorBlendFactor = 0.9
         physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(sprite.texture!.size().width*0.4, sprite.texture!.size().height*0.15))
         physicsBody?.allowsRotation = false
         physicsBody?.linearDamping = 0.0
@@ -121,14 +119,14 @@ class EnemyNormal: Enemy {
     }
     
     override func resumeFromCat() {
-        sprite.runAction(SKAction.colorizeWithColor(SKColor.greenColor(), colorBlendFactor: 0.9, duration: 1))
+        sprite.runAction(SKAction.colorizeWithColor(SKColor.whiteColor(), colorBlendFactor: 0.9, duration: 1))
         physicsBody?.categoryBitMask = PhysicsCategory.EnemyNormal.rawValue
         super.resumeFromCat()
     }
     
     override func resumeFromPurge() {
         super.resumeFromPurge()
-        sprite.color = SKColor.greenColor()
+        sprite.color = SKColor.whiteColor()
     }
 }
 

@@ -28,6 +28,7 @@
 		4C7259C71BCFC07500B04FC6 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7259C61BCFC07500B04FC6 /* MainMenuController.swift */; };
 		4C7D47871BF0CD7600E5114D /* Star.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7D47861BF0CD7600E5114D /* Star.png */; };
 		4C7D47891BF0CD9C00E5114D /* enemytail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C7D47881BF0CD9C00E5114D /* enemytail.sks */; };
+		4C80A4741BF8180400E82B83 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4731BF8180400E82B83 /* bg.png */; };
 		4C8863F71BD5030600496482 /* base@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F21BD5030600496482 /* base@2x.png */; };
 		4C8863F81BD5030600496482 /* knob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F31BD5030600496482 /* knob@2x.png */; };
 		4C8863F91BD5030600496482 /* backgroundMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C8863F51BD5030600496482 /* backgroundMusic.mp3 */; };
@@ -94,6 +95,7 @@
 		4C7259C61BCFC07500B04FC6 /* MainMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
 		4C7D47861BF0CD7600E5114D /* Star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Star.png; sourceTree = "<group>"; };
 		4C7D47881BF0CD9C00E5114D /* enemytail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = enemytail.sks; sourceTree = "<group>"; };
+		4C80A4731BF8180400E82B83 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg.png; path = ../bg.png; sourceTree = "<group>"; };
 		4C8863F21BD5030600496482 /* base@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "base@2x.png"; sourceTree = "<group>"; };
 		4C8863F31BD5030600496482 /* knob@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "knob@2x.png"; sourceTree = "<group>"; };
 		4C8863F51BD5030600496482 /* backgroundMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = backgroundMusic.mp3; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 		4C8863F11BD5030600496482 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				4C80A4731BF8180400E82B83 /* bg.png */,
 				4C9CF7851BECCF2000D682F6 /* effects.atlas */,
 				4C8863FD1BD79F5C00496482 /* characters.atlas */,
 				4C8863F21BD5030600496482 /* base@2x.png */,
@@ -409,6 +412,7 @@
 				4CA49B751BC9EC5900589D3C /* Assets.xcassets in Resources */,
 				4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */,
 				4C6825291BF35F6A0038B0A7 /* firetail.sks in Resources */,
+				4C80A4741BF8180400E82B83 /* bg.png in Resources */,
 				4C8863FE1BD79F5C00496482 /* characters.atlas in Resources */,
 				4C68252B1BF367A80038B0A7 /* ghostlight.sks in Resources */,
 				4C7D47891BF0CD9C00E5114D /* enemytail.sks in Resources */,

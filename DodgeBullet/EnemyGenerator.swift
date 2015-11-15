@@ -16,7 +16,7 @@ class EnemyGenerator {
         ])
     
     static let enemyDistance: CGFloat = 200
-    let maxNormalEnemyCount = 40
+    let maxNormalEnemyCount = 60
     let maxSlowEnemyCount = 5
     
     unowned let gameScene: GameScene
@@ -35,6 +35,9 @@ class EnemyGenerator {
         downRect = CGRectMake(CGRectGetMinX(gameScene.playableArea), CGRectGetMinY(gameScene.playableArea)-EnemyGenerator.enemyDistance, gameScene.playableArea.width, EnemyGenerator.enemyDistance)
         leftRect = CGRectMake(CGRectGetMinX(gameScene.playableArea)-EnemyGenerator.enemyDistance, CGRectGetMinY(gameScene.playableArea), EnemyGenerator.enemyDistance, gameScene.playableArea.height)
         //正常敌人生成策略：线性增量生成，每隔n秒随机在各个区域生成一个敌人
+        for _ in 0 ..< maxNormalEnemyCount/2{
+            spawnNormalEnemy()
+        }
         gameScene .runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.runBlock({ () -> Void in
                 for _ in 0 ..< 4{

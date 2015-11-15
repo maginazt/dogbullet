@@ -87,8 +87,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     override func didMoveToView(view: SKView) {
-        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
         initialing = true
+        setupBackground()
         setupPlayableArea()
         setupEnemyCage()
         setupPlayer()
@@ -98,6 +98,15 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         setupGameOverMenu()
         setupUI()
         initialing = false
+    }
+    
+    private func setupBackground(){
+//        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
+        let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), color: SKColor.whiteColor(), size: size)
+        background.alpha = 0.9
+        background.zPosition = CGFloat(SceneZPosition.EnemyCageZPosition.rawValue) - 1
+        background.position = CGPointMake(size.width/2, size.height/2)
+        addChild(background)
     }
     
     private func setupEnemyCage(){
