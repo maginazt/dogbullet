@@ -554,6 +554,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         turnCatEnabled = true
         nextMinute++
         lastTimeStamp = 0.0
+        backgroundNode.runAction(SKAction.fadeAlphaTo(0.2, duration: 1))
         //取消道具效果
         for type in gamePropsMap.keys{
             gamePropsGenerator.disableEffect(type)
@@ -566,10 +567,10 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         stopTimeEnabled = true
         for enemyNode in enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
-                enemy.turnCat()
+                enemy.turnCat(true)
                 enemy.moveToward(randomPointInRect(playableArea))
                 enemy.faceCurrentDirection()
-                enemy.paused = true
+                enemy.sprite.removeActionForKey(Enemy.runningActionKey)
                 enemy.currentSpeed = 0
                 enemy.removeActionForKey(GameScene.playerKickActionKey)
                 enemy.removeActionForKey(GameScene.hitRockActionKey)
@@ -593,7 +594,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 self.stopTimeEnabled = false
                 for enemyNode in self.enemyLayer.children{
                     if let enemy = enemyNode as? Enemy{
-                        enemy.paused = false
+                        enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
                         enemy.currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
                     }
                 }
@@ -613,6 +614,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         if self.bonusTime < 0{
                             //取消变猫效果
                             self.turnCatEnabled = false
+                            self.backgroundNode.runAction(SKAction.fadeAlphaTo(1, duration: 1))
                             for enemyNode in self.enemyLayer.children{
                                 if let enemy = enemyNode as? Enemy{
                                     enemy.resumeFromCat()

@@ -55,9 +55,14 @@ class Enemy: SKNode{
         }
     }
     
-    func turnCat(){
-        sprite.color = SKColor.goldColor()
-        sprite.colorBlendFactor = 0.9
+    func turnCat(animated: Bool){
+        if animated{
+            sprite.runAction(SKAction.colorizeWithColor(SKColor.goldColor(), colorBlendFactor: 0.9, duration: 1))
+        }
+        else{
+            sprite.color = SKColor.goldColor()
+            sprite.colorBlendFactor = 0.9
+        }
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         effect?.hidden = true
         effect?.targetNode = nil

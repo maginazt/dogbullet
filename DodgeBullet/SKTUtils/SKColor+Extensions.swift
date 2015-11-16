@@ -32,6 +32,7 @@ public func SKColorWithRGBA(r: Int, g: Int, b: Int, a: Int) -> SKColor {
 
 extension SKColor{
     class func goldColor() -> SKColor{
-        return SKColorWithRGB(205, g: 127, b: 50)
+//        return SKColorWithRGB(205, g: 127, b: 50)
+        return SKColorWithRGB(255, g: 215, b: 0)
     }
 }

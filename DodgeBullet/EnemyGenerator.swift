@@ -97,7 +97,7 @@ class EnemyGenerator {
         enemy.faceCurrentDirection()
         
         if gameScene.turnCatEnabled{
-            enemy.turnCat()
+            enemy.turnCat(false)
         }
         if gameScene.stopTimeEnabled{
             enemy.currentSpeed = 0
@@ -124,7 +124,7 @@ class EnemyGenerator {
                         enemy.setupGhostEffect()
                         enemy.position = spawnPoint
                         if self.gameScene.turnCatEnabled{
-                            enemy.turnCat()
+                            enemy.turnCat(false)
                         }
                         if self.gameScene.stopTimeEnabled{
                             enemy.currentSpeed = 0
@@ -222,7 +222,7 @@ class EnemyGenerator {
         enemy.faceCurrentDirection()
         
         if gameScene.turnCatEnabled{
-            enemy.turnCat()
+            enemy.turnCat(false)
         }
         if gameScene.stopTimeEnabled{
             enemy.currentSpeed = 0
