@@ -34,8 +34,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         action.timingMode = .EaseOut
         return action
     }()
+    static let touchToStartAnim = SKAction.repeatActionForever(SKAction.sequence([
+        SKAction.fadeOutWithDuration(0.8),
+        SKAction.fadeInWithDuration(0.2)]))
     
     static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
+    
+    static var blurFilter: CIFilter!
     
     var initialing = true
     var isGameOver = false
@@ -99,15 +104,30 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         setupGameOverMenu()
         setupUI()
         initialing = false
+        if GameViewController.firstLaunch{
+            firstStart()
+        }
+    }
+    
+    func firstStart(){
+        physicsWorld.speed = 0.0
+        let touch2Start = SKLabelNode(fontNamed: "Arial-BoldMT")
+        touch2Start.text = "Touch to start"
+        touch2Start.fontSize = 60
+        touch2Start.fontColor = SKColor.blackColor()
+        touch2Start.name = "touch2start"
+        touch2Start.position = CGPointMake(size.width/2, CGRectGetMaxY(playableArea)-250)
+        touch2Start.runAction(GameScene.touchToStartAnim)
+        addChild(touch2Start)
     }
     
     private func setupBackground(){
         backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
-        let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), color: SKColor.whiteColor(), size: size)
-        backgroundNode = background
-        background.zPosition = CGFloat(SceneZPosition.EnemyCageZPosition.rawValue) - 1
-        background.position = CGPointMake(size.width/2, size.height/2)
-        addChild(background)
+//        let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), color: SKColor.whiteColor(), size: size)
+//        backgroundNode = background
+//        background.zPosition = CGFloat(SceneZPosition.EnemyCageZPosition.rawValue) - 1
+//        background.position = CGPointMake(size.width/2, size.height/2)
+//        addChild(background)
     }
     
     private func setupEnemyCage(){
@@ -202,41 +222,34 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         gameOverMenu.hidden = true
         
-        let restart = SKLabelNode(fontNamed: "Chalkduster")
+        let restart = SKSpriteNode(texture: SKTexture(imageNamed: "reload"), size: CGSizeMake(size.width/15, size.width/15))
         restart.name = "restart"
-        restart.fontColor = SKColor.blueColor()
-        restart.fontSize = 70
-        restart.position = CGPointMake(size.width/2-250, size.height/2-50)
-        restart.text = "Restart"
+        restart.position = CGPointMake(size.width*3/4, size.height/3)
         gameOverMenu.addChild(restart)
         
-        let mainMenu = SKLabelNode(fontNamed: "Chalkduster")
-        mainMenu.name = "mainMenu"
-        mainMenu.fontColor = SKColor.orangeColor()
-        mainMenu.fontSize = 70
-        mainMenu.position = CGPointMake(size.width/2+250, size.height/2-50)
-        mainMenu.text = "Main Menu"
-        gameOverMenu.addChild(mainMenu)
+        let share = SKSpriteNode(texture: SKTexture(imageNamed: "share"), size: CGSizeMake(size.width/15, size.width/15))
+        share.name = "share"
+        share.position = CGPointMake(size.width/4, size.height/3)
+        gameOverMenu.addChild(share)
         addChild(gameOverMenu)
     }
     
     func setupUI(){
         timeLabel = SKLabelNode(fontNamed: "Arial")
         timeLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
-        timeLabel.position = CGPointMake(CGRectGetMidX(playableArea)-60, CGRectGetMaxY(playableArea)-80)
+        timeLabel.position = CGPointMake(CGRectGetMidX(playableArea)-60, CGRectGetMaxY(playableArea)-70)
         timeLabel.fontColor = SKColor.blackColor()
         timeLabel.fontSize = 50
         timeLabel.horizontalAlignmentMode = .Left
+        timeLabel.verticalAlignmentMode = .Center
+        timeLabel.text = "00.0"
         addChild(timeLabel)
         
-        let pauseLabel = SKLabelNode(fontNamed: "Arial")
-        pauseLabel.name = "pause"
-        pauseLabel.fontColor = SKColor.blueColor()
-        pauseLabel.fontSize = 50
-        pauseLabel.text = "pause"
-        pauseLabel.position = CGPointMake(CGRectGetMinX(playableArea)+70, CGRectGetMaxY(playableArea)-80)
-        pauseButton = pauseLabel
-        addChild(pauseLabel)
+        let pauseBtn = SKSpriteNode(texture: SKTexture(imageNamed: "settings"), size: CGSizeMake(80, 80))
+        pauseBtn.position = CGPointMake(CGRectGetMinX(playableArea)+pauseBtn.size.width/2+20, CGRectGetMaxY(playableArea)-pauseBtn.size.width/2-20)
+        pauseButton = pauseBtn
+        pauseBtn.runAction(SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(-M_PI), duration: 10)))
+        addChild(pauseBtn)
     }
     
     /*    碰撞检测事件处理    */
@@ -494,16 +507,20 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 else if !gameOverMenu.hidden{
                     //游戏结束菜单
-                    let mainMenuOver = gameOverMenu.childNodeWithName("mainMenu")
-                    if mainMenuOver!.containsPoint(touchPos){
-                        (view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
-                    }
                     let restartOver = gameOverMenu.childNodeWithName("restart")
                     if restartOver!.containsPoint(touchPos){
                         restartGame()
                     }
                 }
             }
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if GameViewController.firstLaunch{
+            physicsWorld.speed = 1.0
+            childNodeWithName("touch2start")?.removeFromParent()
+            GameViewController.firstLaunch = false
         }
     }
     
@@ -520,6 +537,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     /*   主刷新循环   */
     override func update(currentTime: NSTimeInterval) {
+        if GameViewController.firstLaunch{
+            return
+        }
         if (!inGameMenu.hidden || !gameOverMenu.hidden) && !paused{
             lastTimeStamp = 0.0
             paused = true
@@ -554,7 +574,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         turnCatEnabled = true
         nextMinute++
         lastTimeStamp = 0.0
-        backgroundNode.runAction(SKAction.fadeAlphaTo(0.2, duration: 1))
+//        backgroundNode.runAction(SKAction.fadeAlphaTo(0.2, duration: 1))
         //取消道具效果
         for type in gamePropsMap.keys{
             gamePropsGenerator.disableEffect(type)
@@ -614,7 +634,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         if self.bonusTime < 0{
                             //取消变猫效果
                             self.turnCatEnabled = false
-                            self.backgroundNode.runAction(SKAction.fadeAlphaTo(1, duration: 1))
+//                            self.backgroundNode.runAction(SKAction.fadeAlphaTo(1, duration: 1))
                             for enemyNode in self.enemyLayer.children{
                                 if let enemy = enemyNode as? Enemy{
                                     enemy.resumeFromCat()
@@ -701,12 +721,25 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         physicsWorld.speed = 0.0
         removeAllActions()
         pauseButton.hidden = true
-        timeLabel.runAction(GameScene.showTimeAnim){
-            self.paused = true
-            self.gameOverMenu.hidden = false
-            if self.timePassed > UserDocuments.bestRecord{
-                UserDocuments.bestRecord = self.timePassed
-            }
+        timeLabel.hidden = true
+        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
+            let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
+            blurNode.name = "blur"
+            blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
+            blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+            blurNode.xScale = 1.1
+            blurNode.yScale = 1.1
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.addChild(blurNode)
+                blurNode.runAction(SKAction.group([
+                    SKAction.scaleTo(1.2, duration: 0.5),
+                    SKAction.fadeInWithDuration(0.5)])){
+                        self.gameOverMenu.hidden = false
+                        if self.timePassed > UserDocuments.bestRecord{
+                            UserDocuments.bestRecord = self.timePassed
+                        }
+                }
+            })
         }
     }
     

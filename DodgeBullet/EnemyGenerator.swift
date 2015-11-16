@@ -38,8 +38,10 @@ class EnemyGenerator {
         fillWithNormalEnemy()
         gameScene .runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.runBlock({ () -> Void in
-                for _ in 0 ..< 4{
-                    self.spawnNormalEnemy()
+                if !GameViewController.firstLaunch{
+                    for _ in 0 ..< 4{
+                        self.spawnNormalEnemy()
+                    }
                 }
             }),
             SKAction.waitForDuration(5)])))
@@ -47,13 +49,15 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                self.spawnSlowEnemy()
+                if !GameViewController.firstLaunch{
+                    self.spawnSlowEnemy()
+                }
             })])))
         //快速敌人生成策略：随机生成
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
             SKAction.runBlock({ () -> Void in
-                if !self.gameScene.stopTimeEnabled{
+                if !GameViewController.firstLaunch{
                     self.spawnFastEnemy()
                 }
             })])))

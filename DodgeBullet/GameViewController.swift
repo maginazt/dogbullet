@@ -11,6 +11,8 @@ import SpriteKit
 
 class GameViewController: UIViewController {
     
+    static var firstLaunch = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Configure the view.

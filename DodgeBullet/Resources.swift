@@ -18,6 +18,9 @@ class Resources{
         SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]){
             completionHandler?()
         }
+        let blur = CIFilter(name: "CIGaussianBlur")!
+        blur.setValue(20, forKey: kCIInputRadiusKey)
+        GameScene.blurFilter = blur
     }
     
     static var accelerometerAvailable = false
