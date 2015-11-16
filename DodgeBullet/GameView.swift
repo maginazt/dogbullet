@@ -32,6 +32,7 @@ class GameView: SKView {
     func createAccelerometerController(scene: GameScene){
         controller = AccelerometerController()
         controller!.delegate = scene
+        (controller as! AccelerometerController).start()
     }
     
     func createAnalogController(scene: GameScene, isLeft left: Bool){
@@ -84,11 +85,26 @@ class GameView: SKView {
         if let analogController = controller as? AnalogController{
             analogController .removeFromSuperview()
         }
-        if let accelerometerController = controller as? AccelerometerController{
-            accelerometerController.motionManager.stopAccelerometerUpdates()
+        else if let accelerometerController = controller as? AccelerometerController{
+            accelerometerController.stop()
         }
         controller?.delegate = nil
         controller = nil
+    }
+    
+    func changeControllerTarget(scene: GameScene){
+        controller?.delegate = scene
+        if let grs = gestureRecognizers{
+            for gr in grs{
+                gr.removeTarget(nil, action: nil)
+                if gr is UITapGestureRecognizer{
+                    gr.addTarget(scene, action: "handleDoubleTapGesture:")
+                }
+                else if gr is UIPanGestureRecognizer{
+                    gr.addTarget(scene, action: "handlePanGesture:")
+                }
+            }
+        }
     }
     
     deinit{

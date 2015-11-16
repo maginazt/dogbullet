@@ -15,7 +15,7 @@ class GamePropsBanner {
         SKAction.fadeOutWithDuration(0.2),
         SKAction.removeFromParent()])
     
-    unowned let gameScene: GameScene
+    weak var gameScene: GameScene!
     let area: CGRect
     let gridSize: CGFloat = 100
     

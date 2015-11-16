@@ -43,6 +43,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     let moveSpeed: CGFloat = GameSpeed.PlayerDefaultSpeed.rawValue
     //游戏区域
     var playableArea = CGRectMake(0, 0, 0, 0)
+    var backgroundNode: SKSpriteNode!
     //用户与敌人
     var player: Player!
     var enemyCage: SKNode!
@@ -72,7 +73,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var turnCatEnabled = false//变猫效果
     var stopTimeEnabled = false//时间静止效果
     var nextMinute = 1
-    let maxBonusTime: NSTimeInterval = 10
+    let maxBonusTime: NSTimeInterval = 5
     var bonusTime: NSTimeInterval = 10
     
     /*   初始化   */
@@ -101,9 +102,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func setupBackground(){
-//        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
+        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
         let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), color: SKColor.whiteColor(), size: size)
-        background.alpha = 0.9
+        backgroundNode = background
         background.zPosition = CGFloat(SceneZPosition.EnemyCageZPosition.rawValue) - 1
         background.position = CGPointMake(size.width/2, size.height/2)
         addChild(background)
@@ -541,7 +542,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 timeLabel.fontColor = SKColor.redColor()
             }
             
-            if minute == nextMinute{
+            if Int(timePassed/10) == nextMinute{
                 addTurnCatEffect()
             }
         }
@@ -566,6 +567,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         for enemyNode in enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
                 enemy.turnCat()
+                enemy.moveToward(randomPointInRect(playableArea))
+                enemy.faceCurrentDirection()
                 enemy.paused = true
                 enemy.currentSpeed = 0
                 enemy.removeActionForKey(GameScene.playerKickActionKey)
@@ -706,25 +709,30 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func resumeGame(){
-        inGameMenu.hidden = true
-        paused = false
-        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
-            accelerometerController.motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: accelerometerController.handler)
-        }
-        if stopTimeEnabled{
-            for enemy in enemyLayer.children{
-                enemy.paused = true
+        if !isGameOver{
+            inGameMenu.hidden = true
+            paused = false
+            if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+                accelerometerController.start()
+            }
+            if stopTimeEnabled{
+                for enemy in enemyLayer.children{
+                    enemy.paused = true
+                }
             }
         }
     }
     
     func pauseGame(){
-        paused = true
-        inGameMenu.hidden = false
-        lastTimeStamp = 0.0
-        player.physicsBody?.velocity = CGVectorMake(0, 0)
-        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
-            accelerometerController.motionManager.stopAccelerometerUpdates()
+        if !isGameOver{
+            paused = true
+            inGameMenu.hidden = false
+            pauseButton.hidden = true
+            lastTimeStamp = 0.0
+            if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+                accelerometerController.stop()
+            }
+            player.moveToward(CGPointZero)
         }
     }
     
@@ -732,7 +740,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         let scene = GameScene(size: size)
         scene.scaleMode = scaleMode
         let gameView = view as! GameView
-        gameView.setupController(scene)
+        gameView.changeControllerTarget(scene)
         gameView.presentScene(scene, transition: GameScene.flipTransition)
     }
     

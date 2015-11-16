@@ -37,7 +37,7 @@ class GamePropsGenerator : GamePropsDelegate {
         SKAction.fadeOutWithDuration(2),
         SKAction.removeFromParent()])
     
-    unowned let gameScene: GameScene
+    weak var gameScene: GameScene!
     
     init(gameScene: GameScene){
         self.gameScene = gameScene

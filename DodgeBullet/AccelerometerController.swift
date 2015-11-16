@@ -9,11 +9,12 @@
 import Foundation
 import CoreMotion
 import CoreGraphics
+import UIKit
 class AccelerometerController: PlayerController {
     
-    let ay = Vector3(x: 0.63, y: 0.0, z: -0.92)
-    let az = Vector3(x: 0.0, y: 1.0, z: 0.0)
-    let ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
+    var ay: Vector3!
+    var az: Vector3!
+    var ax: Vector3!
     
     let steerDeadZone: CGFloat = 0.1
     let motionManager: CMMotionManager
@@ -25,7 +26,22 @@ class AccelerometerController: PlayerController {
     init() {
         motionManager = CMMotionManager()
         motionManager.accelerometerUpdateInterval = 0.05
-        motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: handler)
+        setupCoordinate()
+    }
+    
+    func setupCoordinate(){
+        switch UIDevice.currentDevice().orientation{
+        case .LandscapeLeft:
+            ay = Vector3(x: 0.63, y: 0.0, z: -0.92)
+            az = Vector3(x: 0.0, y: 1.0, z: 0.0)
+            ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
+        case .LandscapeRight:
+            ay = Vector3(x: 0.63, y: 0.0, z: -0.92)
+            az = Vector3(x: 0.0, y: 1.0, z: 0.0)
+            ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
+        default:
+            break
+        }
     }
     
     func handler(accelerometerData: CMAccelerometerData?,error: NSError?){
@@ -45,14 +61,13 @@ class AccelerometerController: PlayerController {
         }
     }
     
-//    func lowPassWithVector(var vector: CGPoint) -> CGPoint{
-//        vector.x = vector.x * blend + lastVector.x * (1.0 - blend)
-//        vector.y = vector.y * blend + lastVector.y * (1.0 - blend)
-//        lastVector = vector
-//        return vector
-//    }
+    func start(){
+        if !motionManager.accelerometerActive{
+            motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: handler)
+        }
+    }
     
-    deinit{
+    func stop(){
         motionManager.stopAccelerometerUpdates()
     }
 }

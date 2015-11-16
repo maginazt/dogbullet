@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import CoreMotion
 class Resources{
     
     static let characterAtlas = SKTextureAtlas(named: "characters")
@@ -17,5 +18,11 @@ class Resources{
         SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]){
             completionHandler?()
         }
+    }
+    
+    static var accelerometerAvailable = false
+    
+    static func checkAvailablity(){
+        accelerometerAvailable = CMMotionManager().accelerometerAvailable
     }
 }

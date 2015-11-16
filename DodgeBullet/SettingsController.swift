@@ -18,6 +18,9 @@ class SettingsController: UIViewController {
         super.viewDidLoad()
         musicSwitch.on = UserDocuments.musicStatus
         soundSwitch.on = UserDocuments.soundStatus
+        if !Resources.accelerometerAvailable{
+            controllerSegment.removeSegmentAtIndex(controllerSegment.numberOfSegments-1, animated: false)
+        }
         controllerSegment.selectedSegmentIndex = UserDocuments.controllerStatus.rawValue
     }
     

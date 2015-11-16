@@ -46,13 +46,14 @@ class GameViewController: UIViewController {
     func willResignActive(){
         let skView = self.view as! SKView
         if let scene = skView.scene as? GameScene{
-            scene.childNodeWithName("pause")?.hidden = true
             scene.pauseGame()
         }
     }
     
     func orientationChanged(){
-//        print(UIDevice.currentDevice().orientation.rawValue)
+        if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
+            accelerometerController.setupCoordinate()
+        }
     }
     
     override func prefersStatusBarHidden() -> Bool {

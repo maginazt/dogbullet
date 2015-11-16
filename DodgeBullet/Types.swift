@@ -24,8 +24,8 @@ enum PhysicsCategory: UInt32{
 enum SceneZPosition: Int{
     case EnemyCageZPosition = -100
     case GamePropsZPosition = 50
-    case PlayerZPosition = 80
-    case EnemyZPosition = 100
+    case EnemyZPosition = 80
+    case PlayerZPosition = 100
     case GameMenuZPosition = 200
 }
 
