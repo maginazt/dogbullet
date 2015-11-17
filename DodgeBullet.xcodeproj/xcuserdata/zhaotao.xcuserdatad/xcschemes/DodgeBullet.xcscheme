@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CA49B651BC9EC5900589D3C"
-            BuildableName = "Dog Rush.app"
-            BlueprintName = "Dog Rush"
-            ReferencedContainer = "container:Dog Rush.xcodeproj">
+            BuildableName = "DodgeBullet.app"
+            BlueprintName = "DodgeBullet"
+            ReferencedContainer = "container:DodgeBullet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CA49B651BC9EC5900589D3C"
-            BuildableName = "Dog Rush.app"
-            BlueprintName = "Dog Rush"
-            ReferencedContainer = "container:Dog Rush.xcodeproj">
+            BuildableName = "DodgeBullet.app"
+            BlueprintName = "DodgeBullet"
+            ReferencedContainer = "container:DodgeBullet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>

@@ -69,7 +69,6 @@ class Enemy: SKNode{
     }
     
     func resumeFromCat(){
-        currentSpeed = moveSpeed
         effect?.hidden = false
         effect?.targetNode = scene
     }
