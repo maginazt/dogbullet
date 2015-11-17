@@ -11,8 +11,6 @@ import SpriteKit
 class GameView: SKView {
     //游戏控制
     var controller: PlayerController?
-    //双击手势
-    var changeAnalogPositionGesture: UITapGestureRecognizer?
     //拖动手势
     var onScreenMoveGesture: UIPanGestureRecognizer?
     
@@ -22,8 +20,6 @@ class GameView: SKView {
         switch UserDocuments.controllerStatus{
             case .OnScreen:
                 createOnScreenControl(scene)
-            case .Joystick:
-                createAnalogController(scene, isLeft: false)
             case .Accelerometer:
                 createAccelerometerController(scene)
         }
@@ -35,57 +31,20 @@ class GameView: SKView {
         (controller as! AccelerometerController).start()
     }
     
-    func createAnalogController(scene: GameScene, isLeft left: Bool){
-        var padSide: CGFloat!
-        var padPadding: CGFloat!
-        // width: height = 16 : 9 iphone5
-        if frame.size.height / frame.size.width < 0.65{
-            padSide = frame.size.height / 3
-            padPadding = frame.size.height / 35
-        }
-        // width: height = 4 : 3 ipad
-        else{
-            padSide = frame.size.width / 9
-            padPadding = frame.size.width / 65
-        }
-        
-        var analogController: AnalogController!
-        if left{
-            analogController = AnalogController(frame: CGRectMake(padPadding, frame.size.height - padPadding - padSide, padSide, padSide))
-        }
-        else{
-            analogController = AnalogController(frame: CGRectMake(frame.size.width - padPadding - padSide, frame.size.height - padPadding - padSide, padSide, padSide))
-        }
-        analogController.padSide = padSide
-        analogController.padPadding = padPadding
-        addSubview(analogController)
-        controller = analogController
-        controller!.delegate = scene
-        
-        //更换控制中心手势
-        let dbtap = UITapGestureRecognizer(target: scene, action: "handleDoubleTapGesture:")
-        dbtap.numberOfTapsRequired = 2
-        addGestureRecognizer(dbtap)
-    }
-    
     func createOnScreenControl(scene: GameScene){
         let pan = UIPanGestureRecognizer(target: scene, action: "handlePanGesture:")
+        onScreenMoveGesture = pan
         addGestureRecognizer(pan)
     }
     
     func removeGestureRecognizers(){
-        if let grs = gestureRecognizers{
-            for gr in grs{
-                removeGestureRecognizer(gr)
-            }
+        if let gr = onScreenMoveGesture{
+            removeGestureRecognizer(gr)
         }
     }
     
     func releaseController(){
-        if let analogController = controller as? AnalogController{
-            analogController .removeFromSuperview()
-        }
-        else if let accelerometerController = controller as? AccelerometerController{
+        if let accelerometerController = controller as? AccelerometerController{
             accelerometerController.stop()
         }
         controller?.delegate = nil
@@ -94,16 +53,9 @@ class GameView: SKView {
     
     func changeControllerTarget(scene: GameScene){
         controller?.delegate = scene
-        if let grs = gestureRecognizers{
-            for gr in grs{
-                gr.removeTarget(nil, action: nil)
-                if gr is UITapGestureRecognizer{
-                    gr.addTarget(scene, action: "handleDoubleTapGesture:")
-                }
-                else if gr is UIPanGestureRecognizer{
-                    gr.addTarget(scene, action: "handlePanGesture:")
-                }
-            }
+        if let gr = onScreenMoveGesture{
+            gr.removeTarget(nil, action: nil)
+            gr.addTarget(scene, action: "handlePanGesture:")
         }
     }
     

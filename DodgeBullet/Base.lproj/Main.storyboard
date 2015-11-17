@@ -1,127 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xLV-pM-Joh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Settings Controller-->
-        <scene sceneID="LZq-0L-CeZ">
-            <objects>
-                <viewController storyboardIdentifier="SettingsController" id="CTZ-lv-RyV" customClass="SettingsController" customModule="DodgeBullet" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="50B-Bq-YVj"/>
-                        <viewControllerLayoutGuide type="bottom" id="eiz-Qq-fUC"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="XkI-FB-XZD">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gpH-kJ-6go">
-                                <rect key="frame" x="20" y="30" width="54" height="38"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="20"/>
-                                <state key="normal" title="Back"/>
-                                <connections>
-                                    <action selector="backButtonPressed:" destination="CTZ-lv-RyV" eventType="touchUpInside" id="DAg-S4-zIU"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Background Music" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xas-4F-HT4">
-                                <rect key="frame" x="20" y="98" width="179" height="22"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EMS-pa-a6t">
-                                <rect key="frame" x="531" y="98" width="51" height="31"/>
-                                <animations/>
-                                <connections>
-                                    <action selector="changeMusicState:" destination="CTZ-lv-RyV" eventType="valueChanged" id="Hw9-zS-nAE"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound Effect" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oem-ta-ERI">
-                                <rect key="frame" x="20" y="150" width="127" height="22"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uFw-Dn-g43">
-                                <rect key="frame" x="531" y="150" width="51" height="31"/>
-                                <animations/>
-                                <connections>
-                                    <action selector="changeSoundState:" destination="CTZ-lv-RyV" eventType="valueChanged" id="cBU-pD-kPh"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Controller" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MEq-NQ-E2f">
-                                <rect key="frame" x="20" y="202" width="102" height="22"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="FFX-71-WXq">
-                                <rect key="frame" x="20" y="254" width="560" height="29"/>
-                                <animations/>
-                                <segments>
-                                    <segment title="OnScreen"/>
-                                    <segment title="Joystick"/>
-                                    <segment title="Accelerometer"/>
-                                </segments>
-                                <connections>
-                                    <action selector="changeControllerState:" destination="CTZ-lv-RyV" eventType="valueChanged" id="b0t-O4-RJr"/>
-                                </connections>
-                            </segmentedControl>
-                        </subviews>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="leadingMargin" secondItem="Xas-4F-HT4" secondAttribute="leading" id="0Tl-ta-QqY"/>
-                            <constraint firstItem="Xas-4F-HT4" firstAttribute="top" secondItem="gpH-kJ-6go" secondAttribute="bottom" constant="30" id="7Ev-4O-knC"/>
-                            <constraint firstItem="EMS-pa-a6t" firstAttribute="baseline" secondItem="Xas-4F-HT4" secondAttribute="baseline" id="8uT-qB-6px"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="EMS-pa-a6t" secondAttribute="trailing" id="BRa-14-MMa"/>
-                            <constraint firstItem="uFw-Dn-g43" firstAttribute="top" secondItem="Oem-ta-ERI" secondAttribute="top" id="EDi-zH-ar3"/>
-                            <constraint firstItem="FFX-71-WXq" firstAttribute="top" secondItem="MEq-NQ-E2f" secondAttribute="bottom" constant="30" id="Fo8-qO-aAA"/>
-                            <constraint firstItem="EMS-pa-a6t" firstAttribute="top" secondItem="Xas-4F-HT4" secondAttribute="top" id="HA6-eM-bRu"/>
-                            <constraint firstItem="MEq-NQ-E2f" firstAttribute="top" secondItem="Oem-ta-ERI" secondAttribute="bottom" constant="30" id="KM1-t0-WEJ"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="FFX-71-WXq" secondAttribute="trailing" id="PvZ-Jf-QDM"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="FFX-71-WXq" secondAttribute="leading" id="Qng-fO-HQ8"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="MEq-NQ-E2f" secondAttribute="leading" id="TgQ-IF-n4Q"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="Oem-ta-ERI" secondAttribute="leading" id="Y1P-0X-5yp"/>
-                            <constraint firstItem="gpH-kJ-6go" firstAttribute="leading" secondItem="XkI-FB-XZD" secondAttribute="leadingMargin" id="fEW-Gs-Q3k"/>
-                            <constraint firstItem="uFw-Dn-g43" firstAttribute="trailing" secondItem="EMS-pa-a6t" secondAttribute="trailing" id="ifD-2X-mdi"/>
-                            <constraint firstItem="Oem-ta-ERI" firstAttribute="top" secondItem="Xas-4F-HT4" secondAttribute="bottom" constant="30" id="ncx-82-CMM"/>
-                            <constraint firstItem="gpH-kJ-6go" firstAttribute="top" secondItem="XkI-FB-XZD" secondAttribute="topMargin" constant="30" id="zoU-vC-aA2"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="8uT-qB-6px"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <toolbarItems/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="controllerSegment" destination="FFX-71-WXq" id="5uY-L2-P4u"/>
-                        <outlet property="musicSwitch" destination="EMS-pa-a6t" id="rlf-PO-FKw"/>
-                        <outlet property="soundSwitch" destination="uFw-Dn-g43" id="bdm-2E-UHa"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uae-OI-3R4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="324" y="1731"/>
-        </scene>
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController storyboardIdentifier="GameViewController" id="BV1-FR-VrT" customClass="GameViewController" customModule="DodgeBullet" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GameViewController" id="BV1-FR-VrT" customClass="GameViewController" customModule="Dog_Rush" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" customClass="GameView" customModule="DodgeBullet" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" customClass="GameView" customModule="Dog_Rush" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
@@ -131,27 +23,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1058" y="948"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="pT8-pv-cSL">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="xLV-pM-Joh" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Wfa-eL-RC7">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="BV1-FR-VrT" kind="relationship" relationship="rootViewController" id="Ute-eG-Gx0"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XZM-qO-sKl" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-26" y="948"/>
+            <point key="canvasLocation" x="200" y="1108"/>
         </scene>
     </scenes>
 </document>

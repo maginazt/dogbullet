@@ -17,6 +17,7 @@ class Player: SKNode {
     let mainSprite: AnimatingSprite
     var tail: SKEmitterNode!
     let mainBody: SKPhysicsBody
+    let deadTexture: SKTexture
     
     let fireLength: CGFloat = 512
     //开火区
@@ -35,6 +36,7 @@ class Player: SKNode {
         let texture = Resources.characterAtlas.textureNamed("player-0")
         mainSprite = AnimatingSprite(t: texture)
         mainSprite.stopTexture = texture
+        deadTexture = Resources.characterAtlas.textureNamed("death")
         mainBody = SKPhysicsBody(circleOfRadius: texture.size().width/5)
         mainBody.allowsRotation = false
         mainBody.restitution = 0
@@ -83,5 +85,12 @@ class Player: SKNode {
             tail.particleSpeed = 0.0
             addChild(tail)
         }
+    }
+    
+    func death(){
+        mainSprite.removeAllActions()
+        mainSprite.texture = deadTexture
+        mainSprite.xScale = 1.2
+        mainSprite.yScale = 1.2
     }
 }

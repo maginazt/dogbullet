@@ -1,0 +1,10 @@
+/* 
+  message.strings
+  Dog Rush
+
+  Created by user on 15/11/17.
+  Copyright © 2015年 赵涛. All rights reserved.
+*/
+"touch2start" = "点击屏幕开始游戏";
+"eatThem" = "吃掉它们！";
+"bestScore" = "最佳：";

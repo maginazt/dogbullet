@@ -32,7 +32,6 @@ enum SceneZPosition: Int{
 //控制方式
 enum ControllerType: Int{
     case OnScreen //触屏操控
-    case Joystick //摇杆
     case Accelerometer //加速计
 }
 
