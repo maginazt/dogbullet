@@ -61,7 +61,6 @@
 		CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46C0461BF56C5B002FD0C6 /* Resources.swift */; };
 		CE553F611BFAECCD006D4D79 /* set.png in Resources */ = {isa = PBXBuildFile; fileRef = CE553F601BFAECCD006D4D79 /* set.png */; };
 		CE553F641BFB04D5006D4D79 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE553F661BFB04D5006D4D79 /* Localizable.strings */; };
-		CE553F6F1BFB1100006D4D79 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE553F6E1BFB1100006D4D79 /* Info.plist */; };
 		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; };
 /* End PBXBuildFile section */
 
@@ -436,7 +435,6 @@
 				4CAC5EAF1BF6D1EC00F5575C /* dizzy.sks in Resources */,
 				4C88862C1BF9EC9400C370F0 /* launch.png in Resources */,
 				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,
-				CE553F6F1BFB1100006D4D79 /* Info.plist in Resources */,
 				4CAC5EA81BF6D13900F5575C /* footprint.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
