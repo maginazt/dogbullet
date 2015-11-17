@@ -57,9 +57,11 @@
 		4CD5E5851BDCB5A900463460 /* GamePropsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */; };
 		4CE160A41BEF345A00630B28 /* playertail.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A21BEF345A00630B28 /* playertail.sks */; };
 		4CE160A51BEF345A00630B28 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CE160A31BEF345A00630B28 /* spark.png */; };
+		CE2C8A601BFB186600809B4C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE2C8A621BFB186600809B4C /* InfoPlist.strings */; };
 		CE46C0471BF56C5B002FD0C6 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46C0461BF56C5B002FD0C6 /* Resources.swift */; };
 		CE553F611BFAECCD006D4D79 /* set.png in Resources */ = {isa = PBXBuildFile; fileRef = CE553F601BFAECCD006D4D79 /* set.png */; };
 		CE553F641BFB04D5006D4D79 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE553F661BFB04D5006D4D79 /* Localizable.strings */; };
+		CE553F6F1BFB1100006D4D79 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE553F6E1BFB1100006D4D79 /* Info.plist */; };
 		CE8822761BDF5A09009CD242 /* GamePropsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */; };
 /* End PBXBuildFile section */
 
@@ -127,12 +129,15 @@
 		4CD5E5841BDCB5A900463460 /* GamePropsGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsGenerator.swift; sourceTree = "<group>"; };
 		4CE160A21BEF345A00630B28 /* playertail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = playertail.sks; sourceTree = "<group>"; };
 		4CE160A31BEF345A00630B28 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		CE2C8A611BFB186600809B4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CE2C8A631BFB186700809B4C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		CE2C8A641BFB186900809B4C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		CE46C0461BF56C5B002FD0C6 /* Resources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		CE553F601BFAECCD006D4D79 /* set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = set.png; sourceTree = "<group>"; };
 		CE553F651BFB04D5006D4D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE553F671BFB0528006D4D79 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CE553F681BFB056B006D4D79 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		CE553F6A1BFB0D08006D4D79 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		CE553F6E1BFB1100006D4D79 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE8822751BDF5A09009CD242 /* GamePropsBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePropsBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -303,11 +308,12 @@
 				4CA49B691BC9EC5900589D3C /* AppDelegate.swift */,
 				CE46C0461BF56C5B002FD0C6 /* Resources.swift */,
 				4C4468261BCA61AE00FC0A7F /* Types.swift */,
+				CE553F6E1BFB1100006D4D79 /* Info.plist */,
+				CE2C8A621BFB186600809B4C /* InfoPlist.strings */,
 				4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */,
 				4CA49B711BC9EC5900589D3C /* Main.storyboard */,
 				4CA49B741BC9EC5900589D3C /* Assets.xcassets */,
 				4CA49B761BC9EC5900589D3C /* LaunchScreen.storyboard */,
-				CE553F6B1BFB0D08006D4D79 /* Info.plist */,
 				CE553F661BFB04D5006D4D79 /* Localizable.strings */,
 			);
 			path = DodgeBullet;
@@ -409,6 +415,7 @@
 				4CAC5EAB1BF6D1CF00F5575C /* footprint.sks in Resources */,
 				CE553F611BFAECCD006D4D79 /* set.png in Resources */,
 				4CE160A51BEF345A00630B28 /* spark.png in Resources */,
+				CE2C8A601BFB186600809B4C /* InfoPlist.strings in Resources */,
 				4C7D47871BF0CD7600E5114D /* Star.png in Resources */,
 				CE553F641BFB04D5006D4D79 /* Localizable.strings in Resources */,
 				4C8863FA1BD5030600496482 /* button_press.wav in Resources */,
@@ -429,6 +436,7 @@
 				4CAC5EAF1BF6D1EC00F5575C /* dizzy.sks in Resources */,
 				4C88862C1BF9EC9400C370F0 /* launch.png in Resources */,
 				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,
+				CE553F6F1BFB1100006D4D79 /* Info.plist in Resources */,
 				4CAC5EA81BF6D13900F5575C /* footprint.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,6 +522,16 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		CE2C8A621BFB186600809B4C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE2C8A611BFB186600809B4C /* Base */,
+				CE2C8A631BFB186700809B4C /* zh-Hans */,
+				CE2C8A641BFB186900809B4C /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		CE553F661BFB04D5006D4D79 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -522,14 +540,6 @@
 				CE553F681BFB056B006D4D79 /* zh-Hant */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		CE553F6B1BFB0D08006D4D79 /* Info.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE553F6A1BFB0D08006D4D79 /* Base */,
-			);
-			name = Info.plist;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -627,7 +637,7 @@
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DogRush;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
 			};
@@ -642,7 +652,7 @@
 				INFOPLIST_FILE = DodgeBullet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DogRush;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
 			};
