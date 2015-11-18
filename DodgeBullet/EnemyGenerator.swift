@@ -38,7 +38,7 @@ class EnemyGenerator {
         fillWithNormalEnemy()
         gameScene .runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch{
+                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     for _ in 0 ..< 4{
                         self.spawnNormalEnemy()
                     }
@@ -49,7 +49,7 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch{
+                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     self.spawnSlowEnemy()
                 }
             })])))
@@ -57,7 +57,7 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch{
+                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     self.spawnFastEnemy()
                 }
             })])))
