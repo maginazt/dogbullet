@@ -53,7 +53,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     func spawnGameProps(){
         let gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
-        if gameProps.type == .DogFood && gameScene.dogFoodArea != nil{
+        if gameProps.type == .DogFood && (gameScene.dogFoodArea != nil || gameScene.gamePropsMap[gameProps.type] != nil){
             return
         }
         gameProps.position = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize/2, gameScene.gamePropsBanner.gridSize*2))
