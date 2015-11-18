@@ -63,6 +63,7 @@ class Enemy: SKNode{
             sprite.color = SKColor.goldColor()
             sprite.colorBlendFactor = 0.9
         }
+        currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         effect?.hidden = true
         effect?.targetNode = nil

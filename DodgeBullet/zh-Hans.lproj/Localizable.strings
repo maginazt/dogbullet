@@ -9,3 +9,8 @@
 "eatThem" = "吃掉它们！";
 "bestScore" = "最佳：";
 "bonusTimeUp" = "别被狗咬！";
+"dogFoodDes" = "狗 粮";
+"phantomDes" = "幻 象";
+"slowDownDes" = "减速光环";
+"rockDes" = "石 头";
+"shieldDes" = "防护罩";

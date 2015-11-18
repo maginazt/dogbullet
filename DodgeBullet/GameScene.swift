@@ -14,7 +14,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     static let playerKickActionKey = "playerKickAction"
     static let turnCatActionKey = "TurnCatAction"
     
-    static let bonusTimeAction = SKAction.sequence([
+    static let tinyMessageAction = SKAction.sequence([
         SKAction.moveByX(0, y: 100, duration: 0.5),
         SKAction.fadeOutWithDuration(0.2),
         SKAction.removeFromParent()])
@@ -314,6 +314,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
             let gamePropsBody = contact.bodyA.categoryBitMask == PhysicsCategory.GameProps.rawValue ? contact.bodyA : contact.bodyB
             if let gameProps = gamePropsBody.node as? GameProps{
+                showTinyMessage(gameProps.position, text: gameProps.des, color: SKColor.blackColor())
                 gamePropsGenerator.handleGamePropsEffect(gameProps)
             }
             //石头接触猫，增加额外时间
@@ -344,7 +345,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             timePassed += 0.1
-            showBonusTimeEffect(otherBody.node!.position)
+            showTinyMessage(otherBody.node!.position, text: "+0.1s", color: SKColor.goldColor())
             //石头接触笼子，移除石头
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let rockBody = contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue ? contact.bodyA : contact.bodyB
@@ -392,14 +393,14 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
     }
     
-    func showBonusTimeEffect(position: CGPoint){
-        let bonusLabel = SKLabelNode(fontNamed: "Arial")
-        bonusLabel.fontColor = SKColor.goldColor()
-        bonusLabel.fontSize = 50
-        bonusLabel.text = "+0.1s"
-        bonusLabel.position = position
-        addChild(bonusLabel)
-        bonusLabel.runAction(GameScene.bonusTimeAction)
+    func showTinyMessage(position: CGPoint, text: String, color: SKColor){
+        let tinyMessage = SKLabelNode(fontNamed: "Arial")
+        tinyMessage.fontColor = color
+        tinyMessage.fontSize = 50
+        tinyMessage.text = text
+        tinyMessage.position = position
+        addChild(tinyMessage)
+        tinyMessage.runAction(GameScene.tinyMessageAction)
     }
     
     /*    用户手势处理    */
@@ -710,48 +711,48 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
         pauseButton.hidden = true
         timeLabel.hidden = true
-        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
-            let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
-            blurNode.name = "blur"
-            blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
-            blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
-            blurNode.xScale = 1.1
-            blurNode.yScale = 1.1
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                for enemyNode in self.enemyLayer.children{
-                    if let enemy = enemyNode as? Enemy{
-                        enemy.sprite.removeAllActions()
-                    }
-                }
-                self.addChild(blurNode)
-                blurNode.runAction(SKAction.group([
-                    SKAction.scaleTo(1.2, duration: 0.5),
-                    SKAction.fadeInWithDuration(0.5)])){
-                        self.gameOverMenu.hidden = false
-                        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-                            score.text = self.timePassed < 60 ? (NSString(format: "%3.1fs", self.timePassed) as String) : (NSString(format: "%dm%3.1fs", Int(self.timePassed/60), self.timePassed % 60) as String)
-                        }
-                        self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-                        if self.timePassed > UserDocuments.bestRecord{
-                            UserDocuments.bestRecord = self.timePassed
-                        }
-                        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-                            bestScore.text = UserDocuments.bestRecord < 60 ? (NSString(format: "best: %3.1fs", UserDocuments.bestRecord) as String) : (NSString(format: "best: %dm%3.1fs", Int(UserDocuments.bestRecord/60), UserDocuments.bestRecord % 60) as String)
-                        }
-                }
-            })
+//        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
+//            let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
+//            blurNode.name = "blur"
+//            blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
+//            blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+//            blurNode.xScale = 1.1
+//            blurNode.yScale = 1.1
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                for enemyNode in self.enemyLayer.children{
+//                    if let enemy = enemyNode as? Enemy{
+//                        enemy.sprite.removeAllActions()
+//                    }
+//                }
+//                self.addChild(blurNode)
+//                blurNode.runAction(SKAction.group([
+//                    SKAction.scaleTo(1.2, duration: 0.5),
+//                    SKAction.fadeInWithDuration(0.5)])){
+//                        self.gameOverMenu.hidden = false
+//                        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+//                            score.text = self.timePassed < 60 ? (NSString(format: "%3.1fs", self.timePassed) as String) : (NSString(format: "%dm%3.1fs", Int(self.timePassed/60), self.timePassed % 60) as String)
+//                        }
+//                        self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+//                        if self.timePassed > UserDocuments.bestRecord{
+//                            UserDocuments.bestRecord = self.timePassed
+//                        }
+//                        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+//                            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+//                        }
+//                }
+//            })
+//        }
+        self.gameOverMenu.hidden = false
+        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+            score.text = NSString(format: "%3.1fs", self.timePassed) as String
         }
-//        self.gameOverMenu.hidden = false
-//        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-//            score.text = NSString(format: "%3.1fs", self.timePassed) as String
-//        }
-//        gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-//        if self.timePassed > UserDocuments.bestRecord{
-//            UserDocuments.bestRecord = self.timePassed
-//        }
-//        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-//            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-//        }
+        gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+        if self.timePassed > UserDocuments.bestRecord{
+            UserDocuments.bestRecord = self.timePassed
+        }
+        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+        }
     }
     
     func resumeGame(){

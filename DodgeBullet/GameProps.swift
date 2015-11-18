@@ -33,6 +33,7 @@ class GameProps: SKSpriteNode {
     var effectTime = GameProps.maxEffectTime
     var countDownLabel: SKLabelNode!
     var delegate: GamePropsDelegate?
+    let des: String
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
@@ -41,14 +42,19 @@ class GameProps: SKSpriteNode {
         switch type{
         case .DogFood:
             texture = Resources.characterAtlas.textureNamed("dogFood")
+            des = NSLocalizedString("dogFoodDes", comment: "Dog Food Description")
         case .Phantom:
             texture = Resources.characterAtlas.textureNamed("phantom")
+            des = NSLocalizedString("phantomDes", comment: "Phantom Description")
         case .SlowDown:
             texture = Resources.characterAtlas.textureNamed("slowDown")
+            des = NSLocalizedString("slowDownDes", comment: "Slow Down Description")
         case .Rock:
             texture = Resources.characterAtlas.textureNamed("rock")
+            des = NSLocalizedString("rockDes", comment: "Rock Description")
         default:
             texture = Resources.characterAtlas.textureNamed("whosYourDaddy")
+            des = NSLocalizedString("shieldDes", comment: "Shield Description")
         }
         super.init(texture: texture, color: SKColor.whiteColor(), size: CGSizeMake(75, 75))
         physicsBody = SKPhysicsBody(circleOfRadius: size.width/2)
