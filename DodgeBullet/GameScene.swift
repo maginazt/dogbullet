@@ -459,11 +459,17 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         pauseGame()
                     }
                 }
+                //游戏结束菜单
                 else if !gameOverMenu.hidden{
-                    //游戏结束菜单
-                    let restartOver = gameOverMenu.childNodeWithName("restart")
-                    if restartOver!.containsPoint(touchPos){
+                    //重新开始
+                    let restart = gameOverMenu.childNodeWithName("restart")
+                    if restart!.containsPoint(touchPos){
                         restartGame()
+                    }
+                    //分享
+                    let share = gameOverMenu.childNodeWithName("share")
+                    if share!.containsPoint(touchPos){
+                        popOverShare()
                     }
                 }
             }
@@ -478,23 +484,24 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
     }
     
+    func popOverShare(){
+        let activityVC = UIActivityViewController(activityItems: [NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed)], applicationActivities: nil)
+        activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo]
+        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad{
+            activityVC.modalPresentationStyle = .Popover
+            activityVC.popoverPresentationController?.sourceView = view
+            activityVC.popoverPresentationController?.sourceRect = CGRectMake(view!.frame.size.width/2, view!.frame.size.height/2, 10, 10)
+            activityVC.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        }
+        view?.window?.rootViewController?.presentViewController(activityVC, animated: true, completion: nil)
+    }
+    
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if GameViewController.firstLaunch{
             physicsWorld.speed = 1.0
             childNodeWithName("touch2start")?.removeFromParent()
             GameViewController.firstLaunch = false
         }
-    }
-    
-    private func handleMainMenuAction(){
-        let alert = UIAlertController(title: "Warning", message: "Ingame status will be discarded, continue?", preferredStyle: .Alert)
-        let cancleAction = UIAlertAction(title: "No", style: .Cancel, handler: nil)
-        let continueAction = UIAlertAction(title: "Yes", style: .Destructive) { (action) -> Void in
-            (self.view?.window?.rootViewController as! UINavigationController).popToRootViewControllerAnimated(true)
-        }
-        alert.addAction(cancleAction)
-        alert.addAction(continueAction)
-        view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
     }
     
     /*   主刷新循环   */

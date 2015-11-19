@@ -45,19 +45,25 @@ class GamePropsGenerator : GamePropsDelegate {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 3))),
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled && !gameScene.turnCatEnabled{
+                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     self.spawnGameProps()
                 }
             })])))
     }
     
     func spawnGameProps(){
-        let gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
-        if gameProps.type == .DogFood && (gameScene.dogFoodArea != nil || gameScene.gamePropsLayer.childNodeWithName("dogFood") != nil){
-            return
+        var gameProps: GameProps!
+        if gameScene.turnCatEnabled{
+            gameProps = GameProps(gamePropsType: .Rock)
         }
-        if gameProps.type == .DogFood{
-            gameProps.name = "dogFood"
+        else{
+            gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
+            if gameProps.type == .DogFood && (gameScene.dogFoodArea != nil || gameScene.gamePropsLayer.childNodeWithName("dogFood") != nil){
+                return
+            }
+            if gameProps.type == .DogFood{
+                gameProps.name = "dogFood"
+            }
         }
         gameProps.position = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize*2, gameScene.gamePropsBanner.gridSize*2))
         gameScene.gamePropsLayer.addChild(gameProps)

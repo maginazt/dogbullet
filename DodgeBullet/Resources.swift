@@ -11,6 +11,8 @@ import SpriteKit
 import CoreMotion
 class Resources{
     
+    static let appStoreUrl = NSURL(string: "https://www.store.apple.com")
+    
     static let characterAtlas = SKTextureAtlas(named: "characters")
     static let effectAtlas = SKTextureAtlas(named: "effects")
     

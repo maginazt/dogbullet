@@ -637,7 +637,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "4de9738c-7924-46c8-b542-0d6e9a0b1d04";
 			};
 			name = Debug;
 		};
@@ -652,7 +652,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "4de9738c-7924-46c8-b542-0d6e9a0b1d04";
 			};
 			name = Release;
 		};
