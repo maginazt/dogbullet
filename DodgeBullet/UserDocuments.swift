@@ -8,6 +8,11 @@
 
 import Foundation
 class UserDocuments {
+    
+    static let userDataFilePath: String = {
+        let documentPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
+        return NSString(string: documentPath).stringByAppendingPathComponent("userData.plist")
+    }()
     static let ControllerStatusChangedNotification = "ControllerStatusChangedNotification"
     
     private static let NONE = 0
@@ -60,6 +65,12 @@ class UserDocuments {
         else{
             return status == ON
         }
+    }
+    
+    private static func getUserDataForKey(key: String) throws -> Bool{
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        
+        return true
     }
     
     private static func setStatus(status: Bool, forKey key: String){
