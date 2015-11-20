@@ -49,7 +49,7 @@ class EnemyGenerator {
         gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
+                if !GameViewController.firstLaunch && !gameScene.turnCatEnabled{
                     self.spawnSlowEnemy()
                 }
             })])))
