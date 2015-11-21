@@ -42,13 +42,18 @@ class GamePropsGenerator : GamePropsDelegate {
     init(gameScene: GameScene){
         self.gameScene = gameScene
         //道具生成策略：随机生成
-        gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
+        createNextGameProps()
+    }
+    
+    func createNextGameProps(){
+        gameScene.runAction(SKAction.sequence([
             SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 3))),
             SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
+                if !GameViewController.firstLaunch && !self.gameScene.stopTimeEnabled{
                     self.spawnGameProps()
                 }
-            })])))
+                self.createNextGameProps()
+            })]))
     }
     
     func spawnGameProps(){
@@ -72,6 +77,14 @@ class GamePropsGenerator : GamePropsDelegate {
     // 添加游戏道具效果
     func handleGamePropsEffect(gameProps: GameProps){
         if gameScene.gamePropsMap.keys.contains(gameProps.type){
+            switch gameProps.type{
+            case .Rock:
+                gameScene.showTinyMessage(gameProps.position, text: gameProps.des, color: SKColor.blackColor())
+            case .WhosYourDaddy:
+                gameScene.showTinyMessage(gameProps.position, text: String(format: NSLocalizedString("shieldRemaining", comment: "Shield Remaining Text"), maxShieldCount), color: SKColor.blackColor())
+            default:
+                gameScene.showTinyMessage(gameProps.position, text: NSLocalizedString("resetCountdown", comment: "Reset CountDown Text"), color: SKColor.blackColor())
+            }
             let oldGameProps = gameScene.gamePropsMap[gameProps.type]!
             oldGameProps.resetEffectTimer()
             if gameProps.type == .WhosYourDaddy{
@@ -80,6 +93,7 @@ class GamePropsGenerator : GamePropsDelegate {
             gameProps.removeFromParent()
         }
         else{
+            gameScene.showTinyMessage(gameProps.position, text: gameProps.des, color: SKColor.blackColor())
             if gameProps.type == GamePropsType.Rock{
                 gameProps.removeFromParent()
             }
@@ -231,6 +245,7 @@ class GamePropsGenerator : GamePropsDelegate {
     private func removeWhosYourDaddyEffect(){
         gameScene.shieldCount = 0
         gameScene.player.childNodeWithName("shield")?.runAction(GamePropsGenerator.fadeout0_5Anim)
+        gameScene.showTinyMessage(gameScene.player.position, text: NSLocalizedString("shieldBroken", comment: "Shield Broken Text"), color: SKColor.blackColor())
     }
     
     private func removeSlowDownEffect(){

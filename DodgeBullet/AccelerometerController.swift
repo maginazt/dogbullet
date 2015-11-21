@@ -30,17 +30,16 @@ class AccelerometerController: PlayerController {
     }
     
     func setupCoordinate(){
-        switch UIDevice.currentDevice().orientation{
+        print("application: \(UIApplication.sharedApplication().statusBarOrientation.rawValue)")
+        switch UIApplication.sharedApplication().statusBarOrientation{
         case .LandscapeLeft:
             ay = Vector3(x: 0.63, y: 0.0, z: -0.92)
             az = Vector3(x: 0.0, y: 1.0, z: 0.0)
-            ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
-        case .LandscapeRight:
-            ay = Vector3(x: 0.63, y: 0.0, z: -0.92)
-            az = Vector3(x: 0.0, y: 1.0, z: 0.0)
-            ax = Vector3.crossProduct(Vector3(x: 0.0, y: 1.0, z: 0.0), right: Vector3(x: 0.63, y: 0.0, z: -0.92)).normalized()
+            ax = Vector3.crossProduct(az, right: ay).normalized()
         default:
-            break
+            ay = Vector3(x: -0.63, y: 0.0, z: -0.92)
+            az = Vector3(x: 0.0, y: -1.0, z: 0.0)
+            ax = Vector3.crossProduct(az, right: ay).normalized()
         }
     }
     

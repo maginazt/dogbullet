@@ -13,5 +13,8 @@
 "phantomDes" = "Phantom";
 "slowDownDes" = "Slow Down Aura";
 "rockDes" = "Rock!";
-"shieldDes" = "Shield";
+"shieldDes" = "Shield On";
+"shieldRemaining" = "Shield Remaining: %d";
+"shieldBroken" = "Shield Off";
+"resetCountdown" = "Reset CountDown";
 "shareText" = "I held for %3.1f seconds in a world full of dogs!";

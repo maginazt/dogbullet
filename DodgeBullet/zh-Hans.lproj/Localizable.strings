@@ -13,5 +13,8 @@
 "phantomDes" = "幻 象";
 "slowDownDes" = "减速光环";
 "rockDes" = "石 头";
-"shieldDes" = "防护罩";
+"shieldDes" = "防护罩开启";
+"shieldRemaining" = "防护罩剩余: %d";
+"shieldBroken" = "防护罩关闭";
+"resetCountdown" = "倒计时重置";
 "shareText" = "我在恶狗的世界里坚持了%3.1f秒！";

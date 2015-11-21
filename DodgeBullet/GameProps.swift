@@ -37,7 +37,7 @@ class GameProps: SKSpriteNode {
     
     init(gamePropsType: GamePropsType){
         type = gamePropsType
-//        type = .DogFood
+//        type = .WhosYourDaddy
         var texture: SKTexture!
         switch type{
         case .DogFood:

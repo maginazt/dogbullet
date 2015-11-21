@@ -16,7 +16,8 @@ class EnemyGenerator {
         ])
     
     static let enemyDistance: CGFloat = 200
-    let maxNormalEnemyCount = 80
+    let maxNormalEnemyCount = 100
+    let minimumNormalEnemyCount = 30
     let maxSlowEnemyCount = 5
     
     weak var gameScene: GameScene!
@@ -39,48 +40,40 @@ class EnemyGenerator {
         gameScene .runAction(SKAction.repeatActionForever(SKAction.sequence([
             SKAction.runBlock({ () -> Void in
                 if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
-                    for _ in 0 ..< 4{
-                        self.spawnNormalEnemy()
+                    var count = 5
+                    if self.normalEnemies.count < self.minimumNormalEnemyCount{
+                        count = self.minimumNormalEnemyCount - self.normalEnemies.count
+                    }
+                    for _ in 0 ..< count{
+                        if self.normalEnemies.count < self.maxNormalEnemyCount{
+                            self.spawnNormalEnemy()
+                        }
                     }
                 }
             }),
             SKAction.waitForDuration(5)])))
         //慢速敌人生成策略：随机增量生成
-        gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
-            SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch && !gameScene.turnCatEnabled{
-                    self.spawnSlowEnemy()
-                }
-            })])))
+        createNextSlowEnemy()
         //快速敌人生成策略：随机生成
-        gameScene.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
-            SKAction.runBlock({ () -> Void in
-                if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
-                    self.spawnFastEnemy()
-                }
-            })])))
+        createNextFastEnemy()
     }
     
     func fillWithNormalEnemy(){
-        for _ in 0 ..< maxNormalEnemyCount*5/8{
+        for _ in 0 ..< minimumNormalEnemyCount{
             spawnNormalEnemy()
         }
     }
     
     func spawnNormalEnemy(){
-        if normalEnemies.count < maxNormalEnemyCount{
-            switch random() % 4{
-                case 0:
-                    createNormalEnemyAtPositon(randomPointInRect(upRect))
-                case 1:
-                    createNormalEnemyAtPositon(randomPointInRect(rightRect))
-                case 2:
-                    createNormalEnemyAtPositon(randomPointInRect(downRect))
-                default:
-                    createNormalEnemyAtPositon(randomPointInRect(leftRect))
-            }
+        switch random() % 4{
+        case 0:
+            createNormalEnemyAtPositon(randomPointInRect(upRect))
+        case 1:
+            createNormalEnemyAtPositon(randomPointInRect(rightRect))
+        case 2:
+            createNormalEnemyAtPositon(randomPointInRect(downRect))
+        default:
+            createNormalEnemyAtPositon(randomPointInRect(leftRect))
         }
     }
     
@@ -106,6 +99,17 @@ class EnemyGenerator {
         if gameScene.stopTimeEnabled{
             enemy.currentSpeed = 0
         }
+    }
+    
+    func createNextSlowEnemy(){
+        gameScene.runAction(SKAction.sequence([
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 5, max: 10))),
+            SKAction.runBlock({ () -> Void in
+                if !GameViewController.firstLaunch && !self.gameScene.turnCatEnabled{
+                    self.spawnSlowEnemy()
+                }
+                self.createNextSlowEnemy()
+            })]))
     }
     
     func spawnSlowEnemy(){
@@ -142,6 +146,17 @@ class EnemyGenerator {
                     })])
                 ]))
         }
+    }
+    
+    func createNextFastEnemy(){
+        gameScene.runAction(SKAction.sequence([
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 5))),
+            SKAction.runBlock({ () -> Void in
+                if !GameViewController.firstLaunch && !self.gameScene.stopTimeEnabled{
+                    self.spawnFastEnemy()
+                }
+                self.createNextFastEnemy()
+            })]))
     }
     
     func spawnFastEnemy(){

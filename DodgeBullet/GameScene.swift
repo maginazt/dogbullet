@@ -82,7 +82,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var turnCatEnabled = false//变猫效果
     var stopTimeEnabled = false//时间静止效果
     var nextMinute = 1
-    let maxBonusTime: NSTimeInterval = 5
+    let maxBonusTime: NSTimeInterval = 10
     var bonusTime: NSTimeInterval = 10
     
     /*   初始化   */
@@ -283,7 +283,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
-            if enemyBody.node?.actionForKey(GameScene.hitRockActionKey) != nil || stopTimeEnabled{
+            if enemyBody.node?.actionForKey(GameScene.playerKickActionKey) != nil || stopTimeEnabled{
                 break
             }
             else if shieldCount > 0{
@@ -306,6 +306,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 if shieldCount <= 0{
                     gamePropsGenerator.disableEffect(.WhosYourDaddy)
                 }
+                else{
+                    showTinyMessage(player.position, text: String(format: NSLocalizedString("shieldRemaining", comment: "Shield Remaining Text"), shieldCount), color: SKColor.blackColor())
+                }
             }
             else{
                 handleGameOver()
@@ -314,7 +317,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
             let gamePropsBody = contact.bodyA.categoryBitMask == PhysicsCategory.GameProps.rawValue ? contact.bodyA : contact.bodyB
             if let gameProps = gamePropsBody.node as? GameProps{
-                showTinyMessage(gameProps.position, text: gameProps.des, color: SKColor.blackColor())
                 gamePropsGenerator.handleGamePropsEffect(gameProps)
             }
             //石头接触猫，增加额外时间
@@ -485,7 +487,10 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     func popOverShare(){
-        let activityVC = UIActivityViewController(activityItems: [NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed)], applicationActivities: nil)
+        let shareContent = [
+            NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed),
+            convertViewToImage()]
+        let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: nil)
         activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo]
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad{
             activityVC.modalPresentationStyle = .Popover
@@ -494,6 +499,14 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             activityVC.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         }
         view?.window?.rootViewController?.presentViewController(activityVC, animated: true, completion: nil)
+    }
+    
+    func convertViewToImage() -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(view!.bounds.size, false, 0.0)
+        view!.drawViewHierarchyInRect(view!.bounds, afterScreenUpdates: false)
+        let original = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return original
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -534,7 +547,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 timeLabel.fontColor = SKColor.redColor()
             }
             
-            if Int(timePassed/10) == nextMinute{
+            if Int(timePassed/20) == nextMinute{
                 addTurnCatEffect()
             }
         }
@@ -560,10 +573,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         for enemyNode in enemyLayer.children{
             if let enemy = enemyNode as? Enemy{
                 enemy.turnCat(true)
-                enemy.moveToward(randomPointInRect(playableArea))
-                enemy.faceCurrentDirection()
                 enemy.sprite.removeActionForKey(Enemy.runningActionKey)
-                enemy.currentSpeed = 0
                 enemy.removeActionForKey(GameScene.playerKickActionKey)
                 enemy.removeActionForKey(GameScene.hitRockActionKey)
                 enemy.childNodeWithName("dizzy")?.removeFromParent()
@@ -627,7 +637,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                                 for enemyNode in self.enemyLayer.children{
                                     if let enemy = enemyNode as? Enemy{
                                         enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
-                                        enemy.currentSpeed = enemy.moveSpeed
+                                        if enemy.actionForKey(GameScene.hitRockActionKey) == nil{
+                                            enemy.currentSpeed = enemy.moveSpeed
+                                        }
                                     }
                                 }
                             }
@@ -685,16 +697,14 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             enemiesToAdjustDirection.removeAll()
-            if slowDownEnabled{
+            if slowDownEnabled && !turnCatEnabled{
                 for enemyNode in enemyLayer.children{
-                    if enemyNode.actionForKey(GameScene.hitRockActionKey) == nil && enemyNode.actionForKey(GameScene.playerKickActionKey) == nil && enemyNode.physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
-                        if let enemy = enemyNode as? Enemy{
-                            if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
-                                enemy.purge()
-                            }
-                            else{
-                                enemy.resumeFromPurge()
-                            }
+                    if let enemy = enemyNode as? Enemy{
+                        if (enemy.position-player.position).length() <= gamePropsGenerator.slowDownRadius{
+                            enemy.purge()
+                        }
+                        else{
+                            enemy.resumeFromPurge()
                         }
                     }
                 }
@@ -718,48 +728,62 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
         pauseButton.hidden = true
         timeLabel.hidden = true
-//        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
-//            let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
-//            blurNode.name = "blur"
-//            blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
-//            blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
-//            blurNode.xScale = 1.1
-//            blurNode.yScale = 1.1
-//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                for enemyNode in self.enemyLayer.children{
-//                    if let enemy = enemyNode as? Enemy{
-//                        enemy.sprite.removeAllActions()
-//                    }
-//                }
-//                self.addChild(blurNode)
-//                blurNode.runAction(SKAction.group([
-//                    SKAction.scaleTo(1.2, duration: 0.5),
-//                    SKAction.fadeInWithDuration(0.5)])){
-//                        self.gameOverMenu.hidden = false
-//                        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-//                            score.text = self.timePassed < 60 ? (NSString(format: "%3.1fs", self.timePassed) as String) : (NSString(format: "%dm%3.1fs", Int(self.timePassed/60), self.timePassed % 60) as String)
-//                        }
-//                        self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-//                        if self.timePassed > UserDocuments.bestRecord{
-//                            UserDocuments.bestRecord = self.timePassed
-//                        }
-//                        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-//                            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-//                        }
-//                }
-//            })
+        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
+            let blurNode = self.createBlurScreen()
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                for enemyNode in self.enemyLayer.children{
+                    if let enemy = enemyNode as? Enemy{
+                        enemy.sprite.removeAllActions()
+                    }
+                }
+                self.addChild(blurNode)
+                blurNode.runAction(SKAction.group([
+                    SKAction.scaleTo(1.2, duration: 0.5),
+                    SKAction.fadeInWithDuration(0.5)])){
+                        self.gameOverMenu.hidden = false
+                        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+                            score.text = NSString(format: "%3.1fs", self.timePassed) as String
+                        }
+                        self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+                        if self.timePassed > UserDocuments.bestRecord{
+                            UserDocuments.bestRecord = self.timePassed
+                        }
+                        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+                            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+                        }
+                }
+            })
+        }
+//        self.gameOverMenu.hidden = false
+//        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+//            score.text = NSString(format: "%3.1fs", self.timePassed) as String
 //        }
-        self.gameOverMenu.hidden = false
-        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-            score.text = NSString(format: "%3.1fs", self.timePassed) as String
-        }
-        gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-        if self.timePassed > UserDocuments.bestRecord{
-            UserDocuments.bestRecord = self.timePassed
-        }
-        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-        }
+//        gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+//        if self.timePassed > UserDocuments.bestRecord{
+//            UserDocuments.bestRecord = self.timePassed
+//        }
+//        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+//            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+//        }
+    }
+    
+    func createBlurScreen() -> SKSpriteNode{
+//        UIGraphicsBeginImageContextWithOptions(self.view!.bounds.size, false, 0.0)
+//        self.view!.drawViewHierarchyInRect(self.view!.bounds, afterScreenUpdates: true)
+//        let original = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        GameScene.blurFilter.setValue(CIImage(image: original)!, forKey: kCIInputImageKey)
+//        let output = GameScene.blurFilter.outputImage!
+//        let imgRef = GameScene.ciContext.createCGImage(output, fromRect: output.extent)
+//        let snapshot = UIImage(CGImage: imgRef)
+//        let blurNode = SKSpriteNode(texture: SKTexture(image: snapshot), size: self.size)
+        let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
+        blurNode.name = "blur"
+        blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
+        blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+        blurNode.xScale = 1.1
+        blurNode.yScale = 1.1
+        return blurNode
     }
     
     func resumeGame(){
@@ -801,7 +825,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     /*   PlayerControllerDelegate   */
     func moveByDirection(direction: CGPoint) {
-        if !initialing && !isGameOver{
+        if !initialing && !isGameOver && !GameViewController.firstLaunch{
             player.moveToward(direction*moveSpeed)
         }
     }

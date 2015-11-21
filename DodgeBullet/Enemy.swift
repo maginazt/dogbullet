@@ -58,12 +58,14 @@ class Enemy: SKNode{
     func turnCat(animated: Bool){
         if animated{
             sprite.runAction(SKAction.colorizeWithColor(SKColor.goldColor(), colorBlendFactor: 0.9, duration: 1))
+            zRotation = CGFloat.random(min: 0, max: CGFloat(2*M_PI))
+            currentSpeed = 0
         }
         else{
             sprite.color = SKColor.goldColor()
             sprite.colorBlendFactor = 0.9
+            currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
         }
-        currentSpeed = CGFloat(GameSpeed.CatSpeed.rawValue)
         physicsBody?.categoryBitMask = PhysicsCategory.Cat.rawValue
         effect?.hidden = true
         effect?.targetNode = nil
@@ -75,7 +77,11 @@ class Enemy: SKNode{
     }
     
     func purge(){
-        currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+        //change velocity
+        if actionForKey(GameScene.hitRockActionKey) == nil && actionForKey(GameScene.playerKickActionKey) == nil && physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
+            currentSpeed = CGFloat(GameSpeed.SlowDownSpeed.rawValue)
+        }
+        //change appearance
         if sprite.actionForKey(Enemy.purgeActionKey) == nil{
             sprite.runAction(Enemy.purgeAnim, withKey: Enemy.purgeActionKey)
             effect?.hidden = true
@@ -84,10 +90,14 @@ class Enemy: SKNode{
     }
     
     func resumeFromPurge(){
-        currentSpeed = moveSpeed
-        sprite.removeActionForKey(Enemy.purgeActionKey)
-        effect?.hidden = false
-        effect?.targetNode = scene
+        if actionForKey(GameScene.hitRockActionKey) == nil && actionForKey(GameScene.playerKickActionKey) == nil && physicsBody?.categoryBitMask != PhysicsCategory.Cat.rawValue{
+            currentSpeed = moveSpeed
+        }
+        if sprite.actionForKey(Enemy.purgeActionKey) != nil{
+            sprite.removeActionForKey(Enemy.purgeActionKey)
+            effect?.hidden = false
+            effect?.targetNode = scene
+        }
     }
 }
 class EnemyNormal: Enemy {
