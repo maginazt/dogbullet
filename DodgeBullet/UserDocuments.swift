@@ -14,7 +14,6 @@ class UserDocuments {
         return documentPath.stringByAppendingPathComponent("userData.plist")
     }()
     static let userData: NSMutableDictionary = {
-        print(UserDocuments.userDataFilePath)
         if NSFileManager.defaultManager().fileExistsAtPath(UserDocuments.userDataFilePath){
             return NSMutableDictionary(contentsOfFile: UserDocuments.userDataFilePath)!
         }
