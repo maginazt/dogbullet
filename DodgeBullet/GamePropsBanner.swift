@@ -38,11 +38,9 @@ class GamePropsBanner {
         gameProps.runAction(SKAction.group([
             GamePropsBanner.scaleAnim,
             SKAction.moveTo(pos, duration: 0.2)])){
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let index = self.queue.indexOf(gameProps){
-                        gameProps.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, gameProps.position.y)
-                    }
-                })
+                if let index = self.queue.indexOf(gameProps){
+                    gameProps.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, gameProps.position.y)
+                }
         }
     }
     
@@ -52,12 +50,10 @@ class GamePropsBanner {
             queue.removeAtIndex(removeIndex)
             gameProps.removeActionForKey(GameProps.TimerActionKey)
             gameProps.runAction(GamePropsBanner.fadeout0_2Anim){
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        for index in 0 ..< self.queue.count{
-                            let props = self.queue[index]
-                            props.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, y)
-                        }
-                    })
+                for index in 0 ..< self.queue.count{
+                    let props = self.queue[index]
+                    props.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, y)
+                }
             }
         }
     }

@@ -283,7 +283,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
         case PhysicsCategory.EnemyFast.rawValue | PhysicsCategory.Player.rawValue:
             let enemyBody = contact.bodyA.categoryBitMask == PhysicsCategory.Player.rawValue ? contact.bodyB : contact.bodyA
-            if enemyBody.node?.actionForKey(GameScene.playerKickActionKey) != nil || stopTimeEnabled{
+            if enemyBody.node?.actionForKey(GameScene.playerKickActionKey) != nil || enemyBody.node?.actionForKey(GameScene.hitRockActionKey) != nil || stopTimeEnabled{
                 break
             }
             else if shieldCount > 0{
@@ -293,14 +293,16 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
                 if let enemy = enemyBody.node as? Enemy{
                     let nextVelocity = (enemyBody.node!.position-player.position).normalized()*enemy.moveSpeed
-                    enemyBody.velocity = CGVectorMake(0, 0)
+                    enemy.currentSpeed = 0
                     enemy.runAction(SKAction.sequence([
                         SKAction.group([
                             SKAction.moveBy(CGVector(point: nextVelocity.normalized()*400), duration: 1),
                             SKAction.rotateByAngle(CGFloat(M_PI*4.0), duration: 1)]),
                         SKAction.runBlock({ () -> Void in
-                            enemy.moveToward(nextVelocity)
-                            enemy.faceCurrentDirection()
+                            if enemy.actionForKey(GameScene.hitRockActionKey) == nil{
+                                enemy.moveToward(nextVelocity)
+                                enemy.faceCurrentDirection()
+                            }
                         })]), withKey: GameScene.playerKickActionKey)
                 }
                 if shieldCount <= 0{
@@ -311,7 +313,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             else{
-                handleGameOver()
+//                handleGameOver()
             }
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -491,7 +493,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed),
             convertViewToImage()]
         let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: nil)
-        activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo]
+        activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAddToReadingList, UIActivityTypePostToVimeo]
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad{
             activityVC.modalPresentationStyle = .Popover
             activityVC.popoverPresentationController?.sourceView = view
@@ -636,9 +638,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                                 self.stopTimeEnabled = false
                                 for enemyNode in self.enemyLayer.children{
                                     if let enemy = enemyNode as? Enemy{
-                                        enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
                                         if enemy.actionForKey(GameScene.hitRockActionKey) == nil{
                                             enemy.currentSpeed = enemy.moveSpeed
+                                            enemy.sprite.runAction(Enemy.runningAnim, withKey: Enemy.runningActionKey)
                                         }
                                     }
                                 }

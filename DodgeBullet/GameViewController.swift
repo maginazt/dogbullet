@@ -17,8 +17,8 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         // Configure the view.
         let skView = self.view as! GameView
-        skView.showsFPS = true
-        skView.showsNodeCount = true
+//        skView.showsFPS = true
+//        skView.showsNodeCount = true
 //        skView.showsPhysics = true
         
         /* Sprite Kit applies additional optimizations to improve rendering performance */
@@ -46,9 +46,11 @@ class GameViewController: UIViewController {
     }
     
     func willResignActive(){
-        let skView = self.view as! SKView
-        if let scene = skView.scene as? GameScene{
-            scene.pauseGame()
+        if !GameViewController.firstLaunch{
+            let skView = self.view as! SKView
+            if let scene = skView.scene as? GameScene{
+                scene.pauseGame()
+            }
         }
     }
     

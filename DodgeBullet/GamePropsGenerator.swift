@@ -100,9 +100,7 @@ class GamePropsGenerator : GamePropsDelegate {
             else{
                 gameScene.gamePropsMap[gameProps.type] = gameProps
                 gameProps.initializeEffect(self)
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.gameScene.gamePropsBanner.add(gameProps)
-                })
+                gameScene.gamePropsBanner.add(gameProps)
             }
             switch gameProps.type{
             case .Phantom:
