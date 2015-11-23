@@ -467,12 +467,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 else if !gameOverMenu.hidden{
                     //重新开始
                     let restart = gameOverMenu.childNodeWithName("restart")
-                    if restart!.containsPoint(touchPos){
+                    if (touchPos-restart!.position).length() < 100{
                         restartGame()
                     }
                     //分享
                     let share = gameOverMenu.childNodeWithName("share")
-                    if share!.containsPoint(touchPos){
+                    if (touchPos-share!.position).length() < 100{
                         popOverShare()
                     }
                 }
