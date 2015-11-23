@@ -63,11 +63,11 @@ class GamePropsGenerator : GamePropsDelegate {
         }
         else{
             gameProps = GameProps(gamePropsType: GamePropsType(rawValue: random() % GamePropsType.Maximum.rawValue)!)
-            if gameProps.type == .DogFood && (gameScene.dogFoodArea != nil || gameScene.gamePropsLayer.childNodeWithName("dogFood") != nil){
+            if gameProps.type == .DogFood && (gameScene.dogFoodArea != nil || gameScene.gamePropsLayer.childNodeWithName("dogFoodProps") != nil){
                 return
             }
             if gameProps.type == .DogFood{
-                gameProps.name = "dogFood"
+                gameProps.name = "dogFoodProps"
             }
         }
         gameProps.position = randomPointInRect(CGRectInset(gameScene.playableArea, gameScene.gamePropsBanner.gridSize*2, gameScene.gamePropsBanner.gridSize*2))

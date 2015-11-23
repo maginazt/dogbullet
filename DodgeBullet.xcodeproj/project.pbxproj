@@ -223,19 +223,11 @@
 		4C8863FB1BD5035C00496482 /* viewcontrollers */ = {
 			isa = PBXGroup;
 			children = (
-				4C8863FC1BD5039F00496482 /* scenes */,
+				4CA49B6D1BC9EC5900589D3C /* GameScene.swift */,
 				4CA7049E1BD33393008F0932 /* GameView.swift */,
 				4CA49B6F1BC9EC5900589D3C /* GameViewController.swift */,
 			);
 			name = viewcontrollers;
-			sourceTree = "<group>";
-		};
-		4C8863FC1BD5039F00496482 /* scenes */ = {
-			isa = PBXGroup;
-			children = (
-				4CA49B6D1BC9EC5900589D3C /* GameScene.swift */,
-			);
-			name = scenes;
 			sourceTree = "<group>";
 		};
 		4C8F4C6B1BCBCB8800F93F83 /* entity */ = {

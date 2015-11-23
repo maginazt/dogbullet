@@ -26,33 +26,30 @@ class GamePropsBanner {
         area = CGRectMake(CGRectGetMaxX(gameScene.playableArea)-gridSize*11/2, CGRectGetMaxY(gameScene.playableArea)-120, gridSize*5, 100)
     }
     
+    func getPosition(index: Int) -> CGPoint{
+        return CGPointMake(CGRectGetMaxX(area)-gridSize*(2*CGFloat(index)+1)/2, CGRectGetMaxY(area)-gridSize/2)
+    }
+    
     func add(gameProps: GameProps){
-        var pos: CGPoint!
-        if let lastItem = queue.last{
-            pos = CGPointMake(lastItem.position.x-gridSize, lastItem.position.y)
-        }
-        else{
-            pos = CGPointMake(CGRectGetMaxX(area)-gridSize/2, CGRectGetMaxY(area)-gameProps.size.height/1.5)
-        }
         queue.append(gameProps)
+        let nextIndex = queue.count-1
         gameProps.runAction(SKAction.group([
             GamePropsBanner.scaleAnim,
-            SKAction.moveTo(pos, duration: 0.2)])){
+            SKAction.moveTo(getPosition(nextIndex), duration: 0.2)])){
                 if let index = self.queue.indexOf(gameProps){
-                    gameProps.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, gameProps.position.y)
+                    gameProps.position = self.getPosition(index)
                 }
         }
     }
     
     func remove(gameProps: GameProps){
         if let removeIndex = queue.indexOf(gameProps){
-            let y = gameProps.position.y
             queue.removeAtIndex(removeIndex)
             gameProps.removeActionForKey(GameProps.TimerActionKey)
             gameProps.runAction(GamePropsBanner.fadeout0_2Anim){
                 for index in 0 ..< self.queue.count{
                     let props = self.queue[index]
-                    props.position = CGPointMake(CGRectGetMaxX(self.area)-self.gridSize*(2*CGFloat(index)+1)/2, y)
+                    props.position = self.getPosition(index)
                 }
             }
         }
