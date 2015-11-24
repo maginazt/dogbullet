@@ -12,7 +12,10 @@ import SpriteKit
 class Player: SKNode {
     
     static let runningActionKey = "runningActionKey"
+    static let runningSoundActionKey = "runningSoundActionKey"
     static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.characterAtlas,prefix: "player", numOfPics: 4, timePerFrame: 0.1))
+    static let runningSoundAnim = SKAction.repeatActionForever(SKAction.playSoundFileNamed("run.wav", waitForCompletion: true))
+    
     
     let mainSprite: AnimatingSprite
     var tail: SKEmitterNode!
@@ -56,9 +59,15 @@ class Player: SKNode {
         physicsBody?.velocity = CGVector(point: target)
         if target == CGPointZero{
             mainSprite.removeAllActions()
+            removeActionForKey(Player.runningSoundActionKey)
             mainSprite.texture = mainSprite.stopTexture
         }
         else{
+            if UserDocuments.soundStatus{
+                if actionForKey(Player.runningSoundActionKey) == nil{
+                    runAction(Player.runningSoundAnim, withKey: Player.runningSoundActionKey)
+                }
+            }
             faceCurrentDirection(target)
         }
     }
@@ -88,6 +97,10 @@ class Player: SKNode {
     }
     
     func death(){
+        if UserDocuments.soundStatus{
+            SKTAudio.sharedInstance().playSoundEffect("dead.wav")
+        }
+        removeAllActions()
         mainSprite.removeAllActions()
         mainSprite.texture = deadTexture
         mainSprite.xScale = 1.2

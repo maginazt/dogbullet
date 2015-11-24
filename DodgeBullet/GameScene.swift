@@ -13,6 +13,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     static let hitRockActionKey = "hitRockAction"
     static let playerKickActionKey = "playerKickAction"
     static let turnCatActionKey = "TurnCatAction"
+    static let tickTockActionKey = "tickTockAction"
     
     static let tinyMessageAction = SKAction.sequence([
         SKAction.moveByX(0, y: 100, duration: 0.5),
@@ -41,6 +42,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         SKAction.fadeInWithDuration(0.2)]))
     static let pauseBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(-M_PI), duration: 10))
     static let restartBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 5))
+    static let tickTockAnim = SKAction.repeatActionForever(SKAction.playSoundFileNamed("ticktock.wav", waitForCompletion: true))
     
     static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
     
@@ -326,6 +328,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             fallthrough
             //用户接触猫，增加额外时间
         case PhysicsCategory.Cat.rawValue | PhysicsCategory.Player.rawValue:
+            if UserDocuments.soundStatus{
+                SKTAudio.sharedInstance().playSoundEffect("coin.wav")
+            }
             var catBody: SKPhysicsBody!
             var otherBody: SKPhysicsBody!
             if contact.bodyA.categoryBitMask == PhysicsCategory.Cat.rawValue{
@@ -460,6 +465,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if !paused{
                 if !pauseButton.hidden{
                     if (touchPos-pauseButton.position).length() < 100{
+                        playButtonPress()
                         pauseGame()
                     }
                 }
@@ -468,11 +474,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     //重新开始
                     let restart = gameOverMenu.childNodeWithName("restart")
                     if (touchPos-restart!.position).length() < 100{
+                        playButtonPress()
                         restartGame()
                     }
                     //分享
                     let share = gameOverMenu.childNodeWithName("share")
                     if (touchPos-share!.position).length() < 100{
+                        playButtonPress()
                         popOverShare()
                     }
                 }
@@ -485,6 +493,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     }
                 }
             }
+        }
+    }
+    
+    func playButtonPress(){
+        if UserDocuments.soundStatus{
+            SKTAudio.sharedInstance().playSoundEffect("button.wav")
         }
     }
     
@@ -595,6 +609,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         instructionLabel.runAction(GameScene.showInstructionAnim){
                 //取消时间静止
+                if UserDocuments.soundStatus{
+                    self.runAction(GameScene.tickTockAnim, withKey: GameScene.tickTockActionKey)
+                }
                 self.stopTimeEnabled = false
                 for enemyNode in self.enemyLayer.children{
                     if let enemy = enemyNode as? Enemy{
@@ -618,6 +635,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         if self.bonusTime < 0{
                             self.timeLabel.text = "0.00"
                             self.removeActionForKey(GameScene.turnCatActionKey)
+                            self.removeActionForKey(GameScene.tickTockActionKey)
                             //时间静止
                             self.stopTimeEnabled = true
                             for enemyNode in self.enemyLayer.children{

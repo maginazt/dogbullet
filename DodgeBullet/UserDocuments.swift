@@ -21,8 +21,8 @@ class UserDocuments {
             return NSMutableDictionary()
         }
     }()
-    static let ControllerStatusChangedNotification = "ControllerStatusChangedNotification"
     
+    static let SoundStatusChangedNotification = "SoundStatusChangedNotification"
     private static let SOUND_STATUS_KEY = "SoundStatusKey"
     static var soundStatus: Bool = {
         if let status = UserDocuments.userData.objectForKey(UserDocuments.SOUND_STATUS_KEY) as? NSNumber{
@@ -33,6 +33,7 @@ class UserDocuments {
         }
     }()
     
+    static let ControllerStatusChangedNotification = "ControllerStatusChangedNotification"
     private static let CONTROLLER_STATUS_KEY = "ControllerStatusKey"
     static var controllerStatus: ControllerType = {
         if let status = UserDocuments.userData.objectForKey(UserDocuments.CONTROLLER_STATUS_KEY) as? NSNumber{

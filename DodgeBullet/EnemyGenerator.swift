@@ -17,7 +17,7 @@ class EnemyGenerator {
     
     static let enemyDistance: CGFloat = 200
     let maxNormalEnemyCount = 100
-    let minimumNormalEnemyCount = 30
+    let minimumNormalEnemyCount = 35
     let maxSlowEnemyCount = 5
     
     weak var gameScene: GameScene!

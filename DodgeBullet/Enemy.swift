@@ -83,6 +83,9 @@ class Enemy: SKNode{
         }
         //change appearance
         if sprite.actionForKey(Enemy.purgeActionKey) == nil{
+            if UserDocuments.soundStatus{
+                SKTAudio.sharedInstance().playSoundEffect("purge.wav")
+            }
             sprite.runAction(Enemy.purgeAnim, withKey: Enemy.purgeActionKey)
             effect?.hidden = true
             effect?.targetNode = nil

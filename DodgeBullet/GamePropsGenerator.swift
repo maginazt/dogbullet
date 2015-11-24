@@ -76,6 +76,18 @@ class GamePropsGenerator : GamePropsDelegate {
     
     // 添加游戏道具效果
     func handleGamePropsEffect(gameProps: GameProps){
+        if UserDocuments.soundStatus{
+            switch gameProps.type{
+            case .WhosYourDaddy:
+                SKTAudio.sharedInstance().playSoundEffect("shield.wav")
+            case .SlowDown:
+                SKTAudio.sharedInstance().playSoundEffect("slowdown.wav")
+            case .Rock:
+                SKTAudio.sharedInstance().playSoundEffect("rock.wav")
+            default:
+                SKTAudio.sharedInstance().playSoundEffect("gameprops.wav")
+            }
+        }
         if gameScene.gamePropsMap.keys.contains(gameProps.type){
             switch gameProps.type{
             case .Rock:

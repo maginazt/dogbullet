@@ -32,12 +32,23 @@ class GameViewController: UIViewController {
         
         skView.presentScene(scene)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "soundStatusChanged", name: UserDocuments.SoundStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: UserDocuments.ControllerStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willResignActive", name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIApplicationDidChangeStatusBarOrientationNotification, object: nil)
     }
     
     /*    接收通知    */
+    func soundStatusChanged(){
+        //取消声音
+        if !UserDocuments.soundStatus{
+            let gameView = view as! GameView
+            if let scene = gameView.scene as? GameScene{
+                scene.removeActionForKey(GameScene.tickTockActionKey)
+                scene.player.removeActionForKey(Player.runningSoundActionKey)
+            }
+        }
+    }
     func controllerChanged(){
         let gameView = view as! GameView
         if let scene = gameView.scene as? GameScene{
