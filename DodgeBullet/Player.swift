@@ -9,6 +9,7 @@
 
 import Foundation
 import SpriteKit
+import AudioToolbox
 class Player: SKNode {
     
     static let runningActionKey = "runningActionKey"
@@ -59,13 +60,17 @@ class Player: SKNode {
         physicsBody?.velocity = CGVector(point: target)
         if target == CGPointZero{
             mainSprite.removeAllActions()
-            removeActionForKey(Player.runningSoundActionKey)
+//            removeActionForKey(Player.runningSoundActionKey)
+            Resources.stepSound.stop()
             mainSprite.texture = mainSprite.stopTexture
         }
         else{
-            if UserDocuments.soundStatus{
-                if actionForKey(Player.runningSoundActionKey) == nil{
-                    runAction(Player.runningSoundAnim, withKey: Player.runningSoundActionKey)
+            if physicsBody != nil && UserDocuments.soundStatus{
+//                if actionForKey(Player.runningSoundActionKey) == nil{
+//                    runAction(Player.runningSoundAnim, withKey: Player.runningSoundActionKey)
+//                }
+                if !Resources.stepSound.playing{
+                    Resources.stepSound.play()
                 }
             }
             faceCurrentDirection(target)
@@ -98,9 +103,10 @@ class Player: SKNode {
     
     func death(){
         if UserDocuments.soundStatus{
-            SKTAudio.sharedInstance().playSoundEffect("dead.wav")
+            AudioServicesPlaySystemSound(Resources.deadSound)
+            Resources.stepSound.stop()
         }
-        removeAllActions()
+//        removeAllActions()
         mainSprite.removeAllActions()
         mainSprite.texture = deadTexture
         mainSprite.xScale = 1.2

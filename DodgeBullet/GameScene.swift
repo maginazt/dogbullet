@@ -8,6 +8,7 @@
 
 import SpriteKit
 
+import AudioToolbox
 class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     static let hitRockActionKey = "hitRockAction"
@@ -289,6 +290,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 break
             }
             else if shieldCount > 0{
+                if UserDocuments.soundStatus{
+                    AudioServicesPlaySystemSound(Resources.kickSound)
+                }
                 shieldCount--
                 if let shield = player.childNodeWithName("shield") as? SKSpriteNode{
                     shield.alpha /= 2
@@ -329,7 +333,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             //用户接触猫，增加额外时间
         case PhysicsCategory.Cat.rawValue | PhysicsCategory.Player.rawValue:
             if UserDocuments.soundStatus{
-                SKTAudio.sharedInstance().playSoundEffect("coin.wav")
+                AudioServicesPlaySystemSound(Resources.coinSound)
             }
             var catBody: SKPhysicsBody!
             var otherBody: SKPhysicsBody!
@@ -341,8 +345,11 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 catBody = contact.bodyB
                 otherBody = contact.bodyA
             }
-            catBody.node?.removeAllActions()
-            catBody.node?.removeFromParent()
+            if let cat = catBody.node{
+                showTinyMessage(cat.position, text: "+0.1s", color: SKColor.goldColor())
+                cat.removeAllActions()
+                cat.removeFromParent()
+            }
             if let normalEnemy = catBody.node as? EnemyNormal{
                 if let index = enemyGenerator.normalEnemies.indexOf(normalEnemy){
                     enemyGenerator.normalEnemies.removeAtIndex(index)
@@ -354,7 +361,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             timePassed += 0.1
-            showTinyMessage(otherBody.node!.position, text: "+0.1s", color: SKColor.goldColor())
+            if otherBody.categoryBitMask == PhysicsCategory.Rock.rawValue{
+                otherBody.node?.removeFromParent()
+            }
             //石头接触笼子，移除石头
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyCageEdge.rawValue:
             let rockBody = contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue ? contact.bodyA : contact.bodyB
@@ -365,6 +374,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyNormal.rawValue:
             fallthrough
         case PhysicsCategory.Rock.rawValue | PhysicsCategory.EnemyFast.rawValue:
+            if UserDocuments.soundStatus{
+                AudioServicesPlaySystemSound(Resources.hitSound)
+            }
             var rockBody: SKPhysicsBody!
             var enemyBody: SKPhysicsBody!
             if contact.bodyA.categoryBitMask == PhysicsCategory.Rock.rawValue{
@@ -498,7 +510,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     func playButtonPress(){
         if UserDocuments.soundStatus{
-            SKTAudio.sharedInstance().playSoundEffect("button.wav")
+            AudioServicesPlaySystemSound(Resources.buttonSound)
         }
     }
     
@@ -610,7 +622,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         instructionLabel.runAction(GameScene.showInstructionAnim){
                 //取消时间静止
                 if UserDocuments.soundStatus{
-                    self.runAction(GameScene.tickTockAnim, withKey: GameScene.tickTockActionKey)
+//                    self.runAction(GameScene.tickTockAnim, withKey: GameScene.tickTockActionKey)
+                    Resources.ticktockSound.play()
                 }
                 self.stopTimeEnabled = false
                 for enemyNode in self.enemyLayer.children{
@@ -635,7 +648,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         if self.bonusTime < 0{
                             self.timeLabel.text = "0.00"
                             self.removeActionForKey(GameScene.turnCatActionKey)
-                            self.removeActionForKey(GameScene.tickTockActionKey)
+//                            self.removeActionForKey(GameScene.tickTockActionKey)
+                            Resources.ticktockSound.stop()
                             //时间静止
                             self.stopTimeEnabled = true
                             for enemyNode in self.enemyLayer.children{

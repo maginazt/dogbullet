@@ -48,6 +48,8 @@
 		4C8F4C6D1BCBCB9A00F93F83 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */; };
 		4C8F4C6F1BCBD9AC00F93F83 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */; };
 		4C8F4C721BCBDCF200F93F83 /* EnemyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */; };
+		4C9012AB1C048F83007A85CB /* hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4C9012A91C048F83007A85CB /* hit.wav */; };
+		4C9012AC1C048F83007A85CB /* kick.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4C9012AA1C048F83007A85CB /* kick.wav */; };
 		4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4C9CF7851BECCF2000D682F6 /* effects.atlas */; };
 		4CA49B6A1BC9EC5900589D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B691BC9EC5900589D3C /* AppDelegate.swift */; };
 		4CA49B6E1BC9EC5900589D3C /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6D1BC9EC5900589D3C /* GameScene.swift */; };
@@ -124,6 +126,8 @@
 		4C8F4C6C1BCBCB9A00F93F83 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		4C8F4C6E1BCBD9AC00F93F83 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		4C8F4C711BCBDCF200F93F83 /* EnemyGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnemyGenerator.swift; sourceTree = "<group>"; };
+		4C9012A91C048F83007A85CB /* hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hit.wav; sourceTree = "<group>"; };
+		4C9012AA1C048F83007A85CB /* kick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kick.wav; sourceTree = "<group>"; };
 		4C9CF7851BECCF2000D682F6 /* effects.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = effects.atlas; sourceTree = "<group>"; };
 		4CA49B661BC9EC5900589D3C /* DodgeBullet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DodgeBullet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B691BC9EC5900589D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -230,6 +234,8 @@
 		4C8863F41BD5030600496482 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				4C9012A91C048F83007A85CB /* hit.wav */,
+				4C9012AA1C048F83007A85CB /* kick.wav */,
 				4C87C23D1C033A69008180CA /* shield.wav */,
 				4C87C23E1C033A69008180CA /* slowdown.wav */,
 				4C87C23F1C033A69008180CA /* gameprops.wav */,
@@ -427,6 +433,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C9012AC1C048F83007A85CB /* kick.wav in Resources */,
 				4C87C23B1C0330E4008180CA /* run.wav in Resources */,
 				4CAC5EAB1BF6D1CF00F5575C /* footprint.sks in Resources */,
 				CE553F611BFAECCD006D4D79 /* set.png in Resources */,
@@ -455,6 +462,7 @@
 				4C87C2471C033A69008180CA /* purge.wav in Resources */,
 				4C8886301BF9F39100C370F0 /* settings.png in Resources */,
 				4C87C23C1C0330E4008180CA /* dead.wav in Resources */,
+				4C9012AB1C048F83007A85CB /* hit.wav in Resources */,
 				4CAC5EAF1BF6D1EC00F5575C /* dizzy.sks in Resources */,
 				4C88862C1BF9EC9400C370F0 /* launch.png in Resources */,
 				4CE160A41BEF345A00630B28 /* playertail.sks in Resources */,

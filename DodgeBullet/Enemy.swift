@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import AudioToolbox
 class Enemy: SKNode{
     
     static let runningActionKey = "runningActionKey"
@@ -84,7 +85,7 @@ class Enemy: SKNode{
         //change appearance
         if sprite.actionForKey(Enemy.purgeActionKey) == nil{
             if UserDocuments.soundStatus{
-                SKTAudio.sharedInstance().playSoundEffect("purge.wav")
+                AudioServicesPlaySystemSound(Resources.purgeSound)
             }
             sprite.runAction(Enemy.purgeAnim, withKey: Enemy.purgeActionKey)
             effect?.hidden = true

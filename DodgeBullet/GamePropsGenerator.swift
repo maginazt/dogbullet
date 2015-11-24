@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import AudioToolbox
 class GamePropsGenerator : GamePropsDelegate {
     
     static let dustInActionKey = "dustInAction"
@@ -79,13 +80,13 @@ class GamePropsGenerator : GamePropsDelegate {
         if UserDocuments.soundStatus{
             switch gameProps.type{
             case .WhosYourDaddy:
-                SKTAudio.sharedInstance().playSoundEffect("shield.wav")
+                AudioServicesPlaySystemSound(Resources.shieldSound)
             case .SlowDown:
-                SKTAudio.sharedInstance().playSoundEffect("slowdown.wav")
+                AudioServicesPlaySystemSound(Resources.slowdownSound)
             case .Rock:
-                SKTAudio.sharedInstance().playSoundEffect("rock.wav")
+                AudioServicesPlaySystemSound(Resources.rockSound)
             default:
-                SKTAudio.sharedInstance().playSoundEffect("gameprops.wav")
+                AudioServicesPlaySystemSound(Resources.gamepropsSound)
             }
         }
         if gameScene.gamePropsMap.keys.contains(gameProps.type){
