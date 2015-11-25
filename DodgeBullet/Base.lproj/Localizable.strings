@@ -20,3 +20,6 @@
 "shareText" = "I held for %3.1f seconds in a world full of dogs!";
 "soundText" = "sound";
 "controllerText" = "controller";
+"error" = "Error";
+"noAccelerometer" = "No accelerometer hardware on this device!";
+"ok" = "OK";

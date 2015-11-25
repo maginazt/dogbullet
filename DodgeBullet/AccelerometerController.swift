@@ -30,7 +30,6 @@ class AccelerometerController: PlayerController {
     }
     
     func setupCoordinate(){
-        print("application: \(UIApplication.sharedApplication().statusBarOrientation.rawValue)")
         switch UIApplication.sharedApplication().statusBarOrientation{
         case .LandscapeLeft:
             ay = Vector3(x: 0.63, y: 0.0, z: -0.92)

@@ -13,8 +13,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     static let hitRockActionKey = "hitRockAction"
     static let playerKickActionKey = "playerKickAction"
-    static let turnCatActionKey = "TurnCatAction"
-    static let tickTockActionKey = "tickTockAction"
+    static let turnCatActionKey = "turnCatAction"
     
     static let tinyMessageAction = SKAction.sequence([
         SKAction.moveByX(0, y: 100, duration: 0.5),
@@ -43,9 +42,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         SKAction.fadeInWithDuration(0.2)]))
     static let pauseBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(-M_PI), duration: 10))
     static let restartBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 5))
-    static let tickTockAnim = SKAction.repeatActionForever(SKAction.playSoundFileNamed("ticktock.wav", waitForCompletion: true))
     
-    static let flipTransition = SKTransition.flipVerticalWithDuration(0.3)
+    static let gameTransition = SKTransition.crossFadeWithDuration(0.3)
     
     static var blurFilter: CIFilter!
     
@@ -130,11 +128,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     private func setupBackground(){
         backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
-//        let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), color: SKColor.whiteColor(), size: size)
-//        backgroundNode = background
-//        background.zPosition = CGFloat(SceneZPosition.EnemyCageZPosition.rawValue) - 1
-//        background.position = CGPointMake(size.width/2, size.height/2)
-//        addChild(background)
     }
     
     private func setupEnemyCage(){
@@ -193,17 +186,20 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         inGameMenu.position = CGPointMake(size.width/2, size.height/2)
         inGameMenu.hidden = true
         
-        let soundSwitch = SKLabelNode(fontNamed: "Arial")
+        let soundSwitch = SKLabelNode()
         soundSwitch.fontSize = 70
         if UserDocuments.soundStatus{
+            soundSwitch.fontName = "Arial Bold"
             soundSwitch.fontColor = SKColor.blackColor()
         }
         else{
+            soundSwitch.fontName = "Arial"
             soundSwitch.fontColor = SKColor.whiteColor()
         }
         soundSwitch.name = "sound"
         soundSwitch.text = NSLocalizedString("soundText", comment: "Sound Menu Text")
         soundSwitch.position = CGPointMake(0, inGameMenu.size.height/4)
+        soundSwitch.zPosition = inGameMenu.zPosition + 1
         inGameMenu.addChild(soundSwitch)
         
         let controllerSwitch = SKLabelNode(fontNamed: "Arial")
@@ -212,24 +208,27 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         controllerSwitch.name = "controller"
         controllerSwitch.text = NSLocalizedString("controllerText", comment: "Controller Menu Text")
         controllerSwitch.position = CGPointMake(0, 0)
+        controllerSwitch.zPosition = inGameMenu.zPosition + 1
         inGameMenu.addChild(controllerSwitch)
         
-        var onscreen: SKSpriteNode!
-        var acceremo: SKSpriteNode!
-        switch UserDocuments.controllerStatus{
-        case .Accelerometer:
-            acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "acceon"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.width/7))
-            onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreenoff"), size: acceremo.size)
-        default:
-            onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreenon"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.width/7))
-            acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "acceoff"), size: onscreen.size)
+        let onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreen"), size: CGSizeMake(inGameMenu.size.width/5, inGameMenu.size.width/5))
+        let acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "accelerometer"), size: onscreen.size)
+        let arrow = SKSpriteNode(texture: SKTexture(imageNamed: "arrow"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.height/7))
+        if UserDocuments.controllerStatus == .Accelerometer{
+            arrow.zRotation = CGFloat(M_PI)
         }
-        onscreen.position = CGPointMake(-onscreen.size.width*5/2, -inGameMenu.size.height/4)
+        onscreen.position = CGPointMake(-onscreen.size.width*3/2, -inGameMenu.size.height/4)
         onscreen.name = "onscreen"
+        onscreen.zPosition = inGameMenu.zPosition + 1
         acceremo.position = CGPointMake(-onscreen.position.x, onscreen.position.y)
         acceremo.name = "accelerometer"
+        acceremo.zPosition = inGameMenu.zPosition + 1
+        arrow.position = CGPointMake(0, onscreen.position.y)
+        arrow.name = "arrow"
+        arrow.zPosition = inGameMenu.zPosition + 1
         inGameMenu.addChild(onscreen)
         inGameMenu.addChild(acceremo)
+        inGameMenu.addChild(arrow)
         
         addChild(inGameMenu)
     }
@@ -357,7 +356,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             else{
-//                handleGameOver()
+                handleGameOver()
             }
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:
@@ -539,11 +538,55 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 //游戏内菜单
                 if !inGameMenu.hidden{
                     if !inGameMenu.containsPoint(touchPos){
+                        playButtonPress()
                         resumeGame()
+                    }
+                    else{
+                        let inGamePos = touch.locationInNode(inGameMenu)
+                        //切换音效
+                        let sound = inGameMenu.childNodeWithName("sound") as! SKLabelNode
+                        if sound.containsPoint(inGamePos){
+                            UserDocuments.soundStatus = !UserDocuments.soundStatus
+                            playButtonPress()
+                            if UserDocuments.soundStatus{
+                                sound.fontName = "Arial Bold"
+                                sound.fontColor = SKColor.blackColor()
+                            }
+                            else{
+                                sound.fontName = "Arial"
+                                sound.fontColor = SKColor.whiteColor()
+                            }
+                        }
+                        //切换控制
+                        let arrow = inGameMenu.childNodeWithName("arrow")!
+                        let onscreen = inGameMenu.childNodeWithName("onscreen")!
+                        let accelerometer = inGameMenu.childNodeWithName("accelerometer")!
+                        if arrow.containsPoint(inGamePos) || (onscreen.containsPoint(inGamePos) && UserDocuments.controllerStatus != .OnScreen) || (accelerometer.containsPoint(inGamePos) && UserDocuments.controllerStatus != .Accelerometer){
+                            playButtonPress()
+                            if UserDocuments.controllerStatus == .OnScreen{
+                                if !Resources.accelerometerAvailable{
+                                    showAlert()
+                                    return
+                                }
+                                UserDocuments.controllerStatus = .Accelerometer
+                            }
+                            else{
+                                UserDocuments.controllerStatus = .OnScreen
+                            }
+                            arrow.zRotation += CGFloat(M_PI)
+                            NSNotificationCenter.defaultCenter().postNotificationName(UserDocuments.ControllerStatusChangedNotification, object: nil)
+                        }
                     }
                 }
             }
         }
+    }
+    
+    private func showAlert(){
+        let alert = UIAlertController(title: NSLocalizedString("error", comment: "Error Text"), message: NSLocalizedString("noAccelerometer", comment: "No Accelerometer Text"), preferredStyle: .Alert)
+        let cancleAction = UIAlertAction(title: NSLocalizedString("ok", comment: "OK Text"), style: .Cancel, handler: nil)
+        alert.addAction(cancleAction)
+        view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
     }
     
     func playButtonPress(){
@@ -826,17 +869,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             })
         }
-//        self.gameOverMenu.hidden = false
-//        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-//            score.text = NSString(format: "%3.1fs", self.timePassed) as String
-//        }
-//        gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-//        if self.timePassed > UserDocuments.bestRecord{
-//            UserDocuments.bestRecord = self.timePassed
-//        }
-//        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-//            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-//        }
     }
     
     func createBlurScreen() -> SKSpriteNode{
@@ -866,9 +898,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
             if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
                 accelerometerController.start()
             }
-            if stopTimeEnabled{
-                for enemy in enemyLayer.children{
-                    enemy.paused = true
+            if UserDocuments.soundStatus{
+                if turnCatEnabled && !stopTimeEnabled{
+                    Resources.ticktockSound.play()
                 }
             }
         }
@@ -884,6 +916,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 accelerometerController.stop()
             }
             player.moveToward(CGPointZero)
+            Resources.ticktockSound.stop()
         }
     }
     
@@ -892,12 +925,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         scene.scaleMode = scaleMode
         let gameView = view as! GameView
         gameView.changeControllerTarget(scene)
-        gameView.presentScene(scene, transition: GameScene.flipTransition)
+        gameView.presentScene(scene, transition: GameScene.gameTransition)
     }
     
     /*   PlayerControllerDelegate   */
     func moveByDirection(direction: CGPoint) {
-        if !initialing && !isGameOver && !GameViewController.firstLaunch{
+        if !initialing && !isGameOver && !GameViewController.firstLaunch && !paused{
             player.moveToward(direction*moveSpeed)
         }
     }

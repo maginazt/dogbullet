@@ -22,7 +22,6 @@ class UserDocuments {
         }
     }()
     
-    static let SoundStatusChangedNotification = "SoundStatusChangedNotification"
     private static let SOUND_STATUS_KEY = "SoundStatusKey"
     static var soundStatus: Bool = {
         if let status = UserDocuments.userData.objectForKey(UserDocuments.SOUND_STATUS_KEY) as? NSNumber{

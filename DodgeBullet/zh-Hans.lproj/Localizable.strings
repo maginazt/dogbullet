@@ -20,3 +20,6 @@
 "shareText" = "我在恶狗的世界里坚持了%3.1f秒！";
 "soundText" = "音 效";
 "controllerText" = "控 制";
+"error" = "错误";
+"noAccelerometer" = "本设备不支持加速计！";
+"ok" = "好";

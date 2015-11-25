@@ -13,9 +13,7 @@ import AudioToolbox
 class Player: SKNode {
     
     static let runningActionKey = "runningActionKey"
-    static let runningSoundActionKey = "runningSoundActionKey"
     static let runningAnim = SKAction.repeatActionForever(AnimatingSprite.createAnimWithAtlas(Resources.characterAtlas,prefix: "player", numOfPics: 4, timePerFrame: 0.1))
-    static let runningSoundAnim = SKAction.repeatActionForever(SKAction.playSoundFileNamed("run.wav", waitForCompletion: true))
     
     
     let mainSprite: AnimatingSprite
@@ -60,15 +58,11 @@ class Player: SKNode {
         physicsBody?.velocity = CGVector(point: target)
         if target == CGPointZero{
             mainSprite.removeAllActions()
-//            removeActionForKey(Player.runningSoundActionKey)
             Resources.stepSound.stop()
             mainSprite.texture = mainSprite.stopTexture
         }
         else{
             if physicsBody != nil && UserDocuments.soundStatus{
-//                if actionForKey(Player.runningSoundActionKey) == nil{
-//                    runAction(Player.runningSoundAnim, withKey: Player.runningSoundActionKey)
-//                }
                 if !Resources.stepSound.playing{
                     Resources.stepSound.play()
                 }
@@ -106,7 +100,6 @@ class Player: SKNode {
             AudioServicesPlaySystemSound(Resources.deadSound)
             Resources.stepSound.stop()
         }
-//        removeAllActions()
         mainSprite.removeAllActions()
         mainSprite.texture = deadTexture
         mainSprite.xScale = 1.2
