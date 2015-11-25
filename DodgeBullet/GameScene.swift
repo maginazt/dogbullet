@@ -74,7 +74,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     var slowDownEnabled = false//减速光环效果
     //游戏内菜单
     var pauseButton: SKNode!
-    var inGameMenu: SKNode!
+    var inGameMenu: SKSpriteNode!
     var gameOverMenu: SKNode!
     //时间标识
     var timeLabel: SKLabelNode!
@@ -188,10 +188,48 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func setupInGameMenu(){
-        inGameMenu = SKSpriteNode(texture: SKTexture(imageNamed: "set"), size: CGSizeMake(size.width/3, size.height/4))
+        inGameMenu = SKSpriteNode(texture: SKTexture(imageNamed: "set"), size: CGSizeMake(playableArea.size.width/2, playableArea.size.height/2))
         inGameMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         inGameMenu.position = CGPointMake(size.width/2, size.height/2)
         inGameMenu.hidden = true
+        
+        let soundSwitch = SKLabelNode(fontNamed: "Arial")
+        soundSwitch.fontSize = 70
+        if UserDocuments.soundStatus{
+            soundSwitch.fontColor = SKColor.blackColor()
+        }
+        else{
+            soundSwitch.fontColor = SKColor.whiteColor()
+        }
+        soundSwitch.name = "sound"
+        soundSwitch.text = NSLocalizedString("soundText", comment: "Sound Menu Text")
+        soundSwitch.position = CGPointMake(0, inGameMenu.size.height/4)
+        inGameMenu.addChild(soundSwitch)
+        
+        let controllerSwitch = SKLabelNode(fontNamed: "Arial")
+        controllerSwitch.fontSize = 70
+        controllerSwitch.fontColor = SKColor.blackColor()
+        controllerSwitch.name = "controller"
+        controllerSwitch.text = NSLocalizedString("controllerText", comment: "Controller Menu Text")
+        controllerSwitch.position = CGPointMake(0, 0)
+        inGameMenu.addChild(controllerSwitch)
+        
+        var onscreen: SKSpriteNode!
+        var acceremo: SKSpriteNode!
+        switch UserDocuments.controllerStatus{
+        case .Accelerometer:
+            acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "acceon"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.width/7))
+            onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreenoff"), size: acceremo.size)
+        default:
+            onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreenon"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.width/7))
+            acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "acceoff"), size: onscreen.size)
+        }
+        onscreen.position = CGPointMake(-onscreen.size.width*5/2, -inGameMenu.size.height/4)
+        onscreen.name = "onscreen"
+        acceremo.position = CGPointMake(-onscreen.position.x, onscreen.position.y)
+        acceremo.name = "accelerometer"
+        inGameMenu.addChild(onscreen)
+        inGameMenu.addChild(acceremo)
         
         addChild(inGameMenu)
     }
@@ -319,7 +357,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 }
             }
             else{
-                handleGameOver()
+//                handleGameOver()
             }
             //用户拾得道具 增加特殊效果
         case PhysicsCategory.GameProps.rawValue | PhysicsCategory.Player.rawValue:

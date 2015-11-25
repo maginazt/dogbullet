@@ -18,3 +18,5 @@
 "shieldBroken" = "防护罩关闭";
 "resetCountdown" = "倒计时重置";
 "shareText" = "我在恶狗的世界里坚持了%3.1f秒！";
+"soundText" = "音 效";
+"controllerText" = "控 制";

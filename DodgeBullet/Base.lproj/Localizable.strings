@@ -18,3 +18,5 @@
 "shieldBroken" = "Shield Off";
 "resetCountdown" = "Reset CountDown";
 "shareText" = "I held for %3.1f seconds in a world full of dogs!";
+"soundText" = "sound";
+"controllerText" = "controller";

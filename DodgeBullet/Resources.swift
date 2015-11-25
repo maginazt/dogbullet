@@ -25,6 +25,18 @@ class Resources{
         let blur = CIFilter(name: "CIGaussianBlur")!
         blur.setValue(20, forKey: kCIInputRadiusKey)
         GameScene.blurFilter = blur
+        coinSound = createSound("coin.wav")
+        purgeSound = createSound("purge.wav")
+        shieldSound = createSound("shield.wav")
+        slowdownSound = createSound("slowdown.wav")
+        gamepropsSound = createSound("gameprops.wav")
+        rockSound = createSound("rock.wav")
+        buttonSound = createSound("button.wav")
+        deadSound = createSound("dead.wav")
+        kickSound = createSound("kick.wav")
+        hitSound = createSound("hit.wav")
+        ticktockSound = createMusic("ticktock.wav")
+        stepSound = createMusic("run.wav")
     }
     
     static var accelerometerAvailable = false
@@ -33,34 +45,30 @@ class Resources{
         accelerometerAvailable = CMMotionManager().accelerometerAvailable
     }
     
-    static func createSound(file: String) -> SystemSoundID{
+    static var coinSound: SystemSoundID!
+    static var purgeSound: SystemSoundID!
+    static var shieldSound: SystemSoundID!
+    static var slowdownSound: SystemSoundID!
+    static var gamepropsSound: SystemSoundID!
+    static var rockSound: SystemSoundID!
+    static var buttonSound: SystemSoundID!
+    static var deadSound: SystemSoundID!
+    static var kickSound: SystemSoundID!
+    static var hitSound: SystemSoundID!
+    
+    static var stepSound: AVAudioPlayer!
+    static var ticktockSound: AVAudioPlayer!
+    
+    private static func createSound(file: String) -> SystemSoundID{
         var sound: SystemSoundID = 0
         AudioServicesCreateSystemSoundID(NSBundle.mainBundle().URLForResource(file, withExtension: nil)!, &sound)
         return sound
     }
     
-    static let coinSound = Resources.createSound("coin.wav")
-    static let purgeSound = Resources.createSound("purge.wav")
-    static let shieldSound = Resources.createSound("shield.wav")
-    static let slowdownSound = Resources.createSound("slowdown.wav")
-    static let gamepropsSound = Resources.createSound("gameprops.wav")
-    static let rockSound = Resources.createSound("rock.wav")
-    static let buttonSound = Resources.createSound("button.wav")
-    static let deadSound = Resources.createSound("dead.wav")
-    static let kickSound = Resources.createSound("kick.wav")
-    static let hitSound = Resources.createSound("hit.wav")
-    
-    static let stepSound: AVAudioPlayer = {
-        let player = try! AVAudioPlayer(contentsOfURL: NSBundle.mainBundle().URLForResource("run", withExtension: "wav")!)
+    private static func createMusic(file: String) -> AVAudioPlayer{
+        let player = try! AVAudioPlayer(contentsOfURL: NSBundle.mainBundle().URLForResource(file, withExtension: nil)!)
         player.numberOfLoops = -1
         player.prepareToPlay()
         return player
-    }()
-    
-    static let ticktockSound: AVAudioPlayer = {
-        let player = try! AVAudioPlayer(contentsOfURL: NSBundle.mainBundle().URLForResource("ticktock", withExtension: "wav")!)
-        player.numberOfLoops = -1
-        player.prepareToPlay()
-        return player
-    }()
+    }
 }
