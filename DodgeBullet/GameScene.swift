@@ -43,7 +43,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     static let pauseBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(-M_PI), duration: 10))
     static let restartBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 5))
     
-    static let gameTransition = SKTransition.crossFadeWithDuration(0.3)
+    static var gameTransition = SKTransition.crossFadeWithDuration(0.3)
     
     static var blurFilter: CIFilter!
     
@@ -122,12 +122,17 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         touch2Start.fontColor = SKColor.blackColor()
         touch2Start.name = "touch2start"
         touch2Start.position = CGPointMake(size.width/2, CGRectGetMaxY(playableArea)-250)
+        touch2Start.zPosition = CGFloat(SceneZPosition.BackgroundZPosition.rawValue) + 1
         touch2Start.runAction(GameScene.touchToStartAnim)
         addChild(touch2Start)
     }
     
     private func setupBackground(){
-        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
+//        backgroundColor = SKColorWithRGB(242, g: 244, b: 245)
+        let background = SKSpriteNode(texture: SKTexture(imageNamed: "bg"), size: size)
+        background.position = CGPointMake(size.width/2, size.height/2)
+        background.zPosition = CGFloat(SceneZPosition.BackgroundZPosition.rawValue)
+        addChild(background)
     }
     
     private func setupEnemyCage(){
@@ -181,7 +186,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func setupInGameMenu(){
-        inGameMenu = SKSpriteNode(texture: SKTexture(imageNamed: "set"), size: CGSizeMake(playableArea.size.width/2, playableArea.size.height/2))
+        inGameMenu = SKSpriteNode(texture: SKTexture(imageNamed: "set"), size: CGSizeMake(playableArea.size.width/1.5, playableArea.size.height/1.5))
         inGameMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         inGameMenu.position = CGPointMake(size.width/2, size.height/2)
         inGameMenu.hidden = true
@@ -213,17 +218,23 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         let onscreen = SKSpriteNode(texture: SKTexture(imageNamed: "onscreen"), size: CGSizeMake(inGameMenu.size.width/5, inGameMenu.size.width/5))
         let acceremo = SKSpriteNode(texture: SKTexture(imageNamed: "accelerometer"), size: onscreen.size)
-        let arrow = SKSpriteNode(texture: SKTexture(imageNamed: "arrow"), size: CGSizeMake(inGameMenu.size.width/7, inGameMenu.size.height/7))
-        if UserDocuments.controllerStatus == .Accelerometer{
-            arrow.zRotation = CGFloat(M_PI)
-        }
+        let arrow = SKSpriteNode(texture: SKTexture(imageNamed: "arrow"), size: CGSizeMake(inGameMenu.size.width/20, inGameMenu.size.height/6))
         onscreen.position = CGPointMake(-onscreen.size.width*3/2, -inGameMenu.size.height/4)
         onscreen.name = "onscreen"
         onscreen.zPosition = inGameMenu.zPosition + 1
         acceremo.position = CGPointMake(-onscreen.position.x, onscreen.position.y)
         acceremo.name = "accelerometer"
         acceremo.zPosition = inGameMenu.zPosition + 1
-        arrow.position = CGPointMake(0, onscreen.position.y)
+        if UserDocuments.controllerStatus == .Accelerometer{
+            arrow.position = CGPointMake(acceremo.position.x, acceremo.position.y+acceremo.size.height/2+arrow.size.height/2)
+            acceremo.xScale = 1.1
+            acceremo.yScale = 1.1
+        }
+        else{
+            arrow.position = CGPointMake(onscreen.position.x, onscreen.position.y+onscreen.size.height/2+arrow.size.height/2)
+            onscreen.xScale = 1.1
+            onscreen.yScale = 1.1
+        }
         arrow.name = "arrow"
         arrow.zPosition = inGameMenu.zPosition + 1
         inGameMenu.addChild(onscreen)
@@ -235,8 +246,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     
     func setupGameOverMenu(){
         gameOverMenu = SKNode()
-        gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
-        gameOverMenu.hidden = true
+        gameOverMenu.zPosition = CGFloat(SceneZPosition.BackgroundZPosition.rawValue) - 1
         
         let restart = SKSpriteNode(texture: SKTexture(imageNamed: "reload"), size: CGSizeMake(size.width/15, size.width/15))
         restart.name = "restart"
@@ -284,6 +294,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         
         let pauseBtn = SKSpriteNode(texture: SKTexture(imageNamed: "settings"), size: CGSizeMake(80, 80))
         pauseBtn.position = CGPointMake(CGRectGetMinX(playableArea)+pauseBtn.size.width/2+20, CGRectGetMaxY(playableArea)-pauseBtn.size.width/2-20)
+        pauseBtn.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         pauseButton = pauseBtn
         pauseBtn.runAction(GameScene.pauseBtnAnim)
         addChild(pauseBtn)
@@ -561,7 +572,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         let arrow = inGameMenu.childNodeWithName("arrow")!
                         let onscreen = inGameMenu.childNodeWithName("onscreen")!
                         let accelerometer = inGameMenu.childNodeWithName("accelerometer")!
-                        if arrow.containsPoint(inGamePos) || (onscreen.containsPoint(inGamePos) && UserDocuments.controllerStatus != .OnScreen) || (accelerometer.containsPoint(inGamePos) && UserDocuments.controllerStatus != .Accelerometer){
+                        if (onscreen.containsPoint(inGamePos) && UserDocuments.controllerStatus != .OnScreen) || (accelerometer.containsPoint(inGamePos) && UserDocuments.controllerStatus != .Accelerometer){
                             playButtonPress()
                             if UserDocuments.controllerStatus == .OnScreen{
                                 if !Resources.accelerometerAvailable{
@@ -569,11 +580,20 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                                     return
                                 }
                                 UserDocuments.controllerStatus = .Accelerometer
+                                onscreen.xScale = 1.0
+                                onscreen.yScale = 1.0
+                                accelerometer.xScale = 1.1
+                                accelerometer.yScale = 1.1
+                                arrow.position = CGPointMake(accelerometer.position.x, arrow.position.y)
                             }
                             else{
                                 UserDocuments.controllerStatus = .OnScreen
+                                accelerometer.xScale = 1.0
+                                accelerometer.yScale = 1.0
+                                onscreen.xScale = 1.1
+                                onscreen.yScale = 1.1
+                                arrow.position = CGPointMake(onscreen.position.x, arrow.position.y)
                             }
-                            arrow.zRotation += CGFloat(M_PI)
                             NSNotificationCenter.defaultCenter().postNotificationName(UserDocuments.ControllerStatusChangedNotification, object: nil)
                         }
                     }
@@ -841,33 +861,30 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         for prop in gamePropsLayer.children{
             prop.removeAllActions()
         }
+        for enemyNode in self.enemyLayer.children{
+            if let enemy = enemyNode as? Enemy{
+                enemy.sprite.removeAllActions()
+            }
+        }
         pauseButton.hidden = true
         timeLabel.hidden = true
-        dispatch_async(dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)) { () -> Void in
-            let blurNode = self.createBlurScreen()
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                for enemyNode in self.enemyLayer.children{
-                    if let enemy = enemyNode as? Enemy{
-                        enemy.sprite.removeAllActions()
-                    }
+        //模糊效果
+        let blurNode = self.createBlurScreen()
+        addChild(blurNode)
+        blurNode.runAction(SKAction.group([
+            SKAction.scaleTo(1.2, duration: 0.5),
+            SKAction.fadeInWithDuration(0.5)])){
+                self.gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
+                if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+                    score.text = NSString(format: "%3.1fs", self.timePassed) as String
                 }
-                self.addChild(blurNode)
-                blurNode.runAction(SKAction.group([
-                    SKAction.scaleTo(1.2, duration: 0.5),
-                    SKAction.fadeInWithDuration(0.5)])){
-                        self.gameOverMenu.hidden = false
-                        if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-                            score.text = NSString(format: "%3.1fs", self.timePassed) as String
-                        }
-                        self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-                        if self.timePassed > UserDocuments.bestRecord{
-                            UserDocuments.bestRecord = self.timePassed
-                        }
-                        if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-                            bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-                        }
+                self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+                if self.timePassed > UserDocuments.bestRecord{
+                    UserDocuments.bestRecord = self.timePassed
                 }
-            })
+                if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+                    bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+                }
         }
     }
     
