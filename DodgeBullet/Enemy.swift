@@ -122,15 +122,6 @@ class EnemyNormal: Enemy {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupFootPrintEffect(){
-        if let emitter = SKEmitterNode(fileNamed: "footprint"){
-            effect = emitter
-            emitter.position = CGPointMake(-sprite.texture!.size().width/3, 0)
-            emitter.targetNode = scene
-            addChild(emitter)
-        }
-    }
-    
     override func faceCurrentDirection() {
         super.faceCurrentDirection()
         effect?.particleRotation = zRotation
@@ -168,7 +159,7 @@ class EnemySlow: Enemy {
         if let emitter = SKEmitterNode(fileNamed: "ghostlight"){
             effect = emitter
             emitter.targetNode = scene
-            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue)
+            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue) - 1
 //            emitter.position = CGPointMake(-sprite.texture!.size().width/11, 0)
             addChild(emitter)
         }
@@ -216,7 +207,7 @@ class EnemyFast: Enemy{
             effect = emitter
             emitter.position = CGPointMake(-sprite.texture!.size().width/5, 0)
             emitter.targetNode = scene
-            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue)
+            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue) - 1
             addChild(emitter)
         }
     }

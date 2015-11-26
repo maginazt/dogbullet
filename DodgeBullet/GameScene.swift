@@ -719,6 +719,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         instructionLabel.fontColor = SKColor.redColor()
         instructionLabel.text = NSLocalizedString("eatThem", comment: "Eat Them Text")
         instructionLabel.position = CGPointMake(CGRectGetMidX(playableArea), CGRectGetMidY(playableArea))
+        instructionLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         addChild(instructionLabel)
         
         instructionLabel.runAction(GameScene.showInstructionAnim){

@@ -91,7 +91,7 @@ class Player: SKNode {
             emitter.targetNode = scene
             tail = emitter
             tail.particleSpeed = 0.0
-            tail.particleZPosition = CGFloat(SceneZPosition.PlayerZPosition.rawValue)
+            tail.particleZPosition = CGFloat(SceneZPosition.PlayerZPosition.rawValue) - 1
             addChild(tail)
         }
     }
