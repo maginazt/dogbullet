@@ -168,6 +168,7 @@ class EnemySlow: Enemy {
         if let emitter = SKEmitterNode(fileNamed: "ghostlight"){
             effect = emitter
             emitter.targetNode = scene
+            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue)
 //            emitter.position = CGPointMake(-sprite.texture!.size().width/11, 0)
             addChild(emitter)
         }
@@ -215,6 +216,7 @@ class EnemyFast: Enemy{
             effect = emitter
             emitter.position = CGPointMake(-sprite.texture!.size().width/5, 0)
             emitter.targetNode = scene
+            emitter.particleZPosition = CGFloat(SceneZPosition.EnemyZPosition.rawValue)
             addChild(emitter)
         }
     }

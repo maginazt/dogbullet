@@ -468,6 +468,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         tinyMessage.fontSize = 50
         tinyMessage.text = text
         tinyMessage.position = position
+        tinyMessage.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
         addChild(tinyMessage)
         tinyMessage.runAction(GameScene.tinyMessageAction)
     }

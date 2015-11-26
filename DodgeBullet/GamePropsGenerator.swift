@@ -139,6 +139,7 @@ class GamePropsGenerator : GamePropsDelegate {
         phantom.mainSprite.alpha = 0.7
         phantom.physicsBody = nil
         phantom.position = gameScene.player.position
+        phantom.zPosition = CGFloat(SceneZPosition.PlayerZPosition.rawValue)
         gameScene.playerPhantom = phantom
         gameScene.addChild(phantom)
         phantom.setupTail("phantomtail")
@@ -189,6 +190,7 @@ class GamePropsGenerator : GamePropsDelegate {
         let rock = SKSpriteNode(texture: Resources.characterAtlas.textureNamed("ammo"), color: SKColor.whiteColor(), size: CGSizeMake(20, 20))
         rock.runAction(GamePropsGenerator.rockAnim)
         rock.position = position
+        rock.zPosition = CGFloat(SceneZPosition.GamePropsZPosition.rawValue)
         gameScene.addChild(rock)
         rock.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         rock.physicsBody?.usesPreciseCollisionDetection = true
