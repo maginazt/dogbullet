@@ -18,6 +18,7 @@ class EnemyGenerator {
     static let enemyDistance: CGFloat = 200
     let maxNormalEnemyCount = 100
     let minimumNormalEnemyCount = 35
+    let maximumNormalEnemyCount = 75
     let maxSlowEnemyCount = 5
     
     weak var gameScene: GameScene!
@@ -41,8 +42,12 @@ class EnemyGenerator {
             SKAction.runBlock({ () -> Void in
                 if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     var count = 5
-                    if self.normalEnemies.count < self.minimumNormalEnemyCount{
-                        count = self.minimumNormalEnemyCount - self.normalEnemies.count
+                    var number = (self.gameScene.nextMinute-1)+self.minimumNormalEnemyCount
+                    if number > self.maximumNormalEnemyCount{
+                        number = self.maximumNormalEnemyCount
+                    }
+                    if self.normalEnemies.count < number{
+                        count = number - self.normalEnemies.count
                     }
                     for _ in 0 ..< count{
                         if self.normalEnemies.count < self.maxNormalEnemyCount{
