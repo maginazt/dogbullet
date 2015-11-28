@@ -11,6 +11,7 @@ import SpriteKit
 import CoreMotion
 import AudioToolbox
 import AVFoundation
+import GPUImage
 class Resources{
     
     static let appStoreUrl = NSURL(string: "https://www.store.apple.com")
@@ -22,9 +23,9 @@ class Resources{
         SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]){
             completionHandler?()
         }
-        let blur = CIFilter(name: "CIGaussianBlur")!
-        blur.setValue(20, forKey: kCIInputRadiusKey)
-        GameScene.blurFilter = blur
+        let blurFilter = GPUImageGaussianBlurFilter()
+        blurFilter.blurRadiusInPixels = 7.0
+        GameScene.GPUBlurFilter = blurFilter
         coinSound = createSound("coin.wav")
         purgeSound = createSound("purge.wav")
         shieldSound = createSound("shield.wav")

@@ -102,7 +102,6 @@ class Player: SKNode {
             Resources.stepSound.stop()
         }
         mainSprite.removeAllActions()
-        mainSprite.texture = deadTexture
         mainSprite.xScale = 1.2
         mainSprite.yScale = 1.2
     }

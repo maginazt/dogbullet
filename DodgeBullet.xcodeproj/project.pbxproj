@@ -51,6 +51,8 @@
 		4C9012AB1C048F83007A85CB /* hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4C9012A91C048F83007A85CB /* hit.wav */; };
 		4C9012AC1C048F83007A85CB /* kick.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4C9012AA1C048F83007A85CB /* kick.wav */; };
 		4C9CF7861BECCF2000D682F6 /* effects.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4C9CF7851BECCF2000D682F6 /* effects.atlas */; };
+		4C9E8F4F1C092D40003656E7 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C9E8F4C1C092CC7003656E7 /* GPUImage.framework */; };
+		4C9E8F511C092EC4003656E7 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4C9E8F4C1C092CC7003656E7 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4CA49B6A1BC9EC5900589D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B691BC9EC5900589D3C /* AppDelegate.swift */; };
 		4CA49B6E1BC9EC5900589D3C /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6D1BC9EC5900589D3C /* GameScene.swift */; };
 		4CA49B701BC9EC5900589D3C /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA49B6F1BC9EC5900589D3C /* GameViewController.swift */; };
@@ -79,6 +81,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4C9E8F491C092CC7003656E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		4C9E8F4B1C092CC7003656E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCE209E51943F20C002FEED8;
+			remoteInfo = GPUImageFramework;
+		};
+		4C9E8F4D1C092D1C003656E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCE209E41943F20C002FEED8;
+			remoteInfo = GPUImageFramework;
+		};
 		4CA49B7F1BC9EC5900589D3C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4CA49B5E1BC9EC5900589D3C /* Project object */;
@@ -87,6 +110,19 @@
 			remoteInfo = DodgeBullet;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4C9E8F501C092E9C003656E7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4C9E8F511C092EC4003656E7 /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4C4468011BCA338800FC0A7F /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
@@ -133,6 +169,7 @@
 		4C9012A91C048F83007A85CB /* hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hit.wav; sourceTree = "<group>"; };
 		4C9012AA1C048F83007A85CB /* kick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kick.wav; sourceTree = "<group>"; };
 		4C9CF7851BECCF2000D682F6 /* effects.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = effects.atlas; sourceTree = "<group>"; };
+		4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../GPUImage/GPUImage/framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 		4CA49B661BC9EC5900589D3C /* DodgeBullet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DodgeBullet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA49B691BC9EC5900589D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4CA49B6D1BC9EC5900589D3C /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -145,6 +182,7 @@
 		4CA49B841BC9EC5900589D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4CA7049E1BD33393008F0932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4CA8A7D91BD1CA9E007C5F0E /* UserDocuments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDocuments.swift; sourceTree = "<group>"; };
+		4CABA8391C089D9600FA7087 /* DodgeBullet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DodgeBullet-Bridging-Header.h"; sourceTree = "<group>"; };
 		4CAC5EA61BF6D13900F5575C /* footprint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = footprint.png; sourceTree = "<group>"; };
 		4CAC5EAA1BF6D1CF00F5575C /* footprint.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = footprint.sks; sourceTree = "<group>"; };
 		4CAC5EAE1BF6D1EC00F5575C /* dizzy.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = dizzy.sks; sourceTree = "<group>"; };
@@ -173,6 +211,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C9E8F4F1C092D40003656E7 /* GPUImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,9 +351,19 @@
 			name = emittersystem;
 			sourceTree = "<group>";
 		};
+		4C9E8F441C092CC6003656E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C9E8F4A1C092CC7003656E7 /* libGPUImage.a */,
+				4C9E8F4C1C092CC7003656E7 /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CA49B5D1BC9EC5900589D3C = {
 			isa = PBXGroup;
 			children = (
+				4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */,
 				4CA49B681BC9EC5900589D3C /* DodgeBullet */,
 				4CA49B811BC9EC5900589D3C /* DodgeBulletUITests */,
 				4CA49B671BC9EC5900589D3C /* Products */,
@@ -348,6 +397,7 @@
 				4CA49B741BC9EC5900589D3C /* Assets.xcassets */,
 				4CA49B761BC9EC5900589D3C /* LaunchScreen.storyboard */,
 				CE553F661BFB04D5006D4D79 /* Localizable.strings */,
+				4CABA8391C089D9600FA7087 /* DodgeBullet-Bridging-Header.h */,
 			);
 			path = DodgeBullet;
 			sourceTree = "<group>";
@@ -371,10 +421,12 @@
 				4CA49B621BC9EC5900589D3C /* Sources */,
 				4CA49B631BC9EC5900589D3C /* Frameworks */,
 				4CA49B641BC9EC5900589D3C /* Resources */,
+				4C9E8F501C092E9C003656E7 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4C9E8F4E1C092D1C003656E7 /* PBXTargetDependency */,
 			);
 			name = DodgeBullet;
 			productName = DodgeBullet;
@@ -432,6 +484,12 @@
 			mainGroup = 4CA49B5D1BC9EC5900589D3C;
 			productRefGroup = 4CA49B671BC9EC5900589D3C /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4C9E8F441C092CC6003656E7 /* Products */;
+					ProjectRef = 4C9E8F431C092CC6003656E7 /* GPUImage.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4CA49B651BC9EC5900589D3C /* DodgeBullet */,
@@ -439,6 +497,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4C9E8F4A1C092CC7003656E7 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = 4C9E8F491C092CC7003656E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4C9E8F4C1C092CC7003656E7 /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = 4C9E8F4B1C092CC7003656E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4CA49B641BC9EC5900589D3C /* Resources */ = {
@@ -544,6 +619,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4C9E8F4E1C092D1C003656E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImageFramework;
+			targetProxy = 4C9E8F4D1C092D1C003656E7 /* PBXContainerItemProxy */;
+		};
 		4CA49B801BC9EC5900589D3C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4CA49B651BC9EC5900589D3C /* DodgeBullet */;
@@ -686,6 +766,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "DodgeBullet/DodgeBullet-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -701,6 +782,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "DodgeBullet/DodgeBullet-Bridging-Header.h";
 			};
 			name = Release;
 		};

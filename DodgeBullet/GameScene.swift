@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import GPUImage
 
 import AudioToolbox
 class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
@@ -42,10 +43,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         SKAction.fadeInWithDuration(0.2)]))
     static let pauseBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(-M_PI), duration: 10))
     static let restartBtnAnim = SKAction.repeatActionForever(SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 5))
+    static let blurAnim = SKAction.group([
+        SKAction.fadeInWithDuration(0.2),
+        SKAction.scaleTo(1.1, duration: 0.2)])
     
     static var gameTransition = SKTransition.crossFadeWithDuration(0.3)
     
-    static var blurFilter: CIFilter!
+    static var GPUBlurFilter: GPUImageGaussianBlurFilter!
     
     var initialing = true
     var isGameOver = false
@@ -870,42 +874,41 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         }
         pauseButton.hidden = true
         timeLabel.hidden = true
-        //模糊效果
-        let blurNode = self.createBlurScreen()
-        addChild(blurNode)
-        blurNode.runAction(SKAction.group([
-            SKAction.scaleTo(1.2, duration: 0.5),
-            SKAction.fadeInWithDuration(0.5)])){
-                self.gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
-                if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
-                    score.text = NSString(format: "%3.1fs", self.timePassed) as String
+        runAction(SKAction.group([
+            SKAction.waitForDuration(0.02),
+            SKAction.runBlock({ () -> Void in
+                self.player.mainSprite.texture = self.player.deadTexture
+            })])){
+                //模糊效果
+                let blurNode = self.createBlurScreen()
+                blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
+                blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+                self.addChild(blurNode)
+                blurNode.runAction(GameScene.blurAnim){
+                    self.gameOverMenu.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue)
+                    if let score = self.gameOverMenu.childNodeWithName("score") as? SKLabelNode{
+                        score.text = NSString(format: "%3.1fs", self.timePassed) as String
+                    }
+                    self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
+                    if self.timePassed > UserDocuments.bestRecord{
+                        UserDocuments.bestRecord = self.timePassed
+                    }
+                    if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
+                        bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+                    }
                 }
-                self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
-                if self.timePassed > UserDocuments.bestRecord{
-                    UserDocuments.bestRecord = self.timePassed
-                }
-                if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
-                    bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
-                }
+
         }
-    }
+}
     
     func createBlurScreen() -> SKSpriteNode{
-//        UIGraphicsBeginImageContextWithOptions(self.view!.bounds.size, false, 0.0)
-//        self.view!.drawViewHierarchyInRect(self.view!.bounds, afterScreenUpdates: true)
-//        let original = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        GameScene.blurFilter.setValue(CIImage(image: original)!, forKey: kCIInputImageKey)
-//        let output = GameScene.blurFilter.outputImage!
-//        let imgRef = GameScene.ciContext.createCGImage(output, fromRect: output.extent)
-//        let snapshot = UIImage(CGImage: imgRef)
-//        let blurNode = SKSpriteNode(texture: SKTexture(image: snapshot), size: self.size)
-        let blurNode = SKSpriteNode(texture: self.view!.textureFromNode(self)!.textureByApplyingCIFilter(GameScene.blurFilter), size: self.size)
-        blurNode.name = "blur"
-        blurNode.position = CGPointMake(self.size.width/2, self.size.height/2)
-        blurNode.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
-        blurNode.xScale = 1.1
-        blurNode.yScale = 1.1
+        let screenshot = convertViewToImage()
+        let picture = GPUImagePicture(image: screenshot)
+        picture.addTarget(GameScene.GPUBlurFilter)
+        GameScene.GPUBlurFilter.useNextFrameForImageCapture()
+        picture.processImage()
+        let output = GameScene.GPUBlurFilter.imageFromCurrentFramebuffer()
+        let blurNode = SKSpriteNode(texture: SKTexture(image: output), size: playableArea.size)
         return blurNode
     }
     
@@ -945,6 +948,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         let gameView = view as! GameView
         gameView.changeControllerTarget(scene)
         gameView.presentScene(scene, transition: GameScene.gameTransition)
+        removeAllActions()
+        removeAllChildren()
     }
     
     /*   PlayerControllerDelegate   */

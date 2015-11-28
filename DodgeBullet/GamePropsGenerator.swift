@@ -107,10 +107,7 @@ class GamePropsGenerator : GamePropsDelegate {
         }
         else{
             gameScene.showTinyMessage(gameProps.position, text: gameProps.des, color: SKColor.blackColor())
-            if gameProps.type == GamePropsType.Rock{
-                gameProps.removeFromParent()
-            }
-            else{
+            if gameProps.type != GamePropsType.Rock{
                 gameScene.gamePropsMap[gameProps.type] = gameProps
                 gameProps.initializeEffect(self)
                 gameScene.gamePropsBanner.add(gameProps)
@@ -122,6 +119,7 @@ class GamePropsGenerator : GamePropsDelegate {
                 addDogFoodEffect(gameProps.position)
             case .Rock:
                 addRockEffect(gameProps.position)
+                gameProps.removeFromParent()
             case .WhosYourDaddy:
                 addWhosYourDaddyEffect()
             case .SlowDown:
