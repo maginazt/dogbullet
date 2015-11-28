@@ -16,9 +16,12 @@ class EnemyGenerator {
         ])
     
     static let enemyDistance: CGFloat = 200
-    let maxNormalEnemyCount = 100
-    let minimumNormalEnemyCount = 35
-    let maximumNormalEnemyCount = 75
+    //普通敌人上限
+    let maxNormalEnemyCount: Int
+    //屏幕敌人最少数目
+    let minimumNormalEnemyCount: Int
+    //屏幕敌人最多数目
+    let maximumNormalEnemyCount: Int
     let maxSlowEnemyCount = 5
     
     weak var gameScene: GameScene!
@@ -32,6 +35,25 @@ class EnemyGenerator {
     
     init(gameScene: GameScene){
         self.gameScene = gameScene
+        let sz = gameScene.view!.frame.size
+        // width: height = 4 : 3 ipad
+        if sz.height / sz.width > 0.7{
+            maxNormalEnemyCount = 100
+            minimumNormalEnemyCount = 35
+            maximumNormalEnemyCount = 75
+        }
+        //width: height = 3 : 2 iphone4s
+        else if sz.height / sz.width > 0.6{
+            maxNormalEnemyCount = 120
+            minimumNormalEnemyCount = 42
+            maximumNormalEnemyCount = 90
+        }
+        //width: height = 16 : 9 iphone5
+        else{
+            maxNormalEnemyCount = 140
+            minimumNormalEnemyCount = 49
+            maximumNormalEnemyCount = 105
+        }
         upRect = CGRectMake(CGRectGetMinX(gameScene.playableArea), CGRectGetMaxY(gameScene.playableArea), gameScene.playableArea.width, EnemyGenerator.enemyDistance)
         rightRect = CGRectMake(CGRectGetMaxX(gameScene.playableArea), CGRectGetMinY(gameScene.playableArea), EnemyGenerator.enemyDistance, gameScene.playableArea.height)
         downRect = CGRectMake(CGRectGetMinX(gameScene.playableArea), CGRectGetMinY(gameScene.playableArea)-EnemyGenerator.enemyDistance, gameScene.playableArea.width, EnemyGenerator.enemyDistance)

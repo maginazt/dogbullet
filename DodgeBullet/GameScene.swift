@@ -148,19 +148,18 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     }
     
     private func setupPlayableArea(){
-        if let sz = view?.frame.size{
-            // width: height = 4 : 3 ipad
-            if sz.height / sz.width > 0.7{
-                playableArea = CGRectMake(0, 0, size.width, size.height)
-            }
+        let sz = view!.frame.size
+        // width: height = 4 : 3 ipad
+        if sz.height / sz.width > 0.7{
+            playableArea = CGRectMake(0, 0, size.width, size.height)
+        }
             // width: height = 16 : 9 iphone5
-            // or width: height = 4 : 3 iphone4s
-            else{
-                let maxAspectRatio: CGFloat = sz.width / sz.height
-                let maxAspectHeight = size.width / maxAspectRatio
-                let margin = (size.height - maxAspectHeight) / 2
-                playableArea = CGRectMake(0, margin, size.width, maxAspectHeight)
-            }
+            // or width: height = 3 : 2 iphone4s
+        else{
+            let maxAspectRatio: CGFloat = sz.width / sz.height
+            let maxAspectHeight = size.width / maxAspectRatio
+            let margin = (size.height - maxAspectHeight) / 2
+            playableArea = CGRectMake(0, margin, size.width, maxAspectHeight)
         }
         physicsBody = SKPhysicsBody(edgeLoopFromRect: playableArea)
         physicsBody?.categoryBitMask = PhysicsCategory.Edge.rawValue
