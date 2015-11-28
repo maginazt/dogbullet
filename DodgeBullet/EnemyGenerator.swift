@@ -38,9 +38,9 @@ class EnemyGenerator {
         let sz = gameScene.view!.frame.size
         // width: height = 4 : 3 ipad
         if sz.height / sz.width > 0.7{
-            maxNormalEnemyCount = 100
-            minimumNormalEnemyCount = 35
-            maximumNormalEnemyCount = 75
+            maxNormalEnemyCount = 140
+            minimumNormalEnemyCount = 49
+            maximumNormalEnemyCount = 105
         }
         //width: height = 3 : 2 iphone4s
         else if sz.height / sz.width > 0.6{
@@ -50,9 +50,9 @@ class EnemyGenerator {
         }
         //width: height = 16 : 9 iphone5
         else{
-            maxNormalEnemyCount = 140
-            minimumNormalEnemyCount = 49
-            maximumNormalEnemyCount = 105
+            maxNormalEnemyCount = 100
+            minimumNormalEnemyCount = 35
+            maximumNormalEnemyCount = 75
         }
         upRect = CGRectMake(CGRectGetMinX(gameScene.playableArea), CGRectGetMaxY(gameScene.playableArea), gameScene.playableArea.width, EnemyGenerator.enemyDistance)
         rightRect = CGRectMake(CGRectGetMaxX(gameScene.playableArea), CGRectGetMinY(gameScene.playableArea), EnemyGenerator.enemyDistance, gameScene.playableArea.height)

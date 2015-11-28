@@ -48,7 +48,7 @@ class GamePropsGenerator : GamePropsDelegate {
     
     func createNextGameProps(){
         gameScene.runAction(SKAction.sequence([
-            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 2, max: 3))),
+            SKAction.waitForDuration(NSTimeInterval(CGFloat.random(min: 3, max: 7))),
             SKAction.runBlock({ () -> Void in
                 if !GameViewController.firstLaunch && !self.gameScene.stopTimeEnabled{
                     self.spawnGameProps()

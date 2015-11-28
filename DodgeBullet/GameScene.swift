@@ -680,7 +680,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 timeLabel.fontColor = SKColor.redColor()
             }
             
-            if Int(timePassed/20) == nextMinute{
+            if Int(timePassed/30) == nextMinute{
                 addTurnCatEffect()
             }
         }
