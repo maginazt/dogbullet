@@ -623,7 +623,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         let shareContent = [
             NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed),
             convertViewToImage()]
-        let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: Resources.activities)
         activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAddToReadingList, UIActivityTypePostToVimeo]
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad{
             activityVC.modalPresentationStyle = .Popover

@@ -19,6 +19,8 @@ class Resources{
     static let characterAtlas = SKTextureAtlas(named: "characters")
     static let effectAtlas = SKTextureAtlas(named: "effects")
     
+    static var activities: [UIActivity]!
+    
     static func loadResources(completionHandler: (() -> Void)?){
         SKTextureAtlas.preloadTextureAtlases([characterAtlas, effectAtlas]){
             completionHandler?()
@@ -38,6 +40,7 @@ class Resources{
         hitSound = createSound("hit.wav")
         ticktockSound = createMusic("ticktock.wav")
         stepSound = createMusic("run.wav")
+        activities = [WeixinSessionActivity(), WeixinTimelineActivity()]
     }
     
     static var accelerometerAvailable = false

@@ -23,3 +23,6 @@
 "error" = "Error";
 "noAccelerometer" = "No accelerometer hardware on this device!";
 "ok" = "OK";
+"weChatSession" = "WeChat Session";
+"weChatTimeline" = "WeChat Timeline";
+"weChatShare" = "%@ Share";
