@@ -38,9 +38,9 @@ class EnemyGenerator {
         let sz = gameScene.view!.frame.size
         // width: height = 4 : 3 ipad
         if sz.height / sz.width > 0.7{
-            maxNormalEnemyCount = 140
-            minimumNormalEnemyCount = 49
-            maximumNormalEnemyCount = 105
+            maxNormalEnemyCount = 180
+            minimumNormalEnemyCount = 63
+            maximumNormalEnemyCount = 135
         }
         //width: height = 3 : 2 iphone4s
         else if sz.height / sz.width > 0.6{
@@ -64,7 +64,7 @@ class EnemyGenerator {
             SKAction.runBlock({ () -> Void in
                 if !GameViewController.firstLaunch && !gameScene.stopTimeEnabled{
                     var count = 5
-                    var number = (self.gameScene.nextMinute-1)+self.minimumNormalEnemyCount
+                    var number = (self.gameScene.nextMinute-1)*20+self.minimumNormalEnemyCount
                     if number > self.maximumNormalEnemyCount{
                         number = self.maximumNormalEnemyCount
                     }

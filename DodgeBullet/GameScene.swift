@@ -471,7 +471,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         tinyMessage.fontSize = 50
         tinyMessage.text = text
         tinyMessage.position = position
-        tinyMessage.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+        tinyMessage.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 2
         addChild(tinyMessage)
         tinyMessage.runAction(GameScene.tinyMessageAction)
     }
@@ -722,7 +722,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         instructionLabel.fontColor = SKColor.redColor()
         instructionLabel.text = NSLocalizedString("eatThem", comment: "Eat Them Text")
         instructionLabel.position = CGPointMake(CGRectGetMidX(playableArea), CGRectGetMidY(playableArea))
-        instructionLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 1
+        instructionLabel.zPosition = CGFloat(SceneZPosition.GameMenuZPosition.rawValue) - 2
         addChild(instructionLabel)
         
         instructionLabel.runAction(GameScene.showInstructionAnim){
