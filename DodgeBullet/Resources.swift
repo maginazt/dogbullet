@@ -38,6 +38,13 @@ class Resources{
         deadSound = createSound("dead.wav")
         kickSound = createSound("kick.wav")
         hitSound = createSound("hit.wav")
+        
+        do{
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+        }
+        catch{
+            print("AVAudioSession AVAudioSessionCategoryAmbient failed")
+        }
         ticktockSound = createMusic("ticktock.wav")
         stepSound = createMusic("run.wav")
         activities = [WeixinSessionActivity(), WeixinTimelineActivity()]
