@@ -179,15 +179,16 @@ class GamePropsGenerator : GamePropsDelegate {
     }
     
     private func addRockEffect(position: CGPoint){
+        let rect = CGRectMake(position.x-35, position.y-35, 70, 70)
         for _ in 0 ..< 20{
-            spawnRock(position)
+            spawnRock(rect)
         }
     }
     
-    private func spawnRock(position: CGPoint){
+    private func spawnRock(rect: CGRect){
         let rock = SKSpriteNode(texture: Resources.characterAtlas.textureNamed("ammo"), color: SKColor.whiteColor(), size: CGSizeMake(20, 20))
         rock.runAction(GamePropsGenerator.rockAnim)
-        rock.position = position
+        rock.position = randomPointInRect(rect)
         rock.zPosition = CGFloat(SceneZPosition.GamePropsZPosition.rawValue)
         gameScene.addChild(rock)
         rock.physicsBody = SKPhysicsBody(circleOfRadius: 10)

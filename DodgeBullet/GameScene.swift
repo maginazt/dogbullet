@@ -400,7 +400,6 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                 showTinyMessage(cat.position, text: "+0.1s", color: SKColor.goldColor())
                 cat.removeAllActions()
                 cat.removeFromParent()
-                cat.physicsBody = nil
             }
             if let normalEnemy = catBody.node as? EnemyNormal{
                 if let index = enemyGenerator.normalEnemies.indexOf(normalEnemy){
