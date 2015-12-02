@@ -6,3 +6,4 @@
 //  Copyright © 2015年 赵涛. All rights reserved.
 //
 #import "WeixinActivity.h"
+#import "ABGameKitHelper.h"

@@ -8,10 +8,14 @@
 
 import UIKit
 import SpriteKit
+import iAd
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, ADBannerViewDelegate {
     
     static var firstLaunch = true
+    
+    var adBanner: ADBannerView!
+    static var ADHeight: CGFloat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +39,14 @@ class GameViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "controllerChanged", name: UserDocuments.ControllerStatusChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willResignActive", name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIApplicationDidChangeStatusBarOrientationNotification, object: nil)
+        
+        // 增加广告
+        adBanner = ADBannerView(adType: .Banner)
+        adBanner.delegate = self
+        adBanner.alpha = 0.0
+        adBanner.frame.origin = CGPointMake(0.0, view.frame.size.height-adBanner.frame.size.height)
+        GameViewController.ADHeight = adBanner.frame.size.height
+        view.addSubview(adBanner)
     }
     
     /*    接收通知    */
@@ -58,6 +70,36 @@ class GameViewController: UIViewController {
         if let accelerometerController = (view as? GameView)?.controller as? AccelerometerController{
             accelerometerController.setupCoordinate()
         }
+    }
+    
+    /*   广告事件  */
+    func layoutAdBanner(){
+        let skView = self.view as! SKView
+        if let scene = skView.scene as? GameScene{
+            if scene.isGameOver && adBanner.bannerLoaded{
+                UIView.animateWithDuration(0.25, animations: { () -> Void in
+                    self.adBanner.alpha = 1.0
+                    }, completion: { (finished) -> Void in
+                        if !scene.isGameOver{
+                            self.adBanner.alpha = 0.0
+                        }
+                })
+            }
+        }
+    }
+    
+    func hideAdBanner(){
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            self.adBanner.alpha = 0.0
+        })
+    }
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        layoutAdBanner()
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        hideAdBanner()
     }
     
     override func prefersStatusBarHidden() -> Bool {

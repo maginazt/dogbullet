@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         Resources.loadResources(nil)
         Resources.checkAvailablity()
         WXApi.registerApp("wxf28b23e0d59b1690")
+        ABGameKitHelper.sharedHelper()
         return true
     }
     

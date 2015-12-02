@@ -62,3 +62,8 @@ enum GamePropsType: Int{
     case Rock //石头 晕眩
     case Maximum
 }
+
+//Game Center
+enum GameCenter: String{
+    case BestTimeLeaderBoardID = "best_time_leaderboard"
+}

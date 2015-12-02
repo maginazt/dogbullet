@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C40D75D1C0F2C1A001A935D /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C40D75C1C0F2C1A001A935D /* GameKit.framework */; };
+		4C40D7631C0F3745001A935D /* ABGameKitHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C40D7621C0F3745001A935D /* ABGameKitHelper.m */; };
+		4C40D7651C0F380B001A935D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C40D7641C0F380B001A935D /* CFNetwork.framework */; };
+		4C40D7671C0F3816001A935D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C40D7661C0F3816001A935D /* Security.framework */; };
 		4C4468021BCA338800FC0A7F /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4468011BCA338800FC0A7F /* PlayerController.swift */; };
 		4C4468041BCA37B700FC0A7F /* AnalogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4468031BCA37B700FC0A7F /* AnalogController.swift */; };
 		4C4468121BCA3CD100FC0A7F /* CGFloat+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4468061BCA3CD100FC0A7F /* CGFloat+Extensions.swift */; };
@@ -139,6 +143,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4C40D75C1C0F2C1A001A935D /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		4C40D7611C0F3745001A935D /* ABGameKitHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABGameKitHelper.h; sourceTree = "<group>"; };
+		4C40D7621C0F3745001A935D /* ABGameKitHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABGameKitHelper.m; sourceTree = "<group>"; };
+		4C40D7641C0F380B001A935D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		4C40D7661C0F3816001A935D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		4C4468011BCA338800FC0A7F /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		4C4468031BCA37B700FC0A7F /* AnalogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogController.swift; sourceTree = "<group>"; };
 		4C4468061BCA3CD100FC0A7F /* CGFloat+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extensions.swift"; sourceTree = "<group>"; };
@@ -246,6 +255,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C40D7671C0F3816001A935D /* Security.framework in Frameworks */,
+				4C40D7651C0F380B001A935D /* CFNetwork.framework in Frameworks */,
 				4CD11DA31C0AB58E0053FBA1 /* CoreTelephony.framework in Frameworks */,
 				4CD11DA11C0AB49A0053FBA1 /* libc++.tbd in Frameworks */,
 				4CD11D9F1C0AB48E0053FBA1 /* libsqlite3.0.tbd in Frameworks */,
@@ -253,6 +264,7 @@
 				4CD11D9B1C0AB46F0053FBA1 /* SystemConfiguration.framework in Frameworks */,
 				4CD11D971C0AB3B70053FBA1 /* libWeChatSDK.a in Frameworks */,
 				4C9E8F4F1C092D40003656E7 /* GPUImage.framework in Frameworks */,
+				4C40D75D1C0F2C1A001A935D /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +278,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C40D7601C0F3732001A935D /* GameKit */ = {
+			isa = PBXGroup;
+			children = (
+				4C40D7611C0F3745001A935D /* ABGameKitHelper.h */,
+				4C40D7621C0F3745001A935D /* ABGameKitHelper.m */,
+			);
+			name = GameKit;
+			sourceTree = "<group>";
+		};
 		4C4468001BCA335000FC0A7F /* gamecontroller */ = {
 			isa = PBXGroup;
 			children = (
@@ -408,6 +429,9 @@
 		4CA49B5D1BC9EC5900589D3C = {
 			isa = PBXGroup;
 			children = (
+				4C40D7661C0F3816001A935D /* Security.framework */,
+				4C40D7641C0F380B001A935D /* CFNetwork.framework */,
+				4C40D75C1C0F2C1A001A935D /* GameKit.framework */,
 				4CD11DA21C0AB58E0053FBA1 /* CoreTelephony.framework */,
 				4CD11DA01C0AB49A0053FBA1 /* libc++.tbd */,
 				4CD11D9E1C0AB48E0053FBA1 /* libsqlite3.0.tbd */,
@@ -432,6 +456,7 @@
 		4CA49B681BC9EC5900589D3C /* DodgeBullet */ = {
 			isa = PBXGroup;
 			children = (
+				4C40D7601C0F3732001A935D /* GameKit */,
 				4CD11D921C0AB3B70053FBA1 /* WeChat */,
 				4C8863F01BD5030600496482 /* Resources */,
 				4C8863FB1BD5035C00496482 /* viewcontrollers */,
@@ -532,7 +557,12 @@
 				TargetAttributes = {
 					4CA49B651BC9EC5900589D3C = {
 						CreatedOnToolsVersion = 7.0.1;
-						DevelopmentTeam = D3N9VRT6GX;
+						DevelopmentTeam = 7WWXBQZQ74;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+						};
 					};
 					4CA49B7D1BC9EC5900589D3C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -677,6 +707,7 @@
 				4CD11DAE1C0AB74D0053FBA1 /* WeixinSessionActivity.m in Sources */,
 				4C4468141BCA3CD100FC0A7F /* CGVector+Extensions.swift in Sources */,
 				4C8F4C721BCBDCF200F93F83 /* EnemyGenerator.swift in Sources */,
+				4C40D7631C0F3745001A935D /* ABGameKitHelper.m in Sources */,
 				4C4468251BCA4E8000FC0A7F /* AccelerometerController.swift in Sources */,
 				4CA49B6A1BC9EC5900589D3C /* AppDelegate.swift in Sources */,
 				4C8F4C6F1BCBD9AC00F93F83 /* Enemy.swift in Sources */,
@@ -845,7 +876,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/DodgeBullet/WeChat",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "DodgeBullet/DodgeBullet-Bridging-Header.h";
@@ -865,7 +896,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/DodgeBullet/WeChat",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.maginazt.DodgeBullet;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.com.maginazt.DodgeBullet;
 				PRODUCT_NAME = DodgeBullet;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "DodgeBullet/DodgeBullet-Bridging-Header.h";

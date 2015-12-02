@@ -262,7 +262,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gameOverMenu.addChild(share)
         
         let rating = SKSpriteNode(texture: SKTexture(imageNamed: "rating"), size: CGSizeMake(80, 80))
-        rating.name = "rating"
+        rating.name = "leaderboard"
         rating.position = CGPointMake(CGRectGetMinX(playableArea)+rating.size.width/2+20, CGRectGetMaxY(playableArea)-rating.size.width/2-20)
         gameOverMenu.addChild(rating)
         
@@ -547,6 +547,12 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                         playButtonPress()
                         popOverShare()
                     }
+                    //排行榜
+                    let leader = gameOverMenu.childNodeWithName("leaderboard")
+                    if (touchPos-leader!.position).length() < 100{
+                        playButtonPress()
+                        ABGameKitHelper.sharedHelper().showLeaderboard(GameCenter.BestTimeLeaderBoardID.rawValue)
+                    }
                 }
             }
             else{
@@ -622,7 +628,8 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     func popOverShare(){
         let shareContent = [
             NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed),
-            convertViewToImage()]
+            convertViewToImage(CGRectMake(0, 0, view!.bounds.size.width, view!.bounds.size.height-GameViewController.ADHeight))
+            ]
         let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: Resources.activities)
         activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAddToReadingList, UIActivityTypePostToVimeo]
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad{
@@ -634,9 +641,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         view?.window?.rootViewController?.presentViewController(activityVC, animated: true, completion: nil)
     }
     
-    func convertViewToImage() -> UIImage{
-        UIGraphicsBeginImageContextWithOptions(view!.bounds.size, false, 0.0)
-        view!.drawViewHierarchyInRect(view!.bounds, afterScreenUpdates: false)
+    func convertViewToImage(area: CGRect) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(area.size, false, 0.0)
+        view!.drawViewHierarchyInRect(area, afterScreenUpdates: false)
         let original = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return original
@@ -891,9 +898,13 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
                     self.gameOverMenu.childNodeWithName("restart")?.runAction(GameScene.restartBtnAnim)
                     if self.timePassed > UserDocuments.bestRecord{
                         UserDocuments.bestRecord = self.timePassed
+                        ABGameKitHelper.sharedHelper().reportScore(UInt(self.timePassed*10), forLeaderboard: GameCenter.BestTimeLeaderBoardID.rawValue)
                     }
                     if let bestScore = self.gameOverMenu.childNodeWithName("bestScore") as? SKLabelNode{
                         bestScore.text = NSLocalizedString("bestScore", comment: "Best Score Text") + (NSString(format: "%3.1fs", UserDocuments.bestRecord) as String)
+                    }
+                    if let gvc = self.view?.window?.rootViewController as? GameViewController{
+                        gvc.layoutAdBanner()
                     }
                 }
 
@@ -901,7 +912,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
 }
     
     func createBlurScreen() -> SKSpriteNode{
-        let screenshot = convertViewToImage()
+        let screenshot = convertViewToImage(view!.bounds)
         let picture = GPUImagePicture(image: screenshot)
         picture.addTarget(GameScene.GPUBlurFilter)
         GameScene.GPUBlurFilter.useNextFrameForImageCapture()
@@ -949,6 +960,9 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
         gameView.presentScene(scene, transition: GameScene.gameTransition)
         removeAllActions()
         removeAllChildren()
+        if let gvc = view?.window?.rootViewController as? GameViewController{
+            gvc.hideAdBanner()
+        }
     }
     
     /*   PlayerControllerDelegate   */
