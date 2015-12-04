@@ -16,6 +16,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate {
     
     var adBanner: ADBannerView!
     static var ADHeight: CGFloat!
+    static var ADPadding: CGFloat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +47,7 @@ class GameViewController: UIViewController, ADBannerViewDelegate {
         adBanner.alpha = 0.0
         adBanner.frame.origin = CGPointMake(0.0, view.frame.size.height-adBanner.frame.size.height)
         GameViewController.ADHeight = adBanner.frame.size.height
+        GameViewController.ADPadding = view.frame.size.width*GameViewController.ADHeight/view.frame.size.height/2
         view.addSubview(adBanner)
     }
     

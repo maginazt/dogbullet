@@ -628,7 +628,7 @@ class GameScene: SKScene, PlayerControllerDelegate, SKPhysicsContactDelegate {
     func popOverShare(){
         let shareContent = [
             NSString(format: NSLocalizedString("shareText", comment: "Share Text"), timePassed),
-            convertViewToImage(CGRectMake(0, 0, view!.bounds.size.width, view!.bounds.size.height-GameViewController.ADHeight))
+            convertViewToImage(CGRectMake(-GameViewController.ADPadding, 0, view!.bounds.size.width-2*GameViewController.ADPadding, view!.bounds.size.height-GameViewController.ADHeight))
             ]
         let activityVC = UIActivityViewController(activityItems: shareContent, applicationActivities: Resources.activities)
         activityVC.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAddToReadingList, UIActivityTypePostToVimeo]
